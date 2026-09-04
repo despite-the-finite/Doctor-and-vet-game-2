@@ -5,7 +5,7 @@
  * extras covers every species in the game. Add an entry to SPECIES and a new
  * animal exists — no new drawing code required.
  */
-import { eyes, mouth, blush, moodAura } from './faces.js';
+import { eyes, mouth, blush, moodAura, faceTint } from './faces.js';
 
 export const SPECIES = {
   puppy:     { fur: '#e8b06a', belly: '#fde9cf', ears: 'floppy',  snout: 'dog',  tail: 'wag',    nose: '#4a3527', sound: 'woof',   emoji: '🐶' },
@@ -51,6 +51,9 @@ export function creatureSVG(opts = {}) {
 
   const scale = s.small ? 0.86 : 1;
   const headY = 96, headR = s.bigEyes ? 50 : 46;
+  // A poorly patient's face goes sallow — the one thing a mood changes
+  // besides eyes, mouth and blush.
+  const faceFill = faceTint(mood, s.fur);
 
   return `
 <svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
@@ -88,7 +91,7 @@ export function creatureSVG(opts = {}) {
       ${ears(s, headY, headR)}
       ${s.mane ? `<circle cx="100" cy="${headY}" r="${headR + 15}" fill="${s.mane}"/>` : ''}
       ${s.yarnHair ? yarnHair(s, headY, headR) : ''}
-      <circle cx="100" cy="${headY}" r="${headR}" fill="${s.fur}"/>
+      <circle cx="100" cy="${headY}" r="${headR}" fill="${faceFill}"/>
       ${s.stripes ? `<g stroke="rgba(0,0,0,.14)" stroke-width="5" stroke-linecap="round" fill="none">
           <path d="M 86 ${headY - 38} l 4 12"/><path d="M 100 ${headY - 42} l 0 13"/><path d="M 114 ${headY - 38} l -4 12"/>
         </g>` : ''}

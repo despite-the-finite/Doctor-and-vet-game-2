@@ -6308,7 +6308,7 @@ __def("src/ui/human.js", function (__x, __req) {
  * mark the places a tool can be dropped, so the case engine only ever needs
  * to say "the chest" and this file decides where that is.
  */
-const { eyes, mouth, blush, moodAura } = __req("src/ui/faces.js");
+const { eyes, mouth, blush, moodAura, faceTint } = __req("src/ui/faces.js");
 const { SKIN_TONES, HAIR_COLORS, SCRUB_COLORS, COAT_COLORS, SHOE_COLORS } = __req("src/data/characters.js");
 
 const byId = (list, id, fallback) => list.find((x) => x.id === id) || fallback || list[0];
@@ -6345,6 +6345,10 @@ function humanSVG(opts = {}) {
   const scale = age === 'adult' ? 1 : age === 'toddler' ? 0.9 : 0.96;
   const headR = age === 'toddler' ? HEAD.r * 1.1 : HEAD.r;
   const acc = [accessory, ...extras].filter((a) => a && a !== 'none');
+
+  // A poorly patient's face goes sallow — the one thing a mood changes
+  // besides eyes, mouth and blush.
+  const faceFill = faceTint(mood, sk.value);
 
   const shoeFill = sh.value === 'rainbow' ? 'url(#rainbowShoe)' : sh.value;
   // Sleeves match the coat when one is worn, otherwise the scrubs.
@@ -6397,7 +6401,7 @@ function humanSVG(opts = {}) {
     <!-- head -->
     <g class="lh-char-head">
       ${hairBack(hair, hc.value, headR)}
-      <circle cx="${HEAD.x}" cy="${HEAD.y}" r="${headR}" fill="${sk.value}"/>
+      <circle cx="${HEAD.x}" cy="${HEAD.y}" r="${headR}" fill="${faceFill}"/>
       <ellipse cx="${HEAD.x}" cy="${HEAD.y - headR * 0.5}" rx="${headR * 0.7}" ry="${headR * 0.4}" fill="url(#cheekGlow)"/>
       <!-- ears -->
       <ellipse cx="${HEAD.x - headR + 2}" cy="${HEAD.y + 4}" rx="8" ry="10" fill="${sk.value}"/>
@@ -6557,6 +6561,12 @@ __def("src/ui/faces.js", function (__x, __req) {
  *
  * All parts are drawn around an origin at the centre of the face, so callers
  * just translate to wherever the head is.
+ *
+ * The twelve expressions come from the design's expression sheet, which draws
+ * them in an 80x80 box on a face of r=34 with the eyes at x=29 and x=51.
+ * Here every measurement is expressed as a fraction of the caller's eye
+ * spread instead, so one table of moods fits a human, an animal and a toy
+ * without a special case anywhere.
  */
 
 const MOODS = [
@@ -6564,122 +6574,206 @@ const MOODS = [
   'giggle', 'surprised', 'love', 'proud', 'confused', 'itchy',
 ];
 
+const INK = '#2E2A44';
+const MUTE = '#8C86AD';       /* the ? and Z glyphs */
+const BLUSH = '#FF9EB0';
+const BLUSH_STRONG = '#FF8095';
+const TEAR = '#7ED0FF';
+const HEART = '#FF5F8D';
+const STAR = '#FFD84D';
+const STAR_EDGE = '#E0AE12';
+const ITCH = '#E8556D';
+
+/** The face fill a mood asks for. Only `sick` changes it — it goes sallow. */
+function faceTint(mood, base) {
+  return mood === 'sick' ? '#EDD9B4' : base;
+}
+
 /** Eyes for a mood. `w` is the horizontal spread. */
-function eyes(mood, { w = 15, y = 0, color = '#2E2A44', scale = 1 } = {}) {
+function eyes(mood, { w = 15, y = 0, color = INK, scale = 1 } = {}) {
   const L = -w, R = w;
-  const r = 5.4 * scale;
+  const sw = 3.2 * scale;
+  /* Proportions lifted from the sheet: an eye arc spans 0.64 of the spread
+     either side and rises 0.73 of it; a round eye is 0.455 of it across. */
+  const half = 0.64 * w;
+  const rise = 0.73 * w;
+  const rx = 0.455 * w * scale;
 
-  const dot = (x, ry = r) => `
-    <ellipse cx="${x}" cy="${y}" rx="${r}" ry="${ry}" fill="${color}"/>
-    <circle cx="${x + r * 0.38}" cy="${y - ry * 0.42}" r="${r * 0.34}" fill="#fff" opacity=".95"/>`;
+  /* An open, lidded eye — round pupil with a highlight up and to the right. */
+  const dot = (x, ry = rx) => `
+    <ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${color}"/>
+    <circle cx="${x + rx * 0.4}" cy="${y - ry * 0.4}" r="${rx * 0.36}" fill="#fff"/>`;
 
+  /* A closed, happy eye. dir 1 arches up, dir -1 droops. */
   const arc = (x, dir = 1) =>
-    `<path d="M ${x - r * 1.3} ${y + 1.5 * dir} q ${r * 1.3} ${-6 * dir} ${r * 2.6} 0"
-       stroke="${color}" stroke-width="${3.2 * scale}" fill="none" stroke-linecap="round"/>`;
+    `<path d="M ${x - half} ${y + rise * 0.25 * dir} q ${half} ${-rise * dir} ${half * 2} 0"
+       fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round"/>`;
 
   switch (mood) {
     case 'happy':
+      return arc(L) + arc(R);
     case 'proud':
       return arc(L) + arc(R);
     case 'giggle':
-      return arc(L) + arc(R) + sparkleEye(L - 16, y - 6) + sparkleEye(R + 16, y - 6);
+      return arc(L) + arc(R);
+    case 'itchy':
+      /* squeezed a little tighter than happy — the scrunch of a good scratch */
+      return arc(L, 1.12) + arc(R, 1.12);
     case 'love':
-      return heartEye(L, y) + heartEye(R, y);
+      return heartEye(L, y, w) + heartEye(R, y, w);
     case 'sleepy':
       return arc(L, -1) + arc(R, -1);
     case 'sad':
-      return dot(L, r * 1.15) + dot(R, r * 1.15) + tear(R + 6, y + 6);
+      return dot(L, rx * 1.2) + dot(R, rx * 1.2) + tear(R + w * 0.64, y + w * 1.1, w);
     case 'scared':
-      return dot(L, r * 1.4) + dot(R, r * 1.4) +
-        `<path d="M ${L - 10} ${y - 13} q 10 -6 20 -2" stroke="${color}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-         <path d="M ${R + 10} ${y - 13} q -10 -6 -20 -2" stroke="${color}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
+      return dot(L, rx * 1.4) + dot(R, rx * 1.4) +
+        `<path d="M ${L - w * 0.82} ${y - w * 1.18} q ${w * 0.73} ${-w * 0.45} ${w * 1.36} ${-w * 0.18}"
+           fill="none" stroke="${color}" stroke-width="${2.8 * scale}" stroke-linecap="round"/>
+         <path d="M ${R + w * 0.82} ${y - w * 1.18} q ${-w * 0.73} ${-w * 0.45} ${-w * 1.36} ${-w * 0.18}"
+           fill="none" stroke="${color}" stroke-width="${2.8 * scale}" stroke-linecap="round"/>`;
     case 'sick':
-      return `<path d="M ${L - 6} ${y - 4} l 12 10 M ${L + 6} ${y - 4} l -12 10" stroke="${color}" stroke-width="3.2" stroke-linecap="round"/>
-              <path d="M ${R - 6} ${y - 4} l 12 10 M ${R + 6} ${y - 4} l -12 10" stroke="${color}" stroke-width="3.2" stroke-linecap="round"/>`;
+      return crossEye(L, y, w, color, sw) + crossEye(R, y, w, color, sw);
     case 'surprised':
-      return dot(L, r * 1.5) + dot(R, r * 1.5);
+      return dot(L, rx * 1.5) + dot(R, rx * 1.5);
     case 'confused':
-      return arc(L) + dot(R, r * 1.2);
-    case 'itchy':
-      return `<path d="M ${L - 7} ${y} q 7 -8 14 0" stroke="${color}" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-              <path d="M ${R - 7} ${y} q 7 -8 14 0" stroke="${color}" stroke-width="3.2" fill="none" stroke-linecap="round"/>`;
+      return arc(L) + dot(R, rx * 1.2);
     default: // calm
       return dot(L) + dot(R);
   }
 }
 
-function heartEye(x, y) {
-  return `<path d="M ${x} ${y + 6} C ${x - 9} ${y - 2} ${x - 7} ${y - 10} ${x} ${y - 5}
-    C ${x + 7} ${y - 10} ${x + 9} ${y - 2} ${x} ${y + 6} Z" fill="#ff5f8d"/>`;
+/** The X of a poorly patient's eye. */
+function crossEye(x, y, w, color, sw) {
+  const a = w * 0.55;
+  return `<path d="M ${x - a} ${y - a * 0.8} l ${a * 2} ${a * 1.6} M ${x + a} ${y - a * 0.8} l ${-a * 2} ${a * 1.6}"
+    stroke="${color}" stroke-width="${sw}" stroke-linecap="round" fill="none"/>`;
 }
 
-function tear(x, y) {
-  return `<ellipse cx="${x}" cy="${y}" rx="3.4" ry="5" fill="#7ed0ff" opacity=".95">
-    <animate attributeName="cy" values="${y};${y + 14};${y}" dur="2.4s" repeatCount="indefinite"/>
+function heartEye(x, y, w) {
+  const s = w / 11;   /* the sheet draws this heart against a spread of 11 */
+  return `<path d="M ${x} ${y + 3 * s}
+    C ${x - 8 * s} ${y - 5 * s} ${x - 6 * s} ${y - 12 * s} ${x} ${y - 8 * s}
+    C ${x + 6 * s} ${y - 12 * s} ${x + 8 * s} ${y - 5 * s} ${x} ${y + 3 * s} Z" fill="${HEART}"/>`;
+}
+
+function tear(x, y, w) {
+  const rx = w * 0.31, ry = w * 0.45;
+  return `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${TEAR}">
+    <animate attributeName="cy" values="${y};${y + ry * 2.8};${y}" dur="2.4s" repeatCount="indefinite"/>
     <animate attributeName="opacity" values="0;1;0" dur="2.4s" repeatCount="indefinite"/>
   </ellipse>`;
 }
 
-function sparkleEye(x, y) {
-  return `<text x="${x}" y="${y}" font-size="13" text-anchor="middle">✨</text>`;
-}
-
 /** Mouth for a mood. */
-function mouth(mood, { y = 20, color = '#2E2A44', scale = 1 } = {}) {
-  const sw = 3.4 * scale;
+function mouth(mood, { y = 20, color = INK, scale = 1 } = {}) {
+  const sw = 3.2 * scale;
+  const s = scale;
+  const line = (d) => `<path d="${d}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round"/>`;
+
   switch (mood) {
     case 'happy':
+      return line(`M ${-11 * s} ${y} q ${11 * s} ${10 * s} ${22 * s} 0`);
     case 'proud':
-      return `<path d="M -11 ${y} q 11 12 22 0" stroke="${color}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`;
-    case 'giggle':
-      return `<path d="M -13 ${y - 2} q 13 18 26 0 z" fill="${color}"/>
-              <path d="M -7 ${y + 6} q 7 6 14 0 z" fill="#ff8fa6"/>`;
+      return line(`M ${-9 * s} ${y} q ${9 * s} ${11 * s} ${18 * s} 0`);
     case 'love':
-      return `<path d="M -9 ${y} q 9 11 18 0" stroke="${color}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`;
+      return line(`M ${-9 * s} ${y} q ${9 * s} ${11 * s} ${18 * s} 0`);
+    case 'giggle':
+      /* open laugh, with a tongue behind it */
+      return `<path d="M ${-12 * s} ${y - 3 * s} q ${12 * s} ${16 * s} ${24 * s} 0 z" fill="${color}"/>
+              <path d="M ${-6 * s} ${y + 3 * s} q ${6 * s} ${6 * s} ${12 * s} 0 z" fill="#FF8FA6"/>`;
     case 'sad':
-      return `<path d="M -10 ${y + 6} q 10 -11 20 0" stroke="${color}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`;
+      return line(`M ${-8 * s} ${y + 5 * s} q ${8 * s} ${-7 * s} ${16 * s} 0`);
     case 'scared':
-      return `<ellipse cx="0" cy="${y + 3}" rx="7" ry="8.5" fill="${color}"/>`;
+      return `<ellipse cx="0" cy="${y + 5 * s}" rx="${6 * s}" ry="${7.5 * s}" fill="${color}"/>`;
     case 'sick':
-      return `<path d="M -11 ${y + 4} q 5.5 -8 11 0 q 5.5 8 11 0" stroke="${color}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`;
+      /* the queasy wave */
+      return line(`M ${-11 * s} ${y + 5 * s} q ${5.5 * s} ${-8 * s} ${11 * s} 0 q ${5.5 * s} ${8 * s} ${11 * s} 0`);
     case 'sleepy':
-      return `<ellipse cx="0" cy="${y + 2}" rx="5" ry="6" fill="${color}" opacity=".85"/>`;
+      return `<ellipse cx="0" cy="${y + 3 * s}" rx="${5 * s}" ry="${6 * s}" fill="${color}" opacity=".85"/>`;
     case 'surprised':
-      return `<ellipse cx="0" cy="${y + 2}" rx="6" ry="7" fill="${color}"/>`;
+      return `<ellipse cx="0" cy="${y + 4 * s}" rx="${6 * s}" ry="${7 * s}" fill="${color}"/>`;
     case 'confused':
-      return `<path d="M -9 ${y + 2} q 9 6 18 -3" stroke="${color}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`;
+      /* one corner up, one down */
+      return line(`M ${-9 * s} ${y + 2 * s} q ${9 * s} ${6 * s} ${18 * s} ${-3 * s}`);
     case 'itchy':
-      return `<path d="M -9 ${y + 2} q 9 -7 18 3" stroke="${color}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`;
-    default:
-      return `<path d="M -8 ${y + 1} q 8 6 16 0" stroke="${color}" stroke-width="${sw}" fill="none" stroke-linecap="round"/>`;
+      return line(`M ${-9 * s} ${y + 3 * s} q ${9 * s} ${-7 * s} ${18 * s} ${3 * s}`);
+    default: // calm
+      return line(`M ${-8 * s} ${y + 1 * s} q ${8 * s} ${6 * s} ${16 * s} 0`);
   }
 }
 
 /** Rosy cheeks — the single biggest "cute" lever there is. */
-function blush(mood, { w = 30, y = 14, color = '#ff9eb0', opacity = 0.55 } = {}) {
+function blush(mood, { w = 30, y = 14, color = BLUSH, opacity = 0.55 } = {}) {
+  /* Moods that run hot get a deeper, wider flush. */
   const strong = mood === 'sick' || mood === 'love' || mood === 'giggle';
-  return `<ellipse cx="${-w}" cy="${y}" rx="9" ry="6" fill="${strong ? '#ff8095' : color}" opacity="${strong ? 0.8 : opacity}"/>
-          <ellipse cx="${w}" cy="${y}" rx="9" ry="6" fill="${strong ? '#ff8095' : color}" opacity="${strong ? 0.8 : opacity}"/>`;
+  const fill = strong ? BLUSH_STRONG : color;
+  const op = strong ? 0.8 : opacity;
+  const rx = w * (strong ? 0.28 : 0.245), ry = w * (strong ? 0.19 : 0.175);
+  const cheek = (x) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${fill}" opacity="${op}"/>`;
+  /* sad and scared faces drain rather than flush */
+  if (mood === 'sad' || mood === 'scared' || mood === 'surprised') return '';
+  return cheek(-w) + cheek(w);
 }
 
-/** Little floating symbol above the head (zzz, sweat, question mark…). */
-function moodAura(mood, { y = -70 } = {}) {
-  const glyph = {
-    sleepy: '💤', sick: '🥴', scared: '😟', confused: '❓',
-    love: '💕', proud: '⭐', itchy: '💢', giggle: '😆',
-  }[mood];
-  if (!glyph) return '';
-  return `<text x="34" y="${y}" font-size="24" text-anchor="middle" opacity=".9">
-      ${glyph}
-      <animateTransform attributeName="transform" type="translate" values="0 0; 0 -7; 0 0" dur="2.6s" repeatCount="indefinite"/>
-    </text>`;
+/**
+ * The little drawn mark a mood wears beside the head — the sleeper's Z, the
+ * puzzled ?, the proud star, the itch marks, the giggle's sparkles. Drawn,
+ * never typed: there is no emoji anywhere in the rendered game.
+ */
+function moodAura(mood, { y = -70, x = 24, scale = 1 } = {}) {
+  const s = scale;
+  switch (mood) {
+    case 'sleepy':
+      return `<path d="M ${x} ${y} h ${9 * s} l ${-9 * s} ${8 * s} h ${9 * s}"
+        fill="none" stroke="${MUTE}" stroke-width="${2.6 * s}" stroke-linecap="round" stroke-linejoin="round">
+        <animateTransform attributeName="transform" type="translate" values="0 0; 0 -7; 0 0" dur="2.6s" repeatCount="indefinite"/>
+      </path>`;
+    case 'confused':
+      return `<path d="M ${x} ${y + 2 * s} q ${7 * s} ${-4 * s} ${7 * s} ${3 * s} t ${-6 * s} ${4 * s} v ${3 * s}"
+        fill="none" stroke="${MUTE}" stroke-width="${2.8 * s}" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="translate" values="0 0; 0 -6; 0 0" dur="2.8s" repeatCount="indefinite"/>
+      </path>`;
+    case 'proud':
+      return star(0, y, 7 * s);
+    case 'itchy':
+      return `<path d="M ${x} ${y + 6 * s} l ${6 * s} ${-6 * s} M ${x} ${y + 14 * s} h ${8 * s} M ${x - 2 * s} ${y} l ${3 * s} ${-7 * s}"
+        stroke="${ITCH}" stroke-width="${2.8 * s}" stroke-linecap="round" fill="none"/>`;
+    case 'giggle':
+      return twinkle(-x - 4 * s, y + 4 * s, 2.4 * s, '1.8s') + twinkle(x + 4 * s, y, 2.4 * s, '2.2s');
+    case 'love':
+      return `<path d="M ${x} ${y + 8 * s} c ${-6 * s} ${-8 * s} ${-4 * s} ${-14 * s} ${0} ${-9 * s}
+        c ${4 * s} ${-5 * s} ${6 * s} ${1 * s} ${0} ${9 * s} z" fill="${HEART}" opacity=".9">
+        <animateTransform attributeName="transform" type="translate" values="0 0; 0 -8; 0 0" dur="2.6s" repeatCount="indefinite"/>
+      </path>`;
+    default:
+      return '';
+  }
+}
+
+/** A five-pointed star, used for `proud` and for rewards. */
+function star(cx, cy, r, fill = STAR, stroke = STAR_EDGE) {
+  const pts = [];
+  for (let i = 0; i < 10; i++) {
+    const rad = i % 2 ? r * 0.45 : r;
+    const a = (Math.PI / 5) * i - Math.PI / 2;
+    pts.push(`${(cx + Math.cos(a) * rad).toFixed(2)},${(cy + Math.sin(a) * rad).toFixed(2)}`);
+  }
+  return `<polygon points="${pts.join(' ')}" fill="${fill}" stroke="${stroke}" stroke-width="1.2" stroke-linejoin="round"/>`;
+}
+
+/** A four-pointed sparkle on the design's twinkle. */
+function twinkle(cx, cy, r, dur) {
+  return `<path d="M ${cx} ${cy - r * 2} l ${r} ${r} ${r} ${r * 0.5} -${r} ${r * 0.5} -${r} ${r * 2}
+    -${r} -${r * 2} -${r} -${r * 0.5} ${r} -${r * 0.5} z" fill="${STAR}" opacity=".9">
+    <animate attributeName="opacity" values=".25;1;.25" dur="${dur}" repeatCount="indefinite"/>
+  </path>`;
 }
 
 /** Complete face bundle at the given origin. */
 function face(mood, opts = {}) {
   return eyes(mood, opts) + blush(mood, opts) + mouth(mood, opts);
 }
-  Object.assign(__x, { MOODS, eyes, mouth, blush, moodAura, face });
+  Object.assign(__x, { MOODS, faceTint, eyes, mouth, blush, moodAura, star, face });
 });
 
 __def("src/data/characters.js", function (__x, __req) {
@@ -7800,7 +7894,7 @@ __def("src/ui/creature.js", function (__x, __req) {
  * extras covers every species in the game. Add an entry to SPECIES and a new
  * animal exists — no new drawing code required.
  */
-const { eyes, mouth, blush, moodAura } = __req("src/ui/faces.js");
+const { eyes, mouth, blush, moodAura, faceTint } = __req("src/ui/faces.js");
 
 const SPECIES = {
   puppy:     { fur: '#e8b06a', belly: '#fde9cf', ears: 'floppy',  snout: 'dog',  tail: 'wag',    nose: '#4a3527', sound: 'woof',   emoji: '🐶' },
@@ -7846,6 +7940,9 @@ function creatureSVG(opts = {}) {
 
   const scale = s.small ? 0.86 : 1;
   const headY = 96, headR = s.bigEyes ? 50 : 46;
+  // A poorly patient's face goes sallow — the one thing a mood changes
+  // besides eyes, mouth and blush.
+  const faceFill = faceTint(mood, s.fur);
 
   return `
 <svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
@@ -7883,7 +7980,7 @@ function creatureSVG(opts = {}) {
       ${ears(s, headY, headR)}
       ${s.mane ? `<circle cx="100" cy="${headY}" r="${headR + 15}" fill="${s.mane}"/>` : ''}
       ${s.yarnHair ? yarnHair(s, headY, headR) : ''}
-      <circle cx="100" cy="${headY}" r="${headR}" fill="${s.fur}"/>
+      <circle cx="100" cy="${headY}" r="${headR}" fill="${faceFill}"/>
       ${s.stripes ? `<g stroke="rgba(0,0,0,.14)" stroke-width="5" stroke-linecap="round" fill="none">
           <path d="M 86 ${headY - 38} l 4 12"/><path d="M 100 ${headY - 42} l 0 13"/><path d="M 114 ${headY - 38} l -4 12"/>
         </g>` : ''}

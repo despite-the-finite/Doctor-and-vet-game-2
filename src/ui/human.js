@@ -5,7 +5,7 @@
  * mark the places a tool can be dropped, so the case engine only ever needs
  * to say "the chest" and this file decides where that is.
  */
-import { eyes, mouth, blush, moodAura } from './faces.js';
+import { eyes, mouth, blush, moodAura, faceTint } from './faces.js';
 import { SKIN_TONES, HAIR_COLORS, SCRUB_COLORS, COAT_COLORS, SHOE_COLORS } from '../data/characters.js';
 
 const byId = (list, id, fallback) => list.find((x) => x.id === id) || fallback || list[0];
@@ -42,6 +42,10 @@ export function humanSVG(opts = {}) {
   const scale = age === 'adult' ? 1 : age === 'toddler' ? 0.9 : 0.96;
   const headR = age === 'toddler' ? HEAD.r * 1.1 : HEAD.r;
   const acc = [accessory, ...extras].filter((a) => a && a !== 'none');
+
+  // A poorly patient's face goes sallow — the one thing a mood changes
+  // besides eyes, mouth and blush.
+  const faceFill = faceTint(mood, sk.value);
 
   const shoeFill = sh.value === 'rainbow' ? 'url(#rainbowShoe)' : sh.value;
   // Sleeves match the coat when one is worn, otherwise the scrubs.
@@ -94,7 +98,7 @@ export function humanSVG(opts = {}) {
     <!-- head -->
     <g class="lh-char-head">
       ${hairBack(hair, hc.value, headR)}
-      <circle cx="${HEAD.x}" cy="${HEAD.y}" r="${headR}" fill="${sk.value}"/>
+      <circle cx="${HEAD.x}" cy="${HEAD.y}" r="${headR}" fill="${faceFill}"/>
       <ellipse cx="${HEAD.x}" cy="${HEAD.y - headR * 0.5}" rx="${headR * 0.7}" ry="${headR * 0.4}" fill="url(#cheekGlow)"/>
       <!-- ears -->
       <ellipse cx="${HEAD.x - headR + 2}" cy="${HEAD.y + 4}" rx="8" ry="10" fill="${sk.value}"/>
