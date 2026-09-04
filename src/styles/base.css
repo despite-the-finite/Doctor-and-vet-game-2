@@ -1,0 +1,169 @@
+/* ==========================================================================
+   Little Heroes Hospital — design tokens, reset & shared motion
+   The whole game is drawn with CSS + inline SVG, so this file carries the
+   entire visual language: chunky "sticker" shapes, soft depth, bright but
+   slightly desaturated colours that stay friendly on big tablet screens.
+   ========================================================================== */
+
+:root {
+  /* --- brand palette ---------------------------------------------------- */
+  --sky:        #39b5f0;
+  --sky-deep:   #1a86c4;
+  --sky-soft:   #d6f0ff;
+  --coral:      #ff7a6b;
+  --coral-deep: #e04f42;
+  --mint:       #3fd0a6;
+  --mint-deep:  #21a682;
+  --sun:        #ffc844;
+  --sun-deep:   #e8a413;
+  --grape:      #a97bf0;
+  --grape-deep: #7f4fd0;
+  --bubblegum:  #ff9ec4;
+  --cream:      #fff7ea;
+  --ink:        #2c3350;
+  --ink-soft:   #5d6688;
+  --paper:      #ffffff;
+
+  /* --- surfaces --------------------------------------------------------- */
+  --bg:         #cdeeff;
+  --card:       #ffffff;
+  --card-2:     #fff6e9;
+
+  /* --- shape ------------------------------------------------------------ */
+  --r-sm: 12px;
+  --r-md: 20px;
+  --r-lg: 30px;
+  --r-xl: 44px;
+  --r-pill: 999px;
+
+  /* --- depth: soft ambient + a solid "sticker" edge ---------------------- */
+  --lift-1: 0 4px 0 rgba(44,51,80,.14), 0 8px 20px rgba(44,51,80,.14);
+  --lift-2: 0 7px 0 rgba(44,51,80,.16), 0 16px 34px rgba(44,51,80,.18);
+  --lift-3: 0 12px 0 rgba(44,51,80,.15), 0 26px 60px rgba(44,51,80,.24);
+  --inset:  inset 0 3px 0 rgba(255,255,255,.75);
+
+  /* --- type ------------------------------------------------------------- */
+  --font-display: "Baloo 2", "Trebuchet MS", "Comic Sans MS", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* fluid sizing keeps 4-year-old-sized targets on every device */
+  --step-0: clamp(15px, 1.15vw + 12px, 19px);
+  --step-1: clamp(18px, 1.6vw + 13px, 24px);
+  --step-2: clamp(22px, 2.4vw + 14px, 34px);
+  --step-3: clamp(28px, 4vw + 14px, 52px);
+  --step-4: clamp(36px, 7vw + 12px, 86px);
+
+  --tap: 56px; /* minimum interactive size */
+  --safe: env(safe-area-inset-bottom, 0px);
+
+  /* The game commits to one bright, sunny world rather than following the
+     host's theme. Declaring the scheme keeps built-in controls — the
+     microscope's focus dial, chiefly — light to match, wherever it is
+     embedded. Every colour below is painted explicitly for the same reason. */
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  min-height: 100dvh;   /* holds up when embedded in someone else's document */
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  overflow: hidden;
+}
+
+h1, h2, h3, h4, .display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: .2px;
+  margin: 0;
+  line-height: 1.05;
+}
+
+button { font-family: inherit; }
+
+#app {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+#fx {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 900;
+  overflow: hidden;
+}
+
+/* Every screen fills the viewport and scrolls internally, so a child can
+   never end up on a page with no way back. */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: screen-in .38s cubic-bezier(.2,.9,.3,1.15) both;
+}
+
+.screen-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(24px + var(--safe));
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(18px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* --- shared motion ------------------------------------------------------ */
+@keyframes bob        { 0%,100% { transform: translateY(0) }        50% { transform: translateY(-9px) } }
+@keyframes bob-slow   { 0%,100% { transform: translateY(0) }        50% { transform: translateY(-5px) } }
+@keyframes sway       { 0%,100% { transform: rotate(-2.5deg) }      50% { transform: rotate(2.5deg) } }
+@keyframes pulse-ring { 0% { transform: scale(.7); opacity: .85 }   100% { transform: scale(1.9); opacity: 0 } }
+@keyframes pop-in     { 0% { transform: scale(.4); opacity: 0 } 70% { transform: scale(1.08) } 100% { transform: scale(1); opacity: 1 } }
+@keyframes wiggle     { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-6deg) } 75% { transform: rotate(6deg) } }
+@keyframes twinkle    { 0%,100% { opacity: .25; transform: scale(.75) } 50% { opacity: 1; transform: scale(1.15) } }
+@keyframes float-up   { from { transform: translateY(0); opacity: 1 } to { transform: translateY(-90px); opacity: 0 } }
+@keyframes shimmer    { from { background-position: -200% 0 } to { background-position: 200% 0 } }
+@keyframes glow-ring  { 0%,100% { box-shadow: 0 0 0 0 rgba(255,200,68,.85) } 50% { box-shadow: 0 0 0 16px rgba(255,200,68,0) } }
+@keyframes drift      { from { transform: translateX(-20vw) } to { transform: translateX(120vw) } }
+
+.bob { animation: bob 2.6s ease-in-out infinite; }
+
+/* Respect reduced-motion: keep the game readable, drop the ambience. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .05s !important;
+  }
+}
+
+/* Utility */
+.center { display: flex; align-items: center; justify-content: center; }
+.col { display: flex; flex-direction: column; }
+.row { display: flex; align-items: center; }
+.gap-s { gap: 8px } .gap-m { gap: 16px } .gap-l { gap: 26px }
+.wrap { flex-wrap: wrap; }
+.hidden { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
