@@ -13,7 +13,7 @@ export const MOODS = [
 ];
 
 /** Eyes for a mood. `w` is the horizontal spread. */
-export function eyes(mood, { w = 15, y = 0, color = '#2c3350', scale = 1 } = {}) {
+export function eyes(mood, { w = 15, y = 0, color = '#2E2A44', scale = 1 } = {}) {
   const L = -w, R = w;
   const r = 5.4 * scale;
 
@@ -73,7 +73,7 @@ function sparkleEye(x, y) {
 }
 
 /** Mouth for a mood. */
-export function mouth(mood, { y = 20, color = '#2c3350', scale = 1 } = {}) {
+export function mouth(mood, { y = 20, color = '#2E2A44', scale = 1 } = {}) {
   const sw = 3.4 * scale;
   switch (mood) {
     case 'happy':

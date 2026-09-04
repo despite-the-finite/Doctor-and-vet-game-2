@@ -1,0 +1,177 @@
+/* ============================================================
+   Little Heroes Hospital — design tokens
+   Source of truth: design_references/01 Art Direction & System.dc.html
+   Drop this at the TOP of src/styles/base.css (replacing the old
+   token block) or keep it as src/styles/tokens.css imported first.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Grandstander:wght@500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap');
+
+:root {
+  /* ---- type ---- */
+  --lh-font-display: 'Grandstander', system-ui, sans-serif;   /* titles, buttons, numbers */
+  --lh-font-body:    'Nunito', system-ui, sans-serif;         /* reading */
+
+  --lh-size-hero:      96px;  /* HEROES on the title */
+  --lh-size-title-1:   64px;
+  --lh-size-title-2:   58px;
+  --lh-size-display:   56px;
+  --lh-size-h1:        44px;
+  --lh-size-h2:        34px;
+  --lh-size-h3:        32px;
+  --lh-size-card-title:22px;
+  --lh-size-btn-lg:    27px;
+  --lh-size-btn:       22px;
+  --lh-size-hud-num:   24px;
+  --lh-size-body-lg:   21px;
+  --lh-size-body:      17px;
+  --lh-size-meta:      16px;
+  --lh-size-label:     14px;   /* absolute floor for anything a child reads */
+
+  --lh-track-caps: 2.4px;      /* eyebrow/all-caps labels */
+  --lh-track-tight: -1px;      /* display sizes 44px and up */
+  --lh-lh-tight: 1.05;
+  --lh-lh-body: 1.5;
+
+  /* ---- core palette ---- */
+  --lh-paper:      #FFF9F0;
+  --lh-panel:      #FFFFFF;
+  --lh-canvas:     #F2EEE6;
+  --lh-canvas-top: #F7F3EB;
+  --lh-canvas-bot: #EFEAE0;
+  --lh-sunk:       #F4F1EA;   /* inset/disabled surface */
+
+  --lh-ink:        #2E2A44;   /* all body + outline ink. never #000 */
+  --lh-ink-body:   #4A4667;
+  --lh-ink-soft:   #6B6790;
+  --lh-ink-mute:   #8C86AD;
+  --lh-ink-faint:  #9C97B4;
+
+  --lh-star:       #FFD84D;
+  --lh-star-edge:  #E0AE12;
+  --lh-star-ink:   #6B4300;   /* text on gold */
+  --lh-star-deep:  #C48A00;
+
+  --lh-locked-fill: #E7E2D8;
+  --lh-locked-prop: #B4AC9C;
+
+  /* ---- doctor world ---- */
+  --lh-doc:          #2FA8A0;
+  --lh-doc-lite:     #4FC4BB;
+  --lh-doc-deep:     #1F7E78;
+  --lh-doc-sea:      #1F5E68;
+  --lh-doc-mist:     #DFF6F4;
+  --lh-doc-mist-2:   #B9E9E4;
+  --lh-marigold:     #FFB13B;
+  --lh-marigold-lite:#FFC463;
+  --lh-marigold-deep:#D98A19;
+  --lh-marigold-ink: #6B4300;
+  --lh-rasp:         #E8556D;
+  --lh-rasp-deep:    #B93450;
+  --lh-rasp-hover:   #C43C53;
+
+  /* ---- vet world ---- */
+  --lh-vet:        #4FBF6E;
+  --lh-vet-deep:   #3EA85D;
+  --lh-vet-forest: #2E7D4F;
+  --lh-lime:       #9BDC5A;
+  --lh-sky:        #5EC8F0;
+  --lh-sky-deep:   #2C86B4;
+  --lh-bark:       #8A5A3B;
+  --lh-vet-tint:   #C6EFD2;
+  --lh-vet-tint-2: #E4F7E9;
+
+  /* ---- toy world ---- */
+  --lh-toy:        #A87BF0;
+  --lh-toy-lite:   #C9A0F5;
+  --lh-toy-lite-2: #D6B4FA;
+  --lh-toy-deep:   #8F5FD6;
+  --lh-toy-ink:    #7A4FC4;
+  --lh-gum:        #FF9EC4;
+  --lh-gum-deep:   #D8558C;
+  --lh-butter:     #FFE08A;
+  --lh-cloud:      #F3EBFF;
+
+  /* ---- character drawing ---- */
+  --lh-skin-1: #ffe0c2;  --lh-skin-2: #F0C79E;  --lh-skin-3: #C98D63;
+  --lh-fur-1:  #F7DDBB;  --lh-fur-2:  #F2CFA6;  --lh-fur-3:  #E0AE7C;
+  --lh-fur-line:#C29061;
+  --lh-hair-1: #4A3A2C;  --lh-hair-2: #2E2438;  --lh-hair-3: #2f2a33;
+  --lh-blush:  #FF9EB0;  --lh-blush-strong:#FF8095;
+  --lh-tear:   #7ED0FF;  --lh-heart:#FF5F8D;
+
+  /* ---- radius ---- */
+  --lh-r-xs: 14px;  --lh-r-sm: 18px;  --lh-r-md: 24px;
+  --lh-r-lg: 26px;  --lh-r-xl: 30px;  --lh-r-2xl: 32px;
+  --lh-r-pill: 999px;
+
+  /* ---- depth: hard offset edge + one soft ambient. never a flat border ---- */
+  --lh-edge-1: 0 5px 0 rgba(46,42,68,.12);
+  --lh-edge-2: 0 7px 0 rgba(46,42,68,.14);
+  --lh-edge-3: 0 8px 0 rgba(46,42,68,.10);
+  --lh-edge-4: 0 10px 0 rgba(46,42,68,.10);
+  --lh-air-1:  0 10px 18px rgba(46,42,68,.12);
+  --lh-air-2:  0 16px 26px rgba(46,42,68,.14);
+  --lh-air-3:  0 18px 30px rgba(46,42,68,.22);
+  --lh-inset:  inset 0 3px 8px rgba(46,42,68,.10);
+  --lh-gloss:  inset 0 3px 0 rgba(255,255,255,.50);
+
+  /* ---- geometry ---- */
+  --lh-tap-min: 64px;   /* every tap target. no exceptions */
+  --lh-icon-btn: 68px;
+  --lh-hud-h: 58px;
+  --lh-stage-w: 1280px;
+  --lh-stage-h: 800px;
+}
+
+/* World theming: set data-world on the stage/root element and every
+   themed component picks up its hue with no per-screen overrides. */
+[data-world='doctor'] {
+  --lh-accent: var(--lh-doc);      --lh-accent-lite: var(--lh-doc-lite);
+  --lh-accent-deep: var(--lh-doc-deep); --lh-accent-ink: var(--lh-doc-sea);
+  --lh-accent-tint: var(--lh-doc-mist);
+  --lh-sky-grad: linear-gradient(180deg,#DFF6F4 0%,#F6FBFA 62%,#FFF3E2 100%);
+}
+[data-world='vet'] {
+  --lh-accent: var(--lh-vet);      --lh-accent-lite: var(--lh-lime);
+  --lh-accent-deep: var(--lh-vet-deep); --lh-accent-ink: var(--lh-vet-forest);
+  --lh-accent-tint: var(--lh-vet-tint);
+  --lh-sky-grad: linear-gradient(180deg,#8FE0FA 0%,#C9F1D6 58%,#E6F7D9 100%);
+}
+[data-world='toy'] {
+  --lh-accent: var(--lh-toy);      --lh-accent-lite: var(--lh-toy-lite);
+  --lh-accent-deep: var(--lh-toy-deep); --lh-accent-ink: var(--lh-toy-ink);
+  --lh-accent-tint: var(--lh-cloud);
+  --lh-sky-grad: linear-gradient(180deg,#F3EBFF 0%,#FFE9F3 62%,#FFF6E2 100%);
+}
+
+/* ---- motion library: the whole game's idle life. keep the names ---- */
+@keyframes lh-bob     { 0%,100%{transform:translateY(0)}    50%{transform:translateY(-9px)} }
+@keyframes lh-breathe { 0%,100%{transform:scale(1)}         50%{transform:scale(1.035)} }
+@keyframes lh-sway    { 0%,100%{transform:rotate(-3deg)}    50%{transform:rotate(3deg)} }
+@keyframes lh-blink   { 0%,92%,100%{transform:scaleY(1)}    96%{transform:scaleY(.08)} }
+@keyframes lh-wag     { 0%,100%{transform:rotate(-16deg)}   50%{transform:rotate(16deg)} }
+@keyframes lh-twinkle { 0%,100%{opacity:.25; transform:scale(.7)} 50%{opacity:1; transform:scale(1.15)} }
+@keyframes lh-drift   { from{transform:translateX(-20%)}    to{transform:translateX(140%)} }
+@keyframes lh-pulse   { 0%{transform:scale(.65); opacity:.8} 100%{transform:scale(1.9); opacity:0} }
+@keyframes lh-pop     { 0%{transform:scale(.4); opacity:0} 65%{transform:scale(1.1)} 100%{transform:scale(1); opacity:1} }
+@keyframes lh-shine   { from{background-position:-200% 0}   to{background-position:200% 0} }
+@keyframes lh-rise    { from{transform:translateY(0); opacity:1} to{transform:translateY(-46px); opacity:0} }
+@keyframes lh-spin    { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+@keyframes lh-letter  { from{transform:translateY(26px) scale(.86); opacity:0} to{transform:none; opacity:1} }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--lh-canvas);
+  color: var(--lh-ink);
+  font-family: var(--lh-font-body);
+  font-weight: 700;               /* nothing thinner than 700, anywhere */
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+a { color: var(--lh-rasp); }
+a:hover { color: var(--lh-rasp-hover); }

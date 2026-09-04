@@ -24,7 +24,7 @@ export const SHOW_ART = {
         <animate attributeName="r" values="${46 + i * 12};${72 + i * 12}" dur="1.1s" begin="${i * 0.14}s" repeatCount="indefinite"/>
       </circle>`).join('')}
     </g>
-    <text x="150" y="188" text-anchor="middle" font-size="15" fill="#5d6688" font-family="Baloo 2, sans-serif">thump — thump — thump</text>
+    <text x="150" y="188" text-anchor="middle" font-size="15" fill="#6B6790" font-family="Baloo 2, sans-serif">thump — thump — thump</text>
   </svg>`,
 
   lungs: () => `<svg ${VB} class="art">
@@ -43,13 +43,13 @@ export const SHOW_ART = {
         <animate attributeName="cy" values="60;-40" dur="2.6s" begin="${i * 0.5}s" repeatCount="indefinite"/>
         <animate attributeName="opacity" values="0;.9;0" dur="2.6s" begin="${i * 0.5}s" repeatCount="indefinite"/></circle>`).join('')}
     </g>
-    <text x="150" y="190" text-anchor="middle" font-size="15" fill="#5d6688" font-family="Baloo 2, sans-serif">in… and ouuut…</text>
+    <text x="150" y="190" text-anchor="middle" font-size="15" fill="#6B6790" font-family="Baloo 2, sans-serif">in… and ouuut…</text>
   </svg>`,
 
   germs: () => `<svg ${VB} class="art">
     ${[[70, 70, 26, '#7fd48f'], [160, 60, 20, '#8fbcff'], [230, 90, 24, '#ffa9d0'], [110, 135, 22, '#ffc36b'], [205, 150, 18, '#b39cf5']]
       .map(([x, y, r, c], i) => germ(x, y, r, c, i)).join('')}
-    <text x="150" y="192" text-anchor="middle" font-size="14" fill="#5d6688" font-family="Baloo 2, sans-serif">too tiny to see — but very busy</text>
+    <text x="150" y="192" text-anchor="middle" font-size="14" fill="#6B6790" font-family="Baloo 2, sans-serif">too tiny to see — but very busy</text>
   </svg>`,
 
   cells: () => `<svg ${VB} class="art">
@@ -87,7 +87,7 @@ export const SHOW_ART = {
         <animate attributeName="opacity" values=".2;1;.2" dur="1.8s" repeatCount="indefinite"/></path>
       <path d="M -100 0 H -40" stroke="#ffc844" stroke-width="4" stroke-dasharray="7 7" stroke-linecap="round"/>
     </g>
-    <text x="150" y="184" text-anchor="middle" font-size="14" fill="#5d6688" font-family="Baloo 2, sans-serif">light goes in through the black circle</text>
+    <text x="150" y="184" text-anchor="middle" font-size="14" fill="#6B6790" font-family="Baloo 2, sans-serif">light goes in through the black circle</text>
   </svg>`,
 
   teeth: () => `<svg ${VB} class="art">
@@ -99,7 +99,7 @@ export const SHOW_ART = {
         <animate attributeName="height" values="40;58;40" dur="3.4s" repeatCount="indefinite"/></rect>
       <text x="60" y="-16" font-size="22">🌾</text>
     </g>
-    <text x="150" y="186" text-anchor="middle" font-size="14" fill="#5d6688" font-family="Baloo 2, sans-serif">growing… growing… growing…</text>
+    <text x="150" y="186" text-anchor="middle" font-size="14" fill="#6B6790" font-family="Baloo 2, sans-serif">growing… growing… growing…</text>
   </svg>`,
 
   wing: () => `<svg ${VB} class="art">
@@ -113,7 +113,7 @@ export const SHOW_ART = {
         ${[0, 1, 2, 3, 4].map((i) => `<path d="M ${-50 + i * 26} 4 q 6 22 -4 30"/>`).join('')}
       </g>
     </g>
-    <text x="150" y="186" text-anchor="middle" font-size="14" fill="#5d6688" font-family="Baloo 2, sans-serif">arm • elbow • wrist — just like yours</text>
+    <text x="150" y="186" text-anchor="middle" font-size="14" fill="#6B6790" font-family="Baloo 2, sans-serif">arm • elbow • wrist — just like yours</text>
   </svg>`,
 
   stitches: () => `<svg ${VB} class="art">
@@ -182,7 +182,7 @@ const microFrame = (inner, caption) => `<svg ${VB} class="art art--micro">
   <rect x="0" y="0" width="300" height="200" fill="#101a2e"/>
   <g clip-path="url(#lens)"><rect x="60" y="10" width="180" height="170" fill="#f3fff8"/>${inner}</g>
   <circle cx="150" cy="92" r="82" fill="none" stroke="#3a4a6b" stroke-width="10"/>
-  <circle cx="150" cy="92" r="88" fill="none" stroke="#5d6688" stroke-width="3"/>
+  <circle cx="150" cy="92" r="88" fill="none" stroke="#6B6790" stroke-width="3"/>
   <text x="150" y="190" text-anchor="middle" font-size="13" fill="#9fe6c4" font-family="Baloo 2, sans-serif">${caption}</text>
 </svg>`;
 

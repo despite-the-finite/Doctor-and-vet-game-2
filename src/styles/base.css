@@ -1,65 +1,27 @@
 /* ==========================================================================
-   Little Heroes Hospital — design tokens, reset & shared motion
-   The whole game is drawn with CSS + inline SVG, so this file carries the
-   entire visual language: chunky "sticker" shapes, soft depth, bright but
-   slightly desaturated colours that stay friendly on big tablet screens.
+   Little Heroes Hospital — reset, layout primitives & shared motion
+   Every colour, font, radius and shadow now lives in tokens.css, which is
+   loaded first. This file carries only the things a token cannot express:
+   the reset, the screen shell, the fluid sizing ramp, and the motion this
+   game needs on top of the design's library.
    ========================================================================== */
 
 :root {
-  /* --- brand palette ---------------------------------------------------- */
-  --sky:        #39b5f0;
-  --sky-deep:   #1a86c4;
-  --sky-soft:   #d6f0ff;
-  --coral:      #ff7a6b;
-  --coral-deep: #e04f42;
-  --mint:       #3fd0a6;
-  --mint-deep:  #21a682;
-  --sun:        #ffc844;
-  --sun-deep:   #e8a413;
-  --grape:      #a97bf0;
-  --grape-deep: #7f4fd0;
-  --bubblegum:  #ff9ec4;
-  --cream:      #fff7ea;
-  --ink:        #2c3350;
-  --ink-soft:   #5d6688;
-  --paper:      #ffffff;
+  /* The design fixes a 1280x800 stage; the game also has to hold up on a
+     phone. Each step is a clamp between the design's label floor and the
+     design's size for that role, so nothing ever renders below 14px. */
+  --step-0: clamp(var(--lh-size-label), 0.6vw + 12px, var(--lh-size-body));
+  --step-1: clamp(var(--lh-size-body), 1.1vw + 13px, var(--lh-size-body-lg));
+  --step-2: clamp(21px, 2.2vw + 12px, var(--lh-size-h3));
+  --step-3: clamp(28px, 3.4vw + 14px, var(--lh-size-h1));
+  --step-4: clamp(36px, 6.4vw + 12px, var(--lh-size-hero));
 
-  /* --- surfaces --------------------------------------------------------- */
-  --bg:         #cdeeff;
-  --card:       #ffffff;
-  --card-2:     #fff6e9;
-
-  /* --- shape ------------------------------------------------------------ */
-  --r-sm: 12px;
-  --r-md: 20px;
-  --r-lg: 30px;
-  --r-xl: 44px;
-  --r-pill: 999px;
-
-  /* --- depth: soft ambient + a solid "sticker" edge ---------------------- */
-  --lift-1: 0 4px 0 rgba(44,51,80,.14), 0 8px 20px rgba(44,51,80,.14);
-  --lift-2: 0 7px 0 rgba(44,51,80,.16), 0 16px 34px rgba(44,51,80,.18);
-  --lift-3: 0 12px 0 rgba(44,51,80,.15), 0 26px 60px rgba(44,51,80,.24);
-  --inset:  inset 0 3px 0 rgba(255,255,255,.75);
-
-  /* --- type ------------------------------------------------------------- */
-  --font-display: "Baloo 2", "Trebuchet MS", "Comic Sans MS", system-ui, sans-serif;
-  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
-
-  /* fluid sizing keeps 4-year-old-sized targets on every device */
-  --step-0: clamp(15px, 1.15vw + 12px, 19px);
-  --step-1: clamp(18px, 1.6vw + 13px, 24px);
-  --step-2: clamp(22px, 2.4vw + 14px, 34px);
-  --step-3: clamp(28px, 4vw + 14px, 52px);
-  --step-4: clamp(36px, 7vw + 12px, 86px);
-
-  --tap: 56px; /* minimum interactive size */
   --safe: env(safe-area-inset-bottom, 0px);
 
   /* The game commits to one bright, sunny world rather than following the
      host's theme. Declaring the scheme keeps built-in controls — the
      microscope's focus dial, chiefly — light to match, wherever it is
-     embedded. Every colour below is painted explicitly for the same reason. */
+     embedded. Every colour is painted explicitly for the same reason. */
   color-scheme: light;
 }
 
@@ -73,24 +35,23 @@ html, body {
   overscroll-behavior: none;
 }
 
+/* tokens.css already sets the family, weight, colour and ground. */
 body {
-  font-family: var(--font-body);
   font-size: var(--step-0);
-  color: var(--ink);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   overflow: hidden;
 }
 
 h1, h2, h3, h4, .lh-display {
-  font-family: var(--font-display);
+  font-family: var(--lh-font-display);
   font-weight: 800;
   letter-spacing: .2px;
   margin: 0;
-  line-height: 1.05;
+  line-height: var(--lh-lh-tight);
 }
+
+p { text-wrap: pretty; }
 
 button { font-family: inherit; }
 
@@ -132,28 +93,23 @@ button { font-family: inherit; }
   to   { opacity: 1; transform: none; }
 }
 
-/* --- shared motion ------------------------------------------------------ */
-@keyframes lh-bob        { 0%,100% { transform: translateY(0) }        50% { transform: translateY(-9px) } }
-@keyframes lh-bob-slow   { 0%,100% { transform: translateY(0) }        50% { transform: translateY(-5px) } }
-@keyframes lh-sway       { 0%,100% { transform: rotate(-2.5deg) }      50% { transform: rotate(2.5deg) } }
-@keyframes lh-pulse { 0% { transform: scale(.7); opacity: .85 }   100% { transform: scale(1.9); opacity: 0 } }
-@keyframes lh-pop     { 0% { transform: scale(.4); opacity: 0 } 70% { transform: scale(1.08) } 100% { transform: scale(1); opacity: 1 } }
-@keyframes lh-wiggle     { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-6deg) } 75% { transform: rotate(6deg) } }
-@keyframes lh-twinkle    { 0%,100% { opacity: .25; transform: scale(.75) } 50% { opacity: 1; transform: scale(1.15) } }
-@keyframes lh-rise   { from { transform: translateY(0); opacity: 1 } to { transform: translateY(-90px); opacity: 0 } }
-@keyframes lh-shine    { from { background-position: -200% 0 } to { background-position: 200% 0 } }
-@keyframes lh-glow-ring  { 0%,100% { box-shadow: 0 0 0 0 rgba(255,200,68,.85) } 50% { box-shadow: 0 0 0 16px rgba(255,200,68,0) } }
-@keyframes lh-drift      { from { transform: translateX(-20vw) } to { transform: translateX(120vw) } }
+/* --- motion this game needs on top of the design's library --------------- */
+/* tokens.css owns lh-bob, lh-breathe, lh-sway, lh-blink, lh-wag, lh-twinkle,
+   lh-drift, lh-pulse, lh-pop, lh-shine, lh-rise, lh-spin and lh-letter. */
+@keyframes lh-bob-slow  { 0%,100% { transform: translateY(0) }   50% { transform: translateY(-5px) } }
+@keyframes lh-wiggle    { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-6deg) } 75% { transform: rotate(6deg) } }
+@keyframes lh-glow-ring { 0%,100% { box-shadow: 0 0 0 0 rgba(255,216,77,.85) } 50% { box-shadow: 0 0 0 16px rgba(255,216,77,0) } }
+
+/* The design's lh-drift moves a prop across its own box; the town scenery
+   still in place until the scenes are rebuilt crosses the whole viewport. */
+@keyframes lh-drift-vw  { from { transform: translateX(-20vw) } to { transform: translateX(120vw) } }
 
 .lh-bob { animation: lh-bob 2.6s ease-in-out infinite; }
 
-/* Respect reduced-motion: keep the game readable, drop the ambience. */
+/* Respect reduced-motion: keep the game readable, drop the ambience.
+   tokens.css stills the animations; transitions are this file's to calm. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .05s !important;
-  }
+  *, *::before, *::after { transition-duration: .05s !important; }
 }
 
 /* Utility */

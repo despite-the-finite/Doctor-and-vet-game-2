@@ -13,7 +13,7 @@ const byId = (list, id, fallback) => list.find((x) => x.id === id) || fallback |
 const HEAD = { x: 100, y: 80, r: 40 };
 
 /** A hairline outline is what makes flat shapes read as separate limbs. */
-const OUTLINE = 'stroke="rgba(44,51,80,.13)" stroke-width="2"';
+const OUTLINE = 'stroke="rgba(46,42,68,.13)" stroke-width="2"';
 
 /** Darken a hex colour by `amount` (0–1) — used for the far arm and leg. */
 function dim(hex, amount) {
@@ -57,7 +57,7 @@ export function humanSVG(opts = {}) {
     <radialGradient id="cheekGlow"><stop offset="0%" stop-color="#fff" stop-opacity=".5"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/></radialGradient>
   </defs>
 
-  <ellipse cx="100" cy="243" rx="46" ry="7" fill="rgba(44,51,80,.16)"/>
+  <ellipse cx="100" cy="243" rx="46" ry="7" fill="rgba(46,42,68,.16)"/>
 
   <g transform="translate(100 128) scale(${scale}) translate(-100 -128)" class="${idle ? 'lh-char-idle' : ''}">
     ${acc.includes('cape') ? cape(mood) : ''}
@@ -111,7 +111,7 @@ export function humanSVG(opts = {}) {
 
       ${hairFront(hair, hc.value, headR)}
       ${acc.includes('headband') ? `<path d="M 62 62 q 38 -22 76 0" stroke="#ff7aa8" stroke-width="7" fill="none" stroke-linecap="round"/><text x="140" y="58" font-size="18">🎀</text>` : ''}
-      ${acc.includes('headmirror') ? `<circle cx="100" cy="44" r="12" fill="#e8edf7" stroke="#9aa6c4" stroke-width="3"/><circle cx="100" cy="44" r="4" fill="#5d6688"/><path d="M 64 52 q 36 -20 72 0" stroke="#5d6688" stroke-width="5" fill="none"/>` : ''}
+      ${acc.includes('headmirror') ? `<circle cx="100" cy="44" r="12" fill="#e8edf7" stroke="#9aa6c4" stroke-width="3"/><circle cx="100" cy="44" r="4" fill="#6B6790"/><path d="M 64 52 q 36 -20 72 0" stroke="#6B6790" stroke-width="5" fill="none"/>` : ''}
       ${acc.includes('crown') ? `<text x="100" y="36" font-size="34" text-anchor="middle">👑</text>` : ''}
     </g>
   </g>
@@ -138,9 +138,9 @@ export function humanSVG(opts = {}) {
 function labCoat(color) {
   return `
     <path d="M 65 136 q 2 -21 19 -25 l 16 12 l 16 -12 q 17 4 19 25 l 5 57 q -19 6 -28 5 l -2 -53 l -10 8 l -10 -8 l -2 53 q -9 1 -28 -5 z"
-      fill="${color}" stroke="rgba(44,51,80,.14)" stroke-width="2"/>
-    <circle cx="90" cy="158" r="2.6" fill="rgba(44,51,80,.22)"/>
-    <circle cx="90" cy="174" r="2.6" fill="rgba(44,51,80,.22)"/>`;
+      fill="${color}" stroke="rgba(46,42,68,.14)" stroke-width="2"/>
+    <circle cx="90" cy="158" r="2.6" fill="rgba(46,42,68,.22)"/>
+    <circle cx="90" cy="174" r="2.6" fill="rgba(46,42,68,.22)"/>`;
 }
 
 function stethoscope() {

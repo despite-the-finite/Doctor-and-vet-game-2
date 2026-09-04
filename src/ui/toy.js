@@ -125,7 +125,7 @@ export function toySVG(opts = {}) {
 
 const frame = (inner, spots, idle) => `
 <svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-  <ellipse cx="100" cy="240" rx="52" ry="8" fill="rgba(44,51,80,.16)"/>
+  <ellipse cx="100" cy="240" rx="52" ry="8" fill="rgba(46,42,68,.16)"/>
   <g class="${idle ? 'lh-char-idle' : ''}">${inner}</g>
   <g class="spots" fill="transparent">${spots}</g>
 </svg>`;

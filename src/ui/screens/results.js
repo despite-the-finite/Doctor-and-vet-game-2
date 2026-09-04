@@ -63,7 +63,7 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
   });
 
   if (replay) {
-    card.appendChild(h('p', { style: { fontSize: '13px', color: 'var(--ink-soft)', margin: '0 0 8px' } },
+    card.appendChild(h('p', { style: { fontSize: '13px', color: 'var(--lh-ink-soft)', margin: '0 0 8px' } },
       '🔁 Practice run — fewer coins, but every star still counts!'));
   }
 
