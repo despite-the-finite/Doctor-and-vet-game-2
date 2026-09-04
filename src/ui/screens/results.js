@@ -22,7 +22,7 @@ import { BADGES } from './bag.js';
 function plural(n, word) { return `${n} ${word}${n === 1 ? '' : 's'}`; }
 
 export function resultsScreen({ career, caseDef, result, newTools = [], newRooms = [], progress, replay }) {
-  const el = h('div', { class: 'screen screen--results' });
+  const el = h('div', { class: 'lh-screen lh-screen--results', 'data-world': career });
   // Level 1 of either track is somebody's very first patient — say so.
   const firstEver = caseDef.level === 1 && progress?.firstTime;
 
@@ -88,7 +88,7 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
     h('span', { class: 'unlock-chip__icon' }, ROOMS[r]?.icon || '🏗️'),
     h('span', {}, `${ROOMS[r]?.name || r} unlocked!`))));
 
-  const actions = h('div', { class: 'row gap-m wrap', style: { justifyContent: 'center', marginTop: '16px' } });
+  const actions = h('div', { class: 'lh-row lh-gap-m lh-wrap', style: { justifyContent: 'center', marginTop: '16px' } });
   card.appendChild(actions);
 
   const nextCase = getCase(career, caseDef.level + 1);
@@ -96,14 +96,14 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
 
   if (canPlayNext) {
     actions.appendChild(h('button', {
-      class: 'btn btn--mint', onClick: () => { sfx.select(); go('case', { career, caseId: nextCase.id }, { replace: true }); },
+      class: 'lh-btn lh-btn--primary', onClick: () => { sfx.select(); go('case', { career, caseId: nextCase.id }, { replace: true }); },
     }, `${nextCase.icon} Next patient`));
   }
   actions.appendChild(h('button', {
-    class: 'btn btn--sun', onClick: goToHospital,
+    class: 'lh-btn lh-btn--secondary', onClick: goToHospital,
   }, '🏥 My hospital'));
   actions.appendChild(h('button', {
-    class: 'btn btn--ghost', onClick: () => { sfx.tap(); go('levels', { career }, { replace: true }); },
+    class: 'lh-btn lh-btn--quiet', onClick: () => { sfx.tap(); go('levels', { career }, { replace: true }); },
   }, '📋 All patients'));
 
   function goToHospital() {
@@ -150,7 +150,7 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
           h('div', { class: 'newtool__name' }, tool.name.toUpperCase()),
           h('p', { class: 'newtool__blurb' }, `"${tool.blurb}"`)),
         h('button', {
-          class: 'btn btn--sun btn--huge',
+          class: 'lh-btn lh-btn--secondary lh-btn--lg',
           onClick: () => { sfx.select(); m.close(); resolve(); },
         }, 'ADD TO MY BAG 🎒'),
       ], { dismissable: false, onClose: resolve });

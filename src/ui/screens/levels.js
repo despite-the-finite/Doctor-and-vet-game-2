@@ -14,7 +14,7 @@ export function levelsScreen({ career = 'doctor' } = {}) {
   const track = TRACKS[career];
   if (getState().career !== career) setCareer(career);
 
-  const el = h('div', { class: `screen screen--levels${career === 'vet' ? ' is-vet' : ''}` });
+  const el = h('div', { class: 'lh-screen lh-screen--levels', 'data-world': career });
   const bar = hud({
     title: `${track.icon} ${track.name}`,
     back: () => goHome('hub'),
@@ -23,7 +23,7 @@ export function levelsScreen({ career = 'doctor' } = {}) {
   });
   el.appendChild(bar);
 
-  const scroll = h('div', { class: 'screen-scroll' });
+  const scroll = h('div', { class: 'lh-screen__scroll' });
   const { done, total } = careerCompletion(career);
 
   scroll.appendChild(h('div', { style: { display: 'grid', placeItems: 'center', padding: '4px 16px 14px' } },
@@ -41,17 +41,17 @@ export function levelsScreen({ career = 'doctor' } = {}) {
     const isNext = caseDef === nextUp;
 
     const card = h('button', {
-      class: `level-card${completed ? ' level-card--done' : ''}${isNext ? ' level-card--next' : ''}${unlocked ? '' : ' level-card--locked'}`,
+      class: `lh-case${completed ? ' lh-case--done' : ''}${isNext ? ' lh-case--next' : ''}${unlocked ? '' : ' lh-case--locked'}`,
       onClick: () => start(caseDef, unlocked),
     },
       isNext ? h('span', { class: 'level-badge' }, 'PLAY NEXT') : null,
-      h('span', { class: 'level-card__num' }, unlocked ? caseDef.icon : '🔒'),
-      h('div', { class: 'level-card__body' },
+      h('span', { class: 'lh-case__num' }, unlocked ? caseDef.icon : '🔒'),
+      h('div', { class: 'lh-case__body' },
         h('h3', {}, `${caseDef.level}. ${caseDef.title}`),
         h('p', {}, unlocked ? caseDef.tagline : 'Finish the level before this one to meet this patient!'),
-        h('div', { class: 'level-card__teaches' },
+        h('div', { class: 'lh-case__teaches' },
           ...(unlocked ? caseDef.teaches : []).map((t) => h('span', {}, t)))),
-      h('span', { class: 'level-card__state' }, completed ? '⭐' : unlocked ? '▶️' : '🔒'));
+      h('span', { class: 'lh-case__state' }, completed ? '⭐' : unlocked ? '▶️' : '🔒'));
 
     list.appendChild(card);
   });

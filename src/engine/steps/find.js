@@ -64,7 +64,7 @@ export function runFind(step, ctx) {
     play('select');
     found++;
     numEl.textContent = String(found);
-    counter.classList.remove('chip--bump'); void counter.offsetWidth; counter.classList.add('chip--bump');
+    counter.classList.remove('is-bumping'); void counter.offsetWidth; counter.classList.add('is-bumping');
 
     if (item.label) ctx.say('narrator', `${step.found || 'Found it!'} ${item.label}`);
 

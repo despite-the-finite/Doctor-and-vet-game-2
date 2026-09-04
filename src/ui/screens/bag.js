@@ -21,18 +21,18 @@ const BADGES = {
 
 export function bagScreen() {
   const state = getState();
-  const el = h('div', { class: 'screen screen--bag' });
+  const el = h('div', { class: 'lh-screen lh-screen--bag', 'data-world': 'doctor' });
   const bar = hud({ title: '🎒 My Doctor Bag', back: () => goHome('hub'), dark: true, chips: ['stars', 'kindness'] });
   el.appendChild(bar);
 
-  const scroll = h('div', { class: 'screen-scroll' });
+  const scroll = h('div', { class: 'lh-screen__scroll' });
   const owned = TOOL_ORDER.filter(hasTool).length;
 
   scroll.appendChild(sectionTitle('🩺', 'My equipment', 'Every tool you have collected so far.'));
   scroll.appendChild(h('div', { style: { display: 'grid', placeItems: 'center', padding: '0 16px 12px' } },
     progressBar(owned, TOOL_ORDER.length, 'Collection')));
 
-  const grid = h('div', { class: 'card-grid' });
+  const grid = h('div', { class: 'lh-card-grid' });
   TOOL_ORDER.forEach((id) => {
     const tool = TOOLS[id];
     const got = hasTool(id);
@@ -50,7 +50,7 @@ export function bagScreen() {
 
   /* ------------------------------------------------------------- badges */
   scroll.appendChild(sectionTitle('🏅', 'My badges', 'Special things you have done.'));
-  const badgeGrid = h('div', { class: 'card-grid' });
+  const badgeGrid = h('div', { class: 'lh-card-grid' });
   Object.entries(BADGES).forEach(([id, b]) => {
     const got = state.badges.includes(id);
     badgeGrid.appendChild(h('div', { class: `kit${got ? '' : ' kit--locked'}` },
@@ -72,7 +72,7 @@ export function bagScreen() {
         h('div', { class: 'newtool__name' }, tool.name),
         h('p', { class: 'newtool__blurb' }, tool.blurb),
         h('p', { class: 'newtool__demo' }, tool.demo)),
-      h('button', { class: 'btn btn--sun', onClick: () => m.close() }, 'Cool! 👍'),
+      h('button', { class: 'lh-btn lh-btn--secondary', onClick: () => m.close() }, 'Cool! 👍'),
     ]);
   }
 

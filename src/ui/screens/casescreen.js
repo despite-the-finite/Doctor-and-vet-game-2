@@ -18,11 +18,11 @@ import { hud, modal } from '../components.js';
 
 export function caseScreen({ career, caseId }) {
   const caseDef = getCaseById(caseId);
-  const el = h('div', { class: 'screen' });
+  const el = h('div', { class: 'lh-screen', 'data-world': career });
 
   if (!caseDef) {
     el.appendChild(h('p', { class: 'empty-note' }, 'That patient could not be found.'));
-    el.appendChild(h('button', { class: 'btn', onClick: () => goHome('hub') }, 'Back to my hospital'));
+    el.appendChild(h('button', { class: 'lh-btn', onClick: () => goHome('hub') }, 'Back to my hospital'));
     return { el };
   }
 
@@ -44,9 +44,9 @@ export function caseScreen({ career, caseId }) {
       h('div', { style: { fontSize: '54px' } }, '🚪'),
       h('h2', {}, 'Leave this patient?'),
       h('p', {}, 'You can come back and start them again any time.'),
-      h('div', { class: 'row gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },
-        h('button', { class: 'btn btn--mint', onClick: () => m.close() }, 'Keep helping'),
-        h('button', { class: 'btn btn--ghost', onClick: () => { m.close(); goHome('hub'); } }, 'Leave')),
+      h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },
+        h('button', { class: 'lh-btn lh-btn--primary', onClick: () => m.close() }, 'Keep helping'),
+        h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => { m.close(); goHome('hub'); } }, 'Leave')),
     ]);
   }
 

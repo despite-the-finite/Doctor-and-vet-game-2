@@ -27,19 +27,19 @@ export function heroSVG(opts = {}) {
  * present so a child can silence the game from any screen.
  */
 export function hud({ title = '', back = null, dark = false, chips = ['stars', 'coins'], extra = [] } = {}) {
-  const bar = h('div', { class: `hud${dark ? ' hud--dark' : ''}` });
+  const bar = h('div', { class: `lh-hud${dark ? ' lh-hud--dark' : ''}` });
 
   if (back) {
     bar.appendChild(h('button', {
-      class: 'iconbtn iconbtn--back', 'aria-label': 'Go back',
+      class: 'lh-iconbtn lh-iconbtn--back', 'aria-label': 'Go back',
       onClick: () => { sfx.tap(); back(); },
     }, '⬅️'));
   }
 
-  if (title) bar.appendChild(h('div', { class: 'hud__title' }, title));
-  bar.appendChild(h('div', { class: 'hud__spacer' }));
+  if (title) bar.appendChild(h('div', { class: 'lh-hud__title' }, title));
+  bar.appendChild(h('div', { class: 'lh-hud__spacer' }));
 
-  if (chips.length) bar.classList.add('hud--chips');
+  if (chips.length) bar.classList.add('lh-hud--chips');
   const chipEls = {};
   chips.forEach((kind) => {
     const el = currencyChip(kind);
@@ -51,7 +51,7 @@ export function hud({ title = '', back = null, dark = false, chips = ['stars', '
 
   if (voiceSupported) {
     const voiceBtn = h('button', {
-      class: 'iconbtn', 'aria-label': 'Read the words out loud',
+      class: 'lh-iconbtn', 'aria-label': 'Read the words out loud',
       title: 'Read the words out loud',
       onClick: () => { voiceBtn.textContent = toggleVoice() ? '🗣️' : '🤐'; },
     }, voiceOn() ? '🗣️' : '🤐');
@@ -59,7 +59,7 @@ export function hud({ title = '', back = null, dark = false, chips = ['stars', '
   }
 
   const soundBtn = h('button', {
-    class: 'iconbtn', 'aria-label': 'Sound on or off',
+    class: 'lh-iconbtn', 'aria-label': 'Sound on or off',
     onClick: () => {
       const now = toggleSound();
       soundBtn.textContent = now ? '🔊' : '🔇';
@@ -85,28 +85,28 @@ const CHIP_META = {
 
 export function currencyChip(kind) {
   const meta = CHIP_META[kind];
-  const el = h('div', { class: 'chip', title: meta.label, dataset: { chip: kind } },
-    h('span', { class: 'chip__icon' }, meta.icon),
-    h('span', { class: 'chip__value' }, String(getState().wallet[meta.key] ?? 0)));
+  const el = h('div', { class: 'lh-chip', title: meta.label, dataset: { chip: kind } },
+    h('span', { class: 'lh-chip__icon' }, meta.icon),
+    h('span', { class: 'lh-chip__num' }, String(getState().wallet[meta.key] ?? 0)));
   return el;
 }
 
 function updateChip(el, kind) {
   const meta = CHIP_META[kind];
-  const valueEl = el.querySelector('.chip__value');
+  const valueEl = el.querySelector('.lh-chip__num');
   const next = String(getState().wallet[meta.key] ?? 0);
   if (valueEl.textContent === next) return;
   valueEl.textContent = next;
-  el.classList.remove('chip--bump');
+  el.classList.remove('is-bumping');
   void el.offsetWidth;
-  el.classList.add('chip--bump');
+  el.classList.add('is-bumping');
 }
 
 /** A centred modal. Returns { el, close }. */
 export function modal(content, { onClose = null, dismissable = true } = {}) {
-  const box = h('div', { class: 'modal' }, ...(Array.isArray(content) ? content : [content]));
+  const box = h('div', { class: 'lh-modal' }, ...(Array.isArray(content) ? content : [content]));
   const veil = h('div', {
-    class: 'modal-veil',
+    class: 'lh-modal__veil',
     onClick: (ev) => { if (dismissable && ev.target === veil) close(); },
   }, box);
 
@@ -121,8 +121,8 @@ export function modal(content, { onClose = null, dismissable = true } = {}) {
 
 /** Big rounded section heading used on the hub, shop and bag screens. */
 export function sectionTitle(icon, text, sub = null) {
-  return h('div', { class: 'section-title' },
-    h('span', { class: 'section-title__icon' }, icon),
+  return h('div', { class: 'lh-section-title' },
+    h('span', { class: 'lh-section-title__icon' }, icon),
     h('div', {},
       h('h2', {}, text),
       sub ? h('p', {}, sub) : null));
@@ -131,7 +131,7 @@ export function sectionTitle(icon, text, sub = null) {
 /** Progress bar with a label. */
 export function progressBar(done, total, label = null) {
   const pct = total ? Math.round((done / total) * 100) : 0;
-  return h('div', { class: 'progress' },
-    label ? h('div', { class: 'progress__label' }, label, h('span', {}, `${done}/${total}`)) : null,
-    h('div', { class: 'bar' }, h('div', { class: 'bar__fill', style: { width: `${pct}%` } })));
+  return h('div', { class: 'lh-meter' },
+    label ? h('div', { class: 'lh-meter__label' }, label, h('span', {}, `${done}/${total}`)) : null,
+    h('div', { class: 'lh-meter__track' }, h('div', { class: 'lh-meter__fill', style: { width: `${pct}%` } })));
 }

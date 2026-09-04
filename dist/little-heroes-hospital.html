@@ -98,7 +98,7 @@ body {
   overflow: hidden;
 }
 
-h1, h2, h3, h4, .display {
+h1, h2, h3, h4, .lh-display {
   font-family: var(--font-display);
   font-weight: 800;
   letter-spacing: .2px;
@@ -124,16 +124,16 @@ button { font-family: inherit; }
 
 /* Every screen fills the viewport and scrolls internally, so a child can
    never end up on a page with no way back. */
-.screen {
+.lh-screen {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: screen-in .38s cubic-bezier(.2,.9,.3,1.15) both;
+  animation: lh-screen-in .38s cubic-bezier(.2,.9,.3,1.15) both;
 }
 
-.screen-scroll {
+.lh-screen__scroll {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
@@ -141,25 +141,25 @@ button { font-family: inherit; }
   padding-bottom: calc(24px + var(--safe));
 }
 
-@keyframes screen-in {
+@keyframes lh-screen-in {
   from { opacity: 0; transform: translateY(18px) scale(.985); }
   to   { opacity: 1; transform: none; }
 }
 
 /* --- shared motion ------------------------------------------------------ */
-@keyframes bob        { 0%,100% { transform: translateY(0) }        50% { transform: translateY(-9px) } }
-@keyframes bob-slow   { 0%,100% { transform: translateY(0) }        50% { transform: translateY(-5px) } }
-@keyframes sway       { 0%,100% { transform: rotate(-2.5deg) }      50% { transform: rotate(2.5deg) } }
-@keyframes pulse-ring { 0% { transform: scale(.7); opacity: .85 }   100% { transform: scale(1.9); opacity: 0 } }
-@keyframes pop-in     { 0% { transform: scale(.4); opacity: 0 } 70% { transform: scale(1.08) } 100% { transform: scale(1); opacity: 1 } }
-@keyframes wiggle     { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-6deg) } 75% { transform: rotate(6deg) } }
-@keyframes twinkle    { 0%,100% { opacity: .25; transform: scale(.75) } 50% { opacity: 1; transform: scale(1.15) } }
-@keyframes float-up   { from { transform: translateY(0); opacity: 1 } to { transform: translateY(-90px); opacity: 0 } }
-@keyframes shimmer    { from { background-position: -200% 0 } to { background-position: 200% 0 } }
-@keyframes glow-ring  { 0%,100% { box-shadow: 0 0 0 0 rgba(255,200,68,.85) } 50% { box-shadow: 0 0 0 16px rgba(255,200,68,0) } }
-@keyframes drift      { from { transform: translateX(-20vw) } to { transform: translateX(120vw) } }
+@keyframes lh-bob        { 0%,100% { transform: translateY(0) }        50% { transform: translateY(-9px) } }
+@keyframes lh-bob-slow   { 0%,100% { transform: translateY(0) }        50% { transform: translateY(-5px) } }
+@keyframes lh-sway       { 0%,100% { transform: rotate(-2.5deg) }      50% { transform: rotate(2.5deg) } }
+@keyframes lh-pulse { 0% { transform: scale(.7); opacity: .85 }   100% { transform: scale(1.9); opacity: 0 } }
+@keyframes lh-pop     { 0% { transform: scale(.4); opacity: 0 } 70% { transform: scale(1.08) } 100% { transform: scale(1); opacity: 1 } }
+@keyframes lh-wiggle     { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-6deg) } 75% { transform: rotate(6deg) } }
+@keyframes lh-twinkle    { 0%,100% { opacity: .25; transform: scale(.75) } 50% { opacity: 1; transform: scale(1.15) } }
+@keyframes lh-rise   { from { transform: translateY(0); opacity: 1 } to { transform: translateY(-90px); opacity: 0 } }
+@keyframes lh-shine    { from { background-position: -200% 0 } to { background-position: 200% 0 } }
+@keyframes lh-glow-ring  { 0%,100% { box-shadow: 0 0 0 0 rgba(255,200,68,.85) } 50% { box-shadow: 0 0 0 16px rgba(255,200,68,0) } }
+@keyframes lh-drift      { from { transform: translateX(-20vw) } to { transform: translateX(120vw) } }
 
-.bob { animation: bob 2.6s ease-in-out infinite; }
+.lh-bob { animation: lh-bob 2.6s ease-in-out infinite; }
 
 /* Respect reduced-motion: keep the game readable, drop the ambience. */
 @media (prefers-reduced-motion: reduce) {
@@ -171,13 +171,13 @@ button { font-family: inherit; }
 }
 
 /* Utility */
-.center { display: flex; align-items: center; justify-content: center; }
-.col { display: flex; flex-direction: column; }
-.row { display: flex; align-items: center; }
-.gap-s { gap: 8px } .gap-m { gap: 16px } .gap-l { gap: 26px }
-.wrap { flex-wrap: wrap; }
-.hidden { display: none !important; }
-.sr-only {
+.lh-center { display: flex; align-items: center; justify-content: center; }
+.lh-col { display: flex; flex-direction: column; }
+.lh-row { display: flex; align-items: center; }
+.lh-gap-s { gap: 8px } .lh-gap-m { gap: 16px } .lh-gap-l { gap: 26px }
+.lh-wrap { flex-wrap: wrap; }
+.lh-hidden { display: none !important; }
+.lh-sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
@@ -189,7 +189,7 @@ button { font-family: inherit; }
    ========================================================================== */
 
 /* --- buttons ------------------------------------------------------------ */
-.btn {
+.lh-btn {
   --btn-face: var(--sky);
   --btn-edge: var(--sky-deep);
   position: relative;
@@ -212,25 +212,25 @@ button { font-family: inherit; }
   transition: transform .12s cubic-bezier(.3,1.4,.5,1), box-shadow .12s, filter .12s;
   user-select: none;
 }
-.btn:hover  { transform: translateY(-2px); filter: saturate(1.06) brightness(1.03); }
-.btn:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--btn-edge), 0 4px 10px rgba(44,51,80,.2), var(--inset); }
-.btn:focus-visible { outline: 4px solid var(--ink); outline-offset: 4px; }
-.btn[disabled] { filter: grayscale(.7) opacity(.65); pointer-events: none; }
+.lh-btn:hover  { transform: translateY(-2px); filter: saturate(1.06) brightness(1.03); }
+.lh-btn:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--btn-edge), 0 4px 10px rgba(44,51,80,.2), var(--inset); }
+.lh-btn:focus-visible { outline: 4px solid var(--ink); outline-offset: 4px; }
+.lh-btn[disabled] { filter: grayscale(.7) opacity(.65); pointer-events: none; }
 
-.btn--coral { --btn-face: var(--coral); --btn-edge: var(--coral-deep); }
-.btn--mint  { --btn-face: var(--mint);  --btn-edge: var(--mint-deep); }
-.btn--sun   { --btn-face: var(--sun);   --btn-edge: var(--sun-deep); color: #6b4a00; text-shadow: 0 2px 0 rgba(255,255,255,.4); }
-.btn--grape { --btn-face: var(--grape); --btn-edge: var(--grape-deep); }
-.btn--ghost {
+.lh-btn--alert { --btn-face: var(--coral); --btn-edge: var(--coral-deep); }
+.lh-btn--primary  { --btn-face: var(--mint);  --btn-edge: var(--mint-deep); }
+.lh-btn--secondary   { --btn-face: var(--sun);   --btn-edge: var(--sun-deep); color: #6b4a00; text-shadow: 0 2px 0 rgba(255,255,255,.4); }
+.lh-btn--toy { --btn-face: var(--grape); --btn-edge: var(--grape-deep); }
+.lh-btn--quiet {
   background: rgba(255,255,255,.94); color: var(--ink);
   box-shadow: 0 5px 0 rgba(44,51,80,.18), 0 10px 20px rgba(44,51,80,.14);
   text-shadow: none;
 }
-.btn--huge  { padding: 22px 48px; font-size: var(--step-3); border-radius: var(--r-xl); }
-.btn--small { min-height: 46px; padding: 8px 18px; font-size: var(--step-0); }
+.lh-btn--lg  { padding: 22px 48px; font-size: var(--step-3); border-radius: var(--r-xl); }
+.lh-btn--sm { min-height: 46px; padding: 8px 18px; font-size: var(--step-0); }
 
 /* round icon button — used for back / sound / help, always same spot */
-.iconbtn {
+.lh-iconbtn {
   width: var(--tap); height: var(--tap);
   display: grid; place-items: center;
   border: none; border-radius: 50%;
@@ -239,12 +239,12 @@ button { font-family: inherit; }
   font-size: 26px; line-height: 1; cursor: pointer;
   transition: transform .12s;
 }
-.iconbtn:hover { transform: translateY(-2px) scale(1.05); }
-.iconbtn:active { transform: translateY(3px); }
-.iconbtn:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
+.lh-iconbtn:hover { transform: translateY(-2px) scale(1.05); }
+.lh-iconbtn:active { transform: translateY(3px); }
+.lh-iconbtn:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
 
 /* --- cards -------------------------------------------------------------- */
-.card {
+.lh-card {
   background: var(--card);
   border-radius: var(--r-lg);
   box-shadow: var(--lift-2);
@@ -252,22 +252,22 @@ button { font-family: inherit; }
 }
 
 /* --- top HUD ------------------------------------------------------------ */
-.hud {
+.lh-hud {
   display: flex; align-items: center; gap: 10px;
   padding: 12px 14px calc(12px);
   padding-top: calc(12px + env(safe-area-inset-top, 0px));
   z-index: 40;
   flex: none;
 }
-.hud__spacer { flex: 1; }
-.hud__title {
+.lh-hud__spacer { flex: 1; }
+.lh-hud__title {
   font-family: var(--font-display); font-size: var(--step-2); color: #fff;
   text-shadow: 0 3px 0 rgba(44,51,80,.28); white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
-.hud--dark .hud__title { color: var(--ink); text-shadow: 0 2px 0 rgba(255,255,255,.6); }
+.lh-hud--dark .lh-hud__title { color: var(--ink); text-shadow: 0 2px 0 rgba(255,255,255,.6); }
 
-.chip {
+.lh-chip {
   display: inline-flex; align-items: center; gap: 7px;
   height: 46px; padding: 0 16px 0 12px;
   border-radius: var(--r-pill);
@@ -276,49 +276,49 @@ button { font-family: inherit; }
   font-family: var(--font-display); font-weight: 800; font-size: var(--step-1);
   color: var(--ink); white-space: nowrap;
 }
-.chip__icon { font-size: 22px; }
-.chip--bump { animation: chip-bump .55s cubic-bezier(.2,1.5,.4,1); }
+.lh-chip__icon { font-size: 22px; }
+.is-bumping { animation: lh-chip-bump .55s cubic-bezier(.2,1.5,.4,1); }
 
 /* On a phone the title takes its own line so the chips never squeeze it out. */
 /* Phones get a two-row bar: back + title + sound, then the chips beneath —
    so the title is never squeezed to nothing and no control wraps alone. */
 @media (max-width: 620px) {
-  .hud { flex-wrap: wrap; row-gap: 8px; }
+  .lh-hud { flex-wrap: wrap; row-gap: 8px; }
   /* The title absorbs the slack and truncates; the round buttons never shrink
      and never wrap onto a line of their own. */
-  .hud__title { font-size: var(--step-1); flex: 1 1 0; min-width: 0; }
-  .hud__spacer { flex: 0 0 0px; }
-  .hud > .iconbtn { flex: none; }
-  .chip { height: 40px; padding: 0 13px 0 9px; font-size: var(--step-0); }
-  .chip__icon { font-size: 19px; }
-  .iconbtn { width: 48px; height: 48px; font-size: 22px; }
+  .lh-hud__title { font-size: var(--step-1); flex: 1 1 0; min-width: 0; }
+  .lh-hud__spacer { flex: 0 0 0px; }
+  .lh-hud > .lh-iconbtn { flex: none; }
+  .lh-chip { height: 40px; padding: 0 13px 0 9px; font-size: var(--step-0); }
+  .lh-chip__icon { font-size: 19px; }
+  .lh-iconbtn { width: 48px; height: 48px; font-size: 22px; }
 
   /* Row 1: back, title, then the two toggles kept together on the right.
      Row 2: the currency chips. */
-  .hud--chips > .iconbtn       { order: 2; }
-  .hud--chips > .iconbtn--back { order: 0; }
-  .hud--chips > .hud__title    { order: 1; }
-  .hud--chips > .iconbtn:last-child { margin-left: 0; }
-  .hud--chips > .hud__spacer   { order: 3; flex: 1 0 100%; height: 0; }
-  .hud--chips > .chip          { order: 4; }
+  .lh-hud--chips > .lh-iconbtn       { order: 2; }
+  .lh-hud--chips > .lh-iconbtn--back { order: 0; }
+  .lh-hud--chips > .lh-hud__title    { order: 1; }
+  .lh-hud--chips > .lh-iconbtn:last-child { margin-left: 0; }
+  .lh-hud--chips > .lh-hud__spacer   { order: 3; flex: 1 0 100%; height: 0; }
+  .lh-hud--chips > .lh-chip          { order: 4; }
   /* Push the toggles right when there is no back button to anchor the row. */
-  .hud--chips > .hud__title { margin-right: auto; }
+  .lh-hud--chips > .lh-hud__title { margin-right: auto; }
 }
-@keyframes chip-bump {
+@keyframes lh-chip-bump {
   0% { transform: scale(1) } 35% { transform: scale(1.28) rotate(-4deg) } 100% { transform: scale(1) }
 }
 
 /* --- modal -------------------------------------------------------------- */
-.modal-veil {
+.lh-modal__veil {
   position: fixed; inset: 0; z-index: 800;
   background: rgba(29,36,64,.55);
   backdrop-filter: blur(6px);
   display: grid; place-items: center;
   padding: 20px;
-  animation: veil-in .25s ease both;
+  animation: lh-veil-in .25s ease both;
 }
-@keyframes veil-in { from { opacity: 0 } to { opacity: 1 } }
-.modal {
+@keyframes lh-veil-in { from { opacity: 0 } to { opacity: 1 } }
+.lh-modal {
   width: min(560px, 100%);
   max-height: 88vh; overflow-y: auto;
   background: var(--card);
@@ -326,52 +326,52 @@ button { font-family: inherit; }
   box-shadow: var(--lift-3);
   padding: 30px 26px calc(26px + var(--safe));
   text-align: center;
-  animation: pop-in .42s cubic-bezier(.2,1.3,.4,1.1) both;
+  animation: lh-pop .42s cubic-bezier(.2,1.3,.4,1.1) both;
 }
-.modal h2 { font-size: var(--step-3); margin-bottom: 8px; }
-.modal p  { font-size: var(--step-1); color: var(--ink-soft); margin: 0 0 18px; }
+.lh-modal h2 { font-size: var(--step-3); margin-bottom: 8px; }
+.lh-modal p  { font-size: var(--step-1); color: var(--ink-soft); margin: 0 0 18px; }
 
 /* --- toast (gentle nudges) ---------------------------------------------- */
-.toast-lane {
+.lh-toast-lane {
   position: fixed; left: 50%; bottom: calc(26px + var(--safe));
   transform: translateX(-50%);
   z-index: 880; display: flex; flex-direction: column-reverse;
   gap: 10px; pointer-events: none; width: min(520px, 92vw);
 }
-.toast {
+.lh-toast {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 22px; border-radius: var(--r-pill);
   background: rgba(255,255,255,.98);
   box-shadow: var(--lift-2);
   font-family: var(--font-display); font-weight: 700; font-size: var(--step-1);
   color: var(--ink);
-  animation: toast-in .34s cubic-bezier(.2,1.4,.4,1) both;
+  animation: lh-toast-in .34s cubic-bezier(.2,1.4,.4,1) both;
 }
-.toast--warm { background: linear-gradient(180deg,#fff,#fff2d9); }
-.toast--good { background: linear-gradient(180deg,#fff,#dcfbee); }
-.toast.out { animation: toast-out .3s ease forwards; }
-@keyframes toast-in  { from { opacity:0; transform: translateY(26px) scale(.9) } to { opacity:1; transform:none } }
-@keyframes toast-out { to { opacity: 0; transform: translateY(14px) scale(.94) } }
+.lh-toast--warm { background: linear-gradient(180deg,#fff,#fff2d9); }
+.lh-toast--good { background: linear-gradient(180deg,#fff,#dcfbee); }
+.lh-toast.is-leaving { animation: lh-toast-out .3s ease forwards; }
+@keyframes lh-toast-in  { from { opacity:0; transform: translateY(26px) scale(.9) } to { opacity:1; transform:none } }
+@keyframes lh-toast-out { to { opacity: 0; transform: translateY(14px) scale(.94) } }
 
 /* --- particles ---------------------------------------------------------- */
-.confetti-bit {
+.lh-confetti {
   position: absolute; width: 13px; height: 18px; border-radius: 3px;
   will-change: transform, opacity;
 }
-.spark {
+.lh-spark {
   position: absolute; font-size: 24px; will-change: transform, opacity;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,.15));
 }
-.floater {
+.lh-floater {
   position: absolute; font-family: var(--font-display); font-weight: 800;
   font-size: var(--step-2); color: #fff;
   text-shadow: 0 3px 0 rgba(44,51,80,.35);
-  animation: float-up 1.25s ease-out forwards;
+  animation: lh-rise 1.25s ease-out forwards;
   white-space: nowrap;
 }
 
 /* --- speech bubble ------------------------------------------------------ */
-.bubble {
+.lh-bubble {
   position: relative;
   background: #fff;
   border-radius: var(--r-lg);
@@ -382,59 +382,59 @@ button { font-family: inherit; }
   font-size: var(--step-1);
   color: var(--ink);
   max-width: 34ch;
-  animation: pop-in .35s cubic-bezier(.2,1.3,.4,1.1) both;
+  animation: lh-pop .35s cubic-bezier(.2,1.3,.4,1.1) both;
 }
-.bubble::after {
+.lh-bubble::after {
   content: ""; position: absolute; bottom: -14px; left: 34px;
   border: 12px solid transparent; border-top-color: #fff; border-bottom: 0;
   filter: drop-shadow(0 3px 1px rgba(44,51,80,.1));
 }
-.bubble--thought { background: var(--card-2); font-style: italic; }
-.bubble--translate {
+.lh-bubble--thought { background: var(--card-2); font-style: italic; }
+.lh-bubble--translate {
   background: var(--sun); color: #6b4a00; font-size: var(--step-0);
   padding: 10px 18px; max-width: 30ch;
 }
-.bubble--translate::after { border-top-color: var(--sun); }
+.lh-bubble--translate::after { border-top-color: var(--sun); }
 
 /* --- progress ----------------------------------------------------------- */
-.bar {
+.lh-meter__track {
   height: 18px; border-radius: var(--r-pill);
   background: rgba(44,51,80,.14); overflow: hidden;
   box-shadow: inset 0 2px 4px rgba(44,51,80,.16);
 }
-.bar__fill {
+.lh-meter__fill {
   height: 100%; border-radius: var(--r-pill);
   background: linear-gradient(90deg, var(--mint), var(--sun));
   background-size: 200% 100%;
-  animation: shimmer 2.4s linear infinite;
+  animation: lh-shine 2.4s linear infinite;
   transition: width .5s cubic-bezier(.2,.9,.3,1.2);
 }
 
 /* --- scrollbars (chunky + friendly) ------------------------------------- */
-.screen-scroll::-webkit-scrollbar { width: 12px; }
-.screen-scroll::-webkit-scrollbar-thumb {
+.lh-screen__scroll::-webkit-scrollbar { width: 12px; }
+.lh-screen__scroll::-webkit-scrollbar-thumb {
   background: rgba(44,51,80,.22); border-radius: 99px; border: 3px solid transparent;
   background-clip: padding-box;
 }
 
 /* --- character artwork -------------------------------------------------- */
-.charsvg { width: 100%; height: 100%; overflow: visible; display: block; }
-.patient-art { width: 100%; height: 100%; display: block; }
+.lh-charsvg { width: 100%; height: 100%; overflow: visible; display: block; }
+.lh-patient-art { width: 100%; height: 100%; display: block; }
 
-.char-idle { animation: bob-slow 3.4s ease-in-out infinite; transform-origin: 100px 240px; }
-.char-head { animation: sway 5.2s ease-in-out infinite; transform-origin: 100px 130px; }
-.tail-wag  { animation: wiggle 1.1s ease-in-out infinite; }
-.ear-l, .ear-r { animation: sway 3.8s ease-in-out infinite; transform-origin: 100px 80px; }
-.wing-l { animation: sway 2.6s ease-in-out infinite; }
-.wing-r { animation: sway 2.6s ease-in-out infinite reverse; }
-.ear-bunny { animation: sway 4.4s ease-in-out infinite; transform-origin: 100px 110px; }
+.lh-char-idle { animation: lh-bob-slow 3.4s ease-in-out infinite; transform-origin: 100px 240px; }
+.lh-char-head { animation: lh-sway 5.2s ease-in-out infinite; transform-origin: 100px 130px; }
+.lh-tail-wag  { animation: lh-wiggle 1.1s ease-in-out infinite; }
+.lh-ear--l, .lh-ear--r { animation: lh-sway 3.8s ease-in-out infinite; transform-origin: 100px 80px; }
+.lh-wing--l { animation: lh-sway 2.6s ease-in-out infinite; }
+.lh-wing--r { animation: lh-sway 2.6s ease-in-out infinite reverse; }
+.lh-ear--bunny { animation: lh-sway 4.4s ease-in-out infinite; transform-origin: 100px 110px; }
 
 /* reaction states the case runner toggles on the patient wrapper */
-.patient-art.react-happy  { animation: patient-hop .7s cubic-bezier(.25,1.6,.4,1); }
-.patient-art.react-wiggle { animation: wiggle .5s ease-in-out 2; }
-.patient-art.react-shy    { animation: patient-shy .8s ease; }
-@keyframes patient-hop { 0%,100% { transform: translateY(0) scale(1) } 40% { transform: translateY(-26px) scale(1.05) } 70% { transform: translateY(0) scale(.96,1.04) } }
-@keyframes patient-shy { 0%,100% { transform: translateX(0) } 30% { transform: translateX(-10px) rotate(-3deg) } 65% { transform: translateX(6px) rotate(2deg) } }
+.lh-patient-art.lh-react--happy  { animation: lh-patient-hop .7s cubic-bezier(.25,1.6,.4,1); }
+.lh-patient-art.lh-react--wiggle { animation: lh-wiggle .5s ease-in-out 2; }
+.lh-patient-art.lh-react--shy    { animation: lh-patient-shy .8s ease; }
+@keyframes lh-patient-hop { 0%,100% { transform: translateY(0) scale(1) } 40% { transform: translateY(-26px) scale(1.05) } 70% { transform: translateY(0) scale(.96,1.04) } }
+@keyframes lh-patient-shy { 0%,100% { transform: translateX(0) } 30% { transform: translateX(-10px) rotate(-3deg) } 65% { transform: translateX(6px) rotate(2deg) } }
 
 
 /* ── screens.css ─────────────────────────────── */
@@ -444,7 +444,7 @@ button { font-family: inherit; }
    ========================================================================== */
 
 /* ══════════════════════════════════════════════════════════ TITLE ═══════ */
-.screen--title {
+.lh-screen--title {
   background: linear-gradient(180deg, #7fd0ff 0%, #b8e8ff 45%, #ddf6ff 70%, #cbeeb0 70%, #a8dd8b 100%);
   align-items: center; justify-content: flex-start;
 }
@@ -452,21 +452,21 @@ button { font-family: inherit; }
 .town { position: absolute; inset: 0; overflow: hidden; }
 
 .sky { position: absolute; inset: 0 0 34% 0; }
-.sun { position: absolute; right: 8%; top: 8%; font-size: clamp(38px, 7vw, 74px); animation: bob-slow 7s ease-in-out infinite; filter: drop-shadow(0 0 26px rgba(255,220,120,.9)); }
-.tw { position: absolute; color: #fff; opacity: .5; font-size: 12px; animation: twinkle 3.4s ease-in-out infinite; }
+.sun { position: absolute; right: 8%; top: 8%; font-size: clamp(38px, 7vw, 74px); animation: lh-bob-slow 7s ease-in-out infinite; filter: drop-shadow(0 0 26px rgba(255,220,120,.9)); }
+.tw { position: absolute; color: #fff; opacity: .5; font-size: 12px; animation: lh-twinkle 3.4s ease-in-out infinite; }
 
 .cloud { position: absolute; height: clamp(22px, 4vw, 40px); border-radius: 99px; background: rgba(255,255,255,.92); box-shadow: 0 6px 14px rgba(80,140,190,.18); }
 .cloud::before, .cloud::after { content: ""; position: absolute; border-radius: 50%; background: inherit; }
-.cloud--1 { width: clamp(90px,18vw,190px); top: 14%; animation: drift 46s linear infinite; }
+.cloud--1 { width: clamp(90px,18vw,190px); top: 14%; animation: lh-drift 46s linear infinite; }
 .cloud--1::before { width: 60%; height: 170%; left: 12%; top: -70%; }
-.cloud--2 { width: clamp(70px,13vw,140px); top: 32%; animation: drift 66s linear infinite 8s; }
+.cloud--2 { width: clamp(70px,13vw,140px); top: 32%; animation: lh-drift 66s linear infinite 8s; }
 .cloud--2::before { width: 55%; height: 150%; left: 20%; top: -55%; }
-.cloud--3 { width: clamp(60px,11vw,110px); top: 6%; opacity: .8; animation: drift 82s linear infinite 22s; }
+.cloud--3 { width: clamp(60px,11vw,110px); top: 6%; opacity: .8; animation: lh-drift 82s linear infinite 22s; }
 .cloud--3::before { width: 60%; height: 140%; left: 18%; top: -50%; }
 
-.heli { position: absolute; top: 9%; font-size: clamp(26px, 5vw, 48px); animation: drift 34s linear infinite 4s; filter: drop-shadow(0 6px 8px rgba(0,0,0,.15)); }
+.heli { position: absolute; top: 9%; font-size: clamp(26px, 5vw, 48px); animation: lh-drift 34s linear infinite 4s; filter: drop-shadow(0 6px 8px rgba(0,0,0,.15)); }
 .birds { position: absolute; top: 22%; left: 0; width: 100%; }
-.birds span { position: absolute; font-size: clamp(13px, 2vw, 20px); animation: drift 40s linear infinite; opacity: .85; }
+.birds span { position: absolute; font-size: clamp(13px, 2vw, 20px); animation: lh-drift 40s linear infinite; opacity: .85; }
 .birds span:nth-child(2) { top: 26px; }
 .birds span:nth-child(3) { top: 12px; }
 
@@ -474,7 +474,7 @@ button { font-family: inherit; }
 .hill--back  { bottom: 30%; height: 22%; background: #9ed88b; }
 .hill--front { bottom: 26%; height: 16%; background: #86ca72; }
 
-.tree { position: absolute; bottom: 27%; font-size: clamp(30px, 6vw, 62px); animation: sway 6s ease-in-out infinite; transform-origin: bottom center; }
+.tree { position: absolute; bottom: 27%; font-size: clamp(30px, 6vw, 62px); animation: lh-sway 6s ease-in-out infinite; transform-origin: bottom center; }
 .tree--1 { left: 4%; }
 .tree--2 { left: 15%; font-size: clamp(24px, 5vw, 50px); animation-duration: 7.4s; }
 .tree--3 { right: 6%; animation-duration: 8.2s; }
@@ -494,12 +494,12 @@ button { font-family: inherit; }
   box-shadow: 0 6px 0 #c33f33, 0 10px 22px rgba(44,51,80,.25);
 }
 .sign { font-size: 26px; }
-.cross { color: #fff; font-size: 26px; font-weight: 900; animation: signblink 2.6s ease-in-out infinite; text-shadow: 0 0 18px rgba(255,255,255,.9); }
-@keyframes signblink { 0%,100% { opacity: 1 } 46% { opacity: 1 } 50% { opacity: .35 } 54% { opacity: 1 } 74% { opacity: .4 } }
+.cross { color: #fff; font-size: 26px; font-weight: 900; animation: lh-signblink 2.6s ease-in-out infinite; text-shadow: 0 0 18px rgba(255,255,255,.9); }
+@keyframes lh-signblink { 0%,100% { opacity: 1 } 46% { opacity: 1 } 50% { opacity: .35 } 54% { opacity: 1 } 74% { opacity: .4 } }
 
 .windows { position: absolute; inset: 16% 10% 40% 10%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8% 6%; }
-.win { border-radius: 6px; background: #bfe3ff; box-shadow: inset 0 -4px 0 rgba(0,0,0,.06); animation: winlight 6s ease-in-out infinite; }
-@keyframes winlight { 0%,100% { background: #bfe3ff } 40% { background: #ffe9a8 } 60% { background: #ffe9a8 } }
+.win { border-radius: 6px; background: #bfe3ff; box-shadow: inset 0 -4px 0 rgba(0,0,0,.06); animation: lh-winlight 6s ease-in-out infinite; }
+@keyframes lh-winlight { 0%,100% { background: #bfe3ff } 40% { background: #ffe9a8 } 60% { background: #ffe9a8 } }
 
 .vetwindow {
   position: absolute; right: 8%; bottom: 12%;
@@ -508,8 +508,8 @@ button { font-family: inherit; }
   box-shadow: inset 0 0 0 5px #fff, 0 5px 12px rgba(44,51,80,.16);
   overflow: hidden; display: grid; place-items: end center;
 }
-.vetdog { font-size: clamp(24px, 5vw, 44px); animation: peek 5.5s ease-in-out infinite; }
-@keyframes peek { 0%,100% { transform: translateY(70%) } 30% { transform: translateY(6%) } 70% { transform: translateY(6%) } }
+.vetdog { font-size: clamp(24px, 5vw, 44px); animation: lh-peek 5.5s ease-in-out infinite; }
+@keyframes lh-peek { 0%,100% { transform: translateY(70%) } 30% { transform: translateY(6%) } 70% { transform: translateY(6%) } }
 
 .doorway {
   position: absolute; left: 12%; bottom: 0; width: 26%; height: 34%;
@@ -526,15 +526,15 @@ button { font-family: inherit; }
   filter: drop-shadow(0 4px 5px rgba(44,51,80,.22));
 }
 /* The walking emoji faces left, so only the one heading right is mirrored. */
-.walker--1 { animation: walk-away-left 13s ease-in-out infinite; }
-.walker--2 { transform: scaleX(-1); animation: walk-away-right 17s ease-in-out infinite 6s; }
-@keyframes walk-away-left {
+.walker--1 { animation: lh-walk-away-left 13s ease-in-out infinite; }
+.walker--2 { transform: scaleX(-1); animation: lh-walk-away-right 17s ease-in-out infinite 6s; }
+@keyframes lh-walk-away-left {
   0%   { left: 24%; opacity: 0 }
   10%  { opacity: .95 }
   80%  { opacity: .95 }
   100% { left: 1%; opacity: 0 }
 }
-@keyframes walk-away-right {
+@keyframes lh-walk-away-right {
   0%   { left: 26%; opacity: 0 }
   10%  { opacity: .95 }
   80%  { opacity: .95 }
@@ -548,30 +548,30 @@ button { font-family: inherit; }
 }
 .ambulance {
   position: absolute; bottom: 6%; font-size: clamp(34px, 7vw, 66px);
-  animation: ambulance 16s ease-in-out infinite;
+  animation: lh-ambulance 16s ease-in-out infinite;
   filter: drop-shadow(0 6px 8px rgba(0,0,0,.25));
 }
-/* The ambulance glyph faces left on every major platform, so it drives
+/* The lh-ambulance glyph faces left on every major platform, so it drives
    right-to-left: it pulls up at the hospital and then carries on. Animating
    it the other way made it look like it was reversing the whole way. */
-@keyframes ambulance {
+@keyframes lh-ambulance {
   0%   { left: 108% }
   30%  { left: 34% }
   60%  { left: 34% }
   100% { left: -22% }
 }
 .paws { position: absolute; bottom: 24%; left: 0; width: 100%; height: 30px; }
-.paws span { position: absolute; font-size: 15px; opacity: 0; animation: pawstep 6s ease-in-out infinite; }
-@keyframes pawstep { 0%,100% { opacity: 0 } 20% { opacity: .55 } 70% { opacity: .25 } }
+.paws span { position: absolute; font-size: 15px; opacity: 0; animation: lh-pawstep 6s ease-in-out infinite; }
+@keyframes lh-pawstep { 0%,100% { opacity: 0 } 20% { opacity: .55 } 70% { opacity: .25 } }
 
 .patients { position: absolute; bottom: 23%; left: 0; width: 100%; }
 .patient-walk { position: absolute; font-size: clamp(22px, 4vw, 38px); }
-.patient-walk--1 { animation: stroll 24s linear infinite; }
-.patient-walk--2 { animation: stroll 30s linear infinite 9s; }
-@keyframes stroll { from { left: 106% } to { left: -8% } }
+.patient-walk--1 { animation: lh-stroll 24s linear infinite; }
+.patient-walk--2 { animation: lh-stroll 30s linear infinite 9s; }
+@keyframes lh-stroll { from { left: 106% } to { left: -8% } }
 
-.flutter { position: absolute; top: var(--y); font-size: 20px; animation: flutter-path 20s linear infinite; }
-@keyframes flutter-path {
+.flutter { position: absolute; top: var(--y); font-size: 20px; animation: lh-flutter-path 20s linear infinite; }
+@keyframes lh-flutter-path {
   0%   { transform: translate(-10vw, 0) rotate(-6deg) }
   25%  { transform: translate(30vw, -40px) rotate(8deg) }
   50%  { transform: translate(60vw, 20px) rotate(-8deg) }
@@ -591,7 +591,7 @@ button { font-family: inherit; }
   background: radial-gradient(60% 52% at 50% 40%, rgba(255,255,255,.62), rgba(255,255,255,0) 72%);
   pointer-events: none; z-index: -1;
 }
-.title-badge { font-size: clamp(32px, 7vw, 64px); animation: bob 3.2s ease-in-out infinite; filter: drop-shadow(0 8px 12px rgba(44,51,80,.3)); }
+.title-badge { font-size: clamp(32px, 7vw, 64px); animation: lh-bob 3.2s ease-in-out infinite; filter: drop-shadow(0 8px 12px rgba(44,51,80,.3)); }
 .title-word {
   display: flex; gap: .02em;
   font-size: clamp(30px, 9vw, 82px); line-height: .96;
@@ -599,21 +599,21 @@ button { font-family: inherit; }
   text-shadow: 0 4px 0 #2a6fa0, 0 8px 0 rgba(44,51,80,.28), 0 16px 26px rgba(44,51,80,.35);
 }
 .title-word--big { font-size: clamp(40px, 12.5vw, 112px); color: #ffe27a; text-shadow: 0 5px 0 #d08a12, 0 10px 0 rgba(44,51,80,.25), 0 20px 30px rgba(44,51,80,.35); }
-.title-word span { display: inline-block; animation: letter-drop .7s cubic-bezier(.2,1.5,.4,1) both; }
-@keyframes letter-drop { 0% { transform: translateY(-70px) rotate(-12deg); opacity: 0 } 100% { transform: none; opacity: 1 } }
+.title-word span { display: inline-block; animation: lh-letter .7s cubic-bezier(.2,1.5,.4,1) both; }
+@keyframes lh-letter { 0% { transform: translateY(-70px) rotate(-12deg); opacity: 0 } 100% { transform: none; opacity: 1 } }
 .title-sub {
   margin: 20px 0 18px; font-family: var(--font-display); font-weight: 700;
   font-size: clamp(15px, 2.6vw, 25px); color: #fff;
   text-shadow: 0 3px 0 rgba(44,51,80,.35);
-  animation: pop-in .6s .9s cubic-bezier(.2,1.3,.4,1.1) both;
+  animation: lh-pop .6s .9s cubic-bezier(.2,1.3,.4,1.1) both;
 }
-.title-cta { max-width: min(92vw, 520px); animation: pop-in .5s .8s cubic-bezier(.2,1.5,.4,1.1) both, cta-pulse 2.6s 1.5s ease-in-out infinite; }
-@keyframes cta-pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.045) } }
+.title-cta { max-width: min(92vw, 520px); animation: lh-pop .5s .8s cubic-bezier(.2,1.5,.4,1.1) both, lh-cta-pulse 2.6s 1.5s ease-in-out infinite; }
+@keyframes lh-cta-pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.045) } }
 .title-returning {
   margin-top: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px;
   font-family: var(--font-display); font-weight: 700; color: #fff;
   text-shadow: 0 2px 0 rgba(44,51,80,.35);
-  animation: pop-in .5s 1s cubic-bezier(.2,1.3,.4,1.1) both;
+  animation: lh-pop .5s 1s cubic-bezier(.2,1.3,.4,1.1) both;
 }
 
 /* Portrait phones: a taller hospital and a slimmer road fill the gap that
@@ -633,7 +633,7 @@ button { font-family: inherit; }
 }
 
 /* ══════════════════════════════════════════════════════ CREATOR ═════════ */
-.screen--creator { background: linear-gradient(180deg, #ffe9c7, #ffd8e6 60%, #e3d8ff); }
+.lh-screen--creator { background: linear-gradient(180deg, #ffe9c7, #ffd8e6 60%, #e3d8ff); }
 
 .creator-grid {
   display: grid; gap: 16px; padding: 0 16px 20px;
@@ -672,29 +672,29 @@ button { font-family: inherit; }
 }
 .name-chip:hover { transform: translateY(-2px); }
 
-.option-group { margin-bottom: 14px; }
-.option-group__head {
+.lh-optgroup { margin-bottom: 14px; }
+.lh-optgroup__label {
   display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
   font-family: var(--font-display); font-weight: 800; font-size: var(--step-1); color: var(--ink);
 }
-.option-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.lh-optgroup__row { display: flex; gap: 10px; flex-wrap: wrap; }
 
-.swatch {
+.lh-swatch {
   width: 58px; height: 58px; border-radius: 50%; border: 4px solid #fff;
   box-shadow: 0 4px 0 rgba(44,51,80,.16), 0 8px 14px rgba(44,51,80,.14);
   cursor: pointer; display: grid; place-items: center; font-size: 24px;
   transition: transform .14s cubic-bezier(.3,1.5,.5,1);
   padding: 0;
 }
-.swatch:hover { transform: translateY(-3px) scale(1.06); }
-.swatch--on { border-color: var(--ink); transform: scale(1.12); box-shadow: 0 0 0 5px rgba(255,200,68,.65); }
-.swatch--wide {
+.lh-swatch:hover { transform: translateY(-3px) scale(1.06); }
+.lh-swatch[aria-pressed='true'] { border-color: var(--ink); transform: scale(1.12); box-shadow: 0 0 0 5px rgba(255,200,68,.65); }
+.lh-swatch--wide {
   width: auto; min-width: 92px; height: 54px; border-radius: var(--r-pill);
   padding: 0 16px; background: #fff;
   font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--ink);
   gap: 6px;
 }
-.swatch--rainbow { background: linear-gradient(120deg,#ff7a6b,#ffc844,#3fd0a6,#39b5f0,#a97bf0); }
+.lh-swatch--rainbow { background: linear-gradient(120deg,#ff7a6b,#ffc844,#3fd0a6,#39b5f0,#a97bf0); }
 
 .difficulty-row { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); }
 .diff-card {
@@ -705,14 +705,14 @@ button { font-family: inherit; }
   transition: transform .14s;
 }
 .diff-card:hover { transform: translateY(-3px); }
-.diff-card--on { box-shadow: 0 6px 0 var(--mint-deep), 0 0 0 5px rgba(63,208,166,.4); background: linear-gradient(180deg,#f2fffa,#dcfbee); }
+.diff-card[aria-pressed='true'] { box-shadow: 0 6px 0 var(--mint-deep), 0 0 0 5px rgba(63,208,166,.4); background: linear-gradient(180deg,#f2fffa,#dcfbee); }
 .diff-card__icon { font-size: 38px; }
 .diff-card h3 { font-size: var(--step-1); }
 .diff-card p { margin: 4px 0 0; font-size: 14px; color: var(--ink-soft); line-height: 1.35; }
 
 /* ══════════════════════════════════════════════════════ CAREER ══════════ */
 /* ══════════════════════════════════════════════════════ HUB ═════════════ */
-.screen--hub { background: linear-gradient(180deg, #8fd8ff 0%, #cfeeff 50%, #b6e39a 100%); }
+.lh-screen--hub { background: linear-gradient(180deg, #8fd8ff 0%, #cfeeff 50%, #b6e39a 100%); }
 .hub-scroll { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 
 .building-wrap { width: min(96vw, 720px); padding: 4px 8px 10px; }
@@ -751,7 +751,7 @@ button { font-family: inherit; }
   width: 40px; height: 40px; border-radius: 50%;
   background: rgba(255,255,255,.94); display: grid; place-items: center; font-size: 20px;
   box-shadow: 0 3px 0 rgba(44,51,80,.16);
-  animation: bob-slow 2.6s ease-in-out infinite;
+  animation: lh-bob-slow 2.6s ease-in-out infinite;
 }
 .room__count {
   position: absolute; right: 8px; top: 8px;
@@ -773,7 +773,7 @@ button { font-family: inherit; }
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
   color: #fff; text-shadow: 0 3px 0 rgba(44,51,80,.5); text-align: center; padding: 8px;
 }
-.room__lock-icon { font-size: clamp(26px, 5vw, 42px); animation: bob-slow 3s ease-in-out infinite; }
+.room__lock-icon { font-size: clamp(26px, 5vw, 42px); animation: lh-bob-slow 3s ease-in-out infinite; }
 .room__lock-name { font-family: var(--font-display); font-weight: 800; font-size: clamp(13px, 2.4vw, 19px); }
 .room__lock-how {
   font-size: clamp(11px, 1.8vw, 13px); line-height: 1.25; opacity: .96;
@@ -822,15 +822,15 @@ button { font-family: inherit; }
   background: rgba(44,51,80,.55); border-radius: var(--r-md);
   font-size: clamp(30px, 7vw, 56px);
 }
-.construction span { animation: wiggle .4s ease-in-out infinite; }
+.construction span { animation: lh-wiggle .4s ease-in-out infinite; }
 
 /* ══════════════════════════════════════════════════ LEVEL SELECT ════════ */
-.screen--levels { background: linear-gradient(180deg,#dff2ff,#eaf7ff); }
-.screen--levels.is-vet { background: linear-gradient(180deg,#dffaf0,#effcf7); }
+.lh-screen--levels { background: linear-gradient(180deg,#dff2ff,#eaf7ff); }
+.lh-screen--levels[data-world='vet'] { background: linear-gradient(180deg,#dffaf0,#effcf7); }
 
 .level-list { display: grid; gap: 12px; padding: 0 16px calc(24px + var(--safe)); width: min(96vw, 760px); margin: 0 auto; }
 
-.level-card {
+.lh-case {
   position: relative;
   display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
   border: none; border-radius: var(--r-lg); padding: 14px 16px; cursor: pointer;
@@ -838,24 +838,24 @@ button { font-family: inherit; }
   box-shadow: 0 6px 0 rgba(44,51,80,.14), 0 12px 24px rgba(44,51,80,.12);
   transition: transform .15s cubic-bezier(.3,1.4,.5,1);
 }
-.level-card:hover { transform: translateY(-4px); }
-.level-card__num {
+.lh-case:hover { transform: translateY(-4px); }
+.lh-case__num {
   width: 54px; height: 54px; border-radius: 50%; flex: none;
   display: grid; place-items: center; font-size: 30px;
   background: linear-gradient(180deg,#fff,#e8f2ff); box-shadow: 0 3px 0 rgba(44,51,80,.16);
 }
-.level-card__body h3 { font-size: var(--step-1); }
-.level-card__body p { margin: 2px 0 6px; font-size: 14px; color: var(--ink-soft); line-height: 1.3; }
-.level-card__teaches { display: flex; gap: 5px; flex-wrap: wrap; }
-.level-card__teaches span {
+.lh-case__body h3 { font-size: var(--step-1); }
+.lh-case__body p { margin: 2px 0 6px; font-size: 14px; color: var(--ink-soft); line-height: 1.3; }
+.lh-case__teaches { display: flex; gap: 5px; flex-wrap: wrap; }
+.lh-case__teaches span {
   font-size: 11px; padding: 3px 10px; border-radius: 99px;
   background: rgba(57,181,240,.14); color: #1a6a99; font-weight: 700;
 }
-.level-card__state { font-size: 26px; }
-.level-card--done { background: linear-gradient(180deg,#f4fffa,#dcfbee); box-shadow: 0 6px 0 var(--mint-deep), 0 12px 24px rgba(44,51,80,.12); }
-.level-card--next { box-shadow: 0 6px 0 var(--sun-deep), 0 0 0 5px rgba(255,200,68,.45), 0 12px 24px rgba(44,51,80,.12); }
-.level-card--locked { filter: grayscale(.65) opacity(.72); cursor: not-allowed; }
-.level-card--locked:hover { transform: none; }
+.lh-case__state { font-size: 26px; }
+.lh-case--done { background: linear-gradient(180deg,#f4fffa,#dcfbee); box-shadow: 0 6px 0 var(--mint-deep), 0 12px 24px rgba(44,51,80,.12); }
+.lh-case--next { box-shadow: 0 6px 0 var(--sun-deep), 0 0 0 5px rgba(255,200,68,.45), 0 12px 24px rgba(44,51,80,.12); }
+.lh-case--locked { filter: grayscale(.65) opacity(.72); cursor: not-allowed; }
+.lh-case--locked:hover { transform: none; }
 .level-badge {
   position: absolute; top: -8px; right: 12px;
   padding: 3px 12px; border-radius: 99px; background: var(--sun); color: #6b4a00;
@@ -864,15 +864,15 @@ button { font-family: inherit; }
 }
 
 /* ══════════════════════════════════════════════════════ BAG / SHOP ══════ */
-.screen--bag  { background: linear-gradient(180deg,#fff2df,#ffe6f0); }
-.screen--shop { background: linear-gradient(180deg,#e6f2ff,#f3e9ff); }
+.lh-screen--bag  { background: linear-gradient(180deg,#fff2df,#ffe6f0); }
+.lh-screen--shop { background: linear-gradient(180deg,#e6f2ff,#f3e9ff); }
 
-.section-title { display: flex; align-items: center; gap: 12px; padding: 6px 18px 10px; width: min(96vw, 900px); margin: 0 auto; }
-.section-title__icon { font-size: 34px; }
-.section-title h2 { font-size: var(--step-2); }
-.section-title p { margin: 2px 0 0; font-size: 14px; color: var(--ink-soft); }
+.lh-section-title { display: flex; align-items: center; gap: 12px; padding: 6px 18px 10px; width: min(96vw, 900px); margin: 0 auto; }
+.lh-section-title__icon { font-size: 34px; }
+.lh-section-title h2 { font-size: var(--step-2); }
+.lh-section-title p { margin: 2px 0 0; font-size: 14px; color: var(--ink-soft); }
 
-.card-grid {
+.lh-card-grid {
   display: grid; gap: 12px; padding: 0 16px 20px;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   width: min(96vw, 900px); margin: 0 auto;
@@ -903,7 +903,7 @@ button { font-family: inherit; }
   content: "NEW!"; position: absolute; top: -8px; right: -6px;
   background: var(--coral); color: #fff; font-family: var(--font-display); font-weight: 800;
   font-size: 11px; padding: 3px 10px; border-radius: 99px; box-shadow: 0 3px 0 var(--coral-deep);
-  animation: wiggle 2s ease-in-out infinite;
+  animation: lh-wiggle 2s ease-in-out infinite;
 }
 
 .shop-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 4px 16px 10px; width: min(96vw,900px); margin: 0 auto; }
@@ -914,7 +914,7 @@ button { font-family: inherit; }
   box-shadow: 0 4px 0 rgba(44,51,80,.14);
   display: flex; align-items: center; gap: 6px;
 }
-.shop-tab--on { background: var(--sun); box-shadow: 0 4px 0 var(--sun-deep); color: #6b4a00; }
+.shop-tab[aria-selected='true'] { background: var(--sun); box-shadow: 0 4px 0 var(--sun-deep); color: #6b4a00; }
 
 .buy { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .buy__price {
@@ -928,7 +928,7 @@ button { font-family: inherit; }
 .buy--poor .buy__price { background: #dfe4ee; box-shadow: 0 3px 0 #b8c0d0; color: #6c7590; }
 
 /* ══════════════════════════════════════════════════════ RESULTS ════════ */
-.screen--results {
+.lh-screen--results {
   background: linear-gradient(180deg,#ffd98a,#ffb3c6 55%,#c9a6ff);
   align-items: center; justify-content: center;
 }
@@ -937,7 +937,7 @@ button { font-family: inherit; }
   background: rgba(255,255,255,.96); border-radius: var(--r-xl);
   box-shadow: var(--lift-3); padding: 20px 22px calc(26px + var(--safe));
   max-height: 94vh; max-height: 94dvh; overflow-y: auto; overscroll-behavior: contain;
-  animation: pop-in .5s cubic-bezier(.2,1.3,.4,1.1) both;
+  animation: lh-pop .5s cubic-bezier(.2,1.3,.4,1.1) both;
 }
 .results-card h2 { font-size: clamp(21px, 5vw, 36px); margin-bottom: 4px; text-wrap: balance; }
 .results-card__sub { font-size: var(--step-1); color: var(--ink-soft); margin: 0 0 14px; }
@@ -947,7 +947,7 @@ button { font-family: inherit; }
   display: flex; flex-direction: column; align-items: center; gap: 2px;
   padding: 10px 18px; border-radius: var(--r-lg); min-width: 96px;
   background: linear-gradient(180deg,#fff,#fff4dc); box-shadow: 0 5px 0 rgba(44,51,80,.14);
-  animation: pop-in .5s cubic-bezier(.2,1.5,.4,1.1) both;
+  animation: lh-pop .5s cubic-bezier(.2,1.5,.4,1.1) both;
 }
 .reward-pill__icon { font-size: 28px; }
 .reward-pill__value { font-family: var(--font-display); font-weight: 800; font-size: var(--step-2); }
@@ -963,7 +963,7 @@ button { font-family: inherit; }
   background: linear-gradient(180deg,#fff,#e8fff6);
   box-shadow: 0 4px 0 var(--mint-deep);
   font-family: var(--font-display); font-weight: 800; font-size: 15px;
-  animation: pop-in .5s cubic-bezier(.2,1.5,.4,1.1) both;
+  animation: lh-pop .5s cubic-bezier(.2,1.5,.4,1.1) both;
 }
 .unlock-chip__icon { font-size: 24px; }
 
@@ -979,19 +979,19 @@ button { font-family: inherit; }
 .newtool__kicker {
   font-family: var(--font-display); font-weight: 800; letter-spacing: 3px;
   color: var(--coral); font-size: var(--step-1);
-  animation: twinkle 1.4s ease-in-out infinite;
+  animation: lh-twinkle 1.4s ease-in-out infinite;
 }
 .newtool__icon {
   font-size: clamp(64px, 16vw, 120px);
   filter: drop-shadow(0 10px 14px rgba(44,51,80,.3));
-  animation: pop-in .6s cubic-bezier(.2,1.6,.4,1.1) both, bob 2.6s .6s ease-in-out infinite;
+  animation: lh-pop .6s cubic-bezier(.2,1.6,.4,1.1) both, lh-bob 2.6s .6s ease-in-out infinite;
 }
 .newtool__name { font-family: var(--font-display); font-weight: 800; font-size: var(--step-3); }
 .newtool__blurb { font-size: var(--step-1); color: var(--ink-soft); max-width: 30ch; }
 
 /* ══════════════════════════════════════════════════════ SHARED ═════════ */
-.progress { width: 100%; max-width: 420px; }
-.progress__label {
+.lh-meter { width: 100%; max-width: 420px; }
+.lh-meter__label {
   display: flex; justify-content: space-between; margin-bottom: 5px;
   font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--ink-soft);
 }
@@ -1017,20 +1017,20 @@ button { font-family: inherit; }
 }
 .tool-demo__patient, .tool-demo__pet {
   position: absolute; bottom: 16px; font-size: 46px;
-  animation: demo-patient 3.2s ease-in-out infinite;
+  animation: lh-demo-patient 3.2s ease-in-out infinite;
 }
 .tool-demo__patient { left: 22%; }
 .tool-demo__pet { right: 22%; animation-delay: .35s; }
 .tool-demo__tool {
   position: absolute; left: 50%; top: 50%; font-size: 40px;
   filter: drop-shadow(0 4px 5px rgba(44,51,80,.28));
-  animation: demo-tool 3.2s cubic-bezier(.3,.9,.4,1.2) infinite;
+  animation: lh-demo-tool 3.2s cubic-bezier(.3,.9,.4,1.2) infinite;
 }
 .tool-demo__spark { position: absolute; font-size: 20px; opacity: 0; }
-.tool-demo__spark--a { left: 32%; top: 26%; animation: demo-spark 3.2s ease-in-out infinite 1.1s; }
-.tool-demo__spark--b { right: 32%; top: 34%; animation: demo-spark 3.2s ease-in-out infinite 1.35s; }
+.tool-demo__spark--a { left: 32%; top: 26%; animation: lh-demo-spark 3.2s ease-in-out infinite 1.1s; }
+.tool-demo__spark--b { right: 32%; top: 34%; animation: lh-demo-spark 3.2s ease-in-out infinite 1.35s; }
 
-@keyframes demo-tool {
+@keyframes lh-demo-tool {
   0%   { transform: translate(-50%,-50%) scale(.6) rotate(-18deg); opacity: 0 }
   18%  { transform: translate(-50%,-50%) scale(1) rotate(0deg); opacity: 1 }
   38%  { transform: translate(-118%,-24%) scale(1.05) rotate(-8deg); opacity: 1 }
@@ -1038,12 +1038,12 @@ button { font-family: inherit; }
   78%  { transform: translate(-50%,-50%) scale(1) rotate(0deg); opacity: 1 }
   100% { transform: translate(-50%,-50%) scale(.6) rotate(18deg); opacity: 0 }
 }
-@keyframes demo-patient {
+@keyframes lh-demo-patient {
   0%, 30%, 100% { transform: translateY(0) }
   70%  { transform: translateY(-10px) }
   85%  { transform: translateY(0) scale(1.06) }
 }
-@keyframes demo-spark {
+@keyframes lh-demo-spark {
   0%, 40% { opacity: 0; transform: scale(.4) }
   60%     { opacity: 1; transform: scale(1.2) }
   90%     { opacity: 0; transform: scale(.8) translateY(-14px) }
@@ -1092,23 +1092,23 @@ button { font-family: inherit; }
 .case-overlay { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
 .case-overlay > * { pointer-events: auto; }
 
-.bubble-lane {
+.lh-bubble-lane {
   position: absolute; left: 3%; top: 3%; padding-right: 4px;
   display: flex; flex-direction: column; gap: 8px;
   max-width: min(40ch, 56%);
   z-index: 4; pointer-events: none;
 }
-.bubble-lane .bubble { font-size: clamp(14px, 1.5vw + 9px, 21px); }
-.bubble-lane .bubble--settled { opacity: .96; }
-.bubble-lane .bubble:not(:last-child) {
+.lh-bubble-lane .lh-bubble { font-size: clamp(14px, 1.5vw + 9px, 21px); }
+.lh-bubble-lane .lh-bubble--settled { opacity: .96; }
+.lh-bubble-lane .lh-bubble:not(:last-child) {
   opacity: .5; transform: scale(.93); transform-origin: left top;
   max-height: 3.4em; overflow: hidden;
 }
-.bubble--narrator, .bubble--nurse { background: var(--card-2); }
-.bubble--hero { background: #e2f4ff; }
-.bubble--hero::after { border-top-color: #e2f4ff; }
-.bubble--narrator::after, .bubble--nurse::after { border-top-color: var(--card-2); }
-.bubble__tkey { opacity: .8; }
+.lh-bubble--narrator, .lh-bubble--nurse { background: var(--card-2); }
+.lh-bubble--hero { background: #e2f4ff; }
+.lh-bubble--hero::after { border-top-color: #e2f4ff; }
+.lh-bubble--narrator::after, .lh-bubble--nurse::after { border-top-color: var(--card-2); }
+.lh-bubble__tkey { opacity: .8; }
 
 .case-nametag {
   position: absolute; right: 12px; top: 12px; z-index: 5;
@@ -1123,8 +1123,8 @@ button { font-family: inherit; }
   position: absolute; left: 12px; bottom: 10px; z-index: 6;
   display: flex; gap: 8px;
 }
-.chip--tiny { height: 38px; font-size: var(--step-0); padding: 0 14px 0 10px; }
-.chip--tiny .chip__icon { font-size: 18px; }
+.lh-chip--tiny { height: 38px; font-size: var(--step-0); padding: 0 14px 0 10px; }
+.lh-chip--tiny .lh-chip__icon { font-size: 18px; }
 
 /* ------------------------------------------------------------- step dots */
 .case-dots {
@@ -1164,12 +1164,12 @@ button { font-family: inherit; }
   border-radius: var(--r-md); padding: 12px 18px;
   font-size: var(--step-0); color: #7a5a12; line-height: 1.35;
   box-shadow: var(--lift-1); max-width: 62ch;
-  animation: pop-in .35s cubic-bezier(.2,1.3,.4,1.1) both;
+  animation: lh-pop .35s cubic-bezier(.2,1.3,.4,1.1) both;
 }
 .panel__teach-icon { font-size: 22px; }
 
-.btn--wide { width: min(340px, 100%); }
-.btn__arrow { animation: wiggle 1.4s ease-in-out infinite; }
+.lh-btn--wide { width: min(340px, 100%); }
+.lh-btn__arrow { animation: lh-wiggle 1.4s ease-in-out infinite; }
 
 /* ------------------------------------------------------------- tool tray */
 .tool-tray {
@@ -1198,9 +1198,9 @@ button { font-family: inherit; }
   font-family: var(--font-display); font-weight: 700; font-size: 13px;
   color: var(--ink-soft); text-align: center; line-height: 1.1;
 }
-.tool--glow { animation: glow-ring 1.5s ease-in-out infinite; }
+.tool--glow { animation: lh-glow-ring 1.5s ease-in-out infinite; }
 .tool--armed { outline: 5px solid var(--sun); outline-offset: 3px; transform: translateY(-6px) scale(1.06); }
-.tool--shake { animation: wiggle .48s ease-in-out; }
+.tool--shake { animation: lh-wiggle .48s ease-in-out; }
 .tool--away { opacity: .35; transform: scale(.9); pointer-events: none; }
 
 .tool-ghost {
@@ -1210,14 +1210,14 @@ button { font-family: inherit; }
   display: grid; place-items: center; font-size: 42px;
   background: rgba(255,255,255,.96);
   box-shadow: 0 10px 26px rgba(44,51,80,.35);
-  animation: pop-in .18s ease both;
+  animation: lh-pop .18s ease both;
 }
 
 .tool-stuck {
   position: absolute; transform: translate(-50%,-50%);
   font-size: clamp(34px, 6vw, 54px); z-index: 6;
   filter: drop-shadow(0 4px 6px rgba(44,51,80,.3));
-  animation: pop-in .3s cubic-bezier(.2,1.4,.4,1) both;
+  animation: lh-pop .3s cubic-bezier(.2,1.4,.4,1) both;
   pointer-events: none;
 }
 
@@ -1230,16 +1230,16 @@ button { font-family: inherit; }
 .spot-marker__ring {
   position: absolute; inset: 0; border-radius: 50%;
   border: 5px dashed var(--sun);
-  animation: spin 9s linear infinite;
+  animation: lh-spin 9s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg) } }
+@keyframes lh-spin { to { transform: rotate(360deg) } }
 .spot-marker__dot {
   width: 54px; height: 54px; border-radius: 50%;
   background: rgba(255,255,255,.85); display: grid; place-items: center;
   font-size: 26px; opacity: .55;
-  animation: bob 2s ease-in-out infinite;
+  animation: lh-bob 2s ease-in-out infinite;
 }
-.spot-marker--hit { animation: pop-in .3s reverse forwards; }
+.spot-marker--hit { animation: lh-pop .3s reverse forwards; }
 
 .spots circle { pointer-events: auto; }
 .spot--over { fill: rgba(255,200,68,.4) !important; }
@@ -1251,7 +1251,7 @@ button { font-family: inherit; }
   padding: 14px 26px; border-radius: var(--r-lg);
   background: #fff; box-shadow: var(--lift-2);
   touch-action: none; user-select: none;
-  animation: pop-in .3s cubic-bezier(.2,1.3,.4,1.1) both;
+  animation: lh-pop .3s cubic-bezier(.2,1.3,.4,1.1) both;
 }
 .gauge--hold { width: 168px; cursor: pointer; }
 .gauge__ring { position: absolute; top: 10px; left: 50%; transform: translateX(-50%) rotate(-90deg); width: 108px; height: 108px; }
@@ -1260,7 +1260,7 @@ button { font-family: inherit; }
 .gauge--pressing .gauge__fill { stroke: var(--mint); }
 .gauge__icon { font-size: 48px; height: 108px; display: grid; place-items: center; }
 .gauge__label { font-family: var(--font-display); font-weight: 700; font-size: var(--step-0); color: var(--ink-soft); }
-.gauge--done { animation: pop-in .26s reverse forwards; }
+.gauge--done { animation: lh-pop .26s reverse forwards; }
 .gauge--pressing { box-shadow: var(--lift-1), 0 0 0 6px rgba(63,208,166,.25); }
 
 .gauge--rub { width: min(340px, 100%); cursor: ew-resize; }
@@ -1279,7 +1279,7 @@ button { font-family: inherit; }
   background: #fff; border-radius: var(--r-lg);
   box-shadow: var(--lift-2); padding: 14px 20px;
   border-top: 8px solid var(--tint);
-  animation: pop-in .38s cubic-bezier(.2,1.3,.4,1.1) both;
+  animation: lh-pop .38s cubic-bezier(.2,1.3,.4,1.1) both;
 }
 .readout__head {
   display: flex; align-items: center; gap: 8px;
@@ -1331,8 +1331,8 @@ button { font-family: inherit; }
   box-shadow: 0 6px 0 var(--mint-deep), 0 0 0 5px rgba(63,208,166,.35);
 }
 .choice--dim { opacity: .4; filter: grayscale(.5); }
-.choice--wobble { animation: wiggle .5s ease-in-out; }
-.choice--glow { animation: glow-ring 1.4s ease-in-out infinite; }
+.choice--wobble { animation: lh-wiggle .5s ease-in-out; }
+.choice--glow { animation: lh-glow-ring 1.4s ease-in-out infinite; }
 .choice--picked { background: linear-gradient(180deg,#fff0f6,#ffd9e8); box-shadow: 0 6px 0 #e06a99; }
 .choice[disabled] { cursor: default; }
 
@@ -1343,14 +1343,14 @@ button { font-family: inherit; }
   border: none; background: rgba(255,255,255,.55);
   display: grid; place-items: center; cursor: pointer;
   box-shadow: 0 4px 10px rgba(44,51,80,.2);
-  animation: pop-in .4s cubic-bezier(.2,1.3,.4,1.1) both;
+  animation: lh-pop .4s cubic-bezier(.2,1.3,.4,1.1) both;
   z-index: 6;
 }
-.find-spot__icon { font-size: 30px; animation: bob-slow 3s ease-in-out infinite; }
+.find-spot__icon { font-size: 30px; animation: lh-bob-slow 3s ease-in-out infinite; }
 .find-spot:hover { transform: translate(-50%,-50%) scale(1.12); }
 .find-spot--halo { box-shadow: 0 0 0 5px rgba(255,200,68,.5), 0 4px 10px rgba(44,51,80,.2); }
-.find-spot--found { animation: pop-in .35s reverse forwards; pointer-events: none; }
-.find-spot--wobble { animation: wiggle .48s ease-in-out; }
+.find-spot--found { animation: lh-pop .35s reverse forwards; pointer-events: none; }
+.find-spot--wobble { animation: lh-wiggle .48s ease-in-out; }
 
 .find-counter {
   display: inline-flex; align-items: center; gap: 4px;
@@ -1383,7 +1383,7 @@ button { font-family: inherit; }
 .triage__body em { font-size: var(--step-0); color: var(--ink-soft); font-style: normal; }
 .triage__card--done { background: linear-gradient(180deg,#e6fff4,#c6f7e2); box-shadow: 0 6px 0 var(--mint-deep); }
 .triage__card--done .triage__rank { background: var(--mint); color: #fff; }
-.triage__card--halo { animation: glow-ring 1.5s ease-in-out infinite; }
+.triage__card--halo { animation: lh-glow-ring 1.5s ease-in-out infinite; }
 
 /* --------------------------------------------------------------- scanner */
 .scanner { width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
@@ -1403,7 +1403,7 @@ button { font-family: inherit; }
 .xray-frame__hint { position: absolute; inset: 0; display: grid; place-items: center; font-size: 38px; opacity: .5; }
 .xray-frame--locked { background: rgba(63,208,166,.25); box-shadow: inset 0 0 0 3px var(--mint), 0 0 0 8px rgba(63,208,166,.25); }
 .xray-frame--locked .xray-frame__corner { border-color: var(--mint-deep); }
-.xray-frame--firing { animation: pop-in .3s reverse forwards; }
+.xray-frame--firing { animation: lh-pop .3s reverse forwards; }
 
 .micro-view {
   width: min(420px, 100%); aspect-ratio: 3/2; border-radius: var(--r-lg);
@@ -1432,25 +1432,25 @@ button { font-family: inherit; }
 
 .scan-loading { display: flex; flex-direction: column; align-items: center; gap: 10px; font-family: var(--font-display); font-size: var(--step-1); }
 .scan-loading__bar { width: min(320px, 100%); height: 18px; border-radius: 99px; background: rgba(44,51,80,.14); overflow: hidden; }
-.scan-loading__bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg,var(--grape),var(--sky)); animation: scanfill 1.2s ease-out forwards; }
-@keyframes scanfill { to { width: 100% } }
+.scan-loading__bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg,var(--grape),var(--sky)); animation: lh-scanfill 1.2s ease-out forwards; }
+@keyframes lh-scanfill { to { width: 100% } }
 
 .scan-plate {
   width: min(440px, 100%); border-radius: var(--r-lg); overflow: hidden;
   box-shadow: var(--lift-2);
-  animation: pop-in .45s cubic-bezier(.2,1.3,.4,1.1) both;
+  animation: lh-pop .45s cubic-bezier(.2,1.3,.4,1.1) both;
 }
 .scan-plate svg { width: 100%; display: block; }
 .scan-caption { font-family: var(--font-display); font-weight: 700; font-size: var(--step-1); text-align: center; }
-.art--xray .scanline { animation: scansweep 2.4s linear infinite; }
-@keyframes scansweep { from { transform: translateY(-30px) } to { transform: translateY(200px) } }
+.art--xray .scanline { animation: lh-scansweep 2.4s linear infinite; }
+@keyframes lh-scansweep { from { transform: translateY(-30px) } to { transform: translateY(200px) } }
 /* Pulse the marker with opacity only.
-   `twinkle` also animates `transform`, and a CSS transform on an SVG element
+   `lh-twinkle` also animates `transform`, and a CSS transform on an SVG element
    overrides its transform="..." attribute — which threw any positioned group
    (the swallowed duck) off the plate. It also dipped to opacity .25, far too
    faint to find on a dark X-ray. */
-.art-flag { animation: flag-pulse 1.8s ease-in-out infinite; }
-@keyframes flag-pulse { 0%, 100% { opacity: .72 } 50% { opacity: 1 } }
+.art-flag { animation: lh-flag-pulse 1.8s ease-in-out infinite; }
+@keyframes lh-flag-pulse { 0%, 100% { opacity: .72 } 50% { opacity: 1 } }
 
 /* ------------------------------------------------------------- show card */
 .showcard {
@@ -1458,15 +1458,15 @@ button { font-family: inherit; }
   background: linear-gradient(180deg,#fff,#f7fbff);
   border-radius: var(--r-xl); box-shadow: var(--lift-2);
   padding: 12px 20px 20px; text-align: center;
-  animation: pop-in .42s cubic-bezier(.2,1.3,.4,1.1) both;
+  animation: lh-pop .42s cubic-bezier(.2,1.3,.4,1.1) both;
 }
 .showcard__art svg { width: 100%; height: auto; max-height: 30vh; max-height: 30dvh; }
 .showcard__title { font-size: var(--step-2); margin: 4px 0 6px; }
 .showcard__text { font-size: var(--step-0); color: var(--ink-soft); line-height: 1.45; margin: 0; }
-.art-beat { animation: art-beat 1.1s ease-in-out infinite; transform-origin: center; }
-@keyframes art-beat { 0%,100% { transform: scale(1) } 18% { transform: scale(1.14) } 36% { transform: scale(1) } 54% { transform: scale(1.08) } }
-.art-breathe { animation: art-breathe 2.6s ease-in-out infinite; transform-origin: center 40px; }
-@keyframes art-breathe { 0%,100% { transform: scale(1) } 50% { transform: scale(1.11, 1.06) } }
+.art-beat { animation: lh-art-beat 1.1s ease-in-out infinite; transform-origin: center; }
+@keyframes lh-art-beat { 0%,100% { transform: scale(1) } 18% { transform: scale(1.14) } 36% { transform: scale(1) } 54% { transform: scale(1.08) } }
+.art-breathe { animation: lh-art-breathe 2.6s ease-in-out infinite; transform-origin: center 40px; }
+@keyframes lh-art-breathe { 0%,100% { transform: scale(1) } 50% { transform: scale(1.11, 1.06) } }
 
 /* ------------------------------------------------------------- backdrop */
 .backdrop { position: absolute; inset: 0; overflow: hidden; }
@@ -1493,19 +1493,19 @@ button { font-family: inherit; }
   box-shadow: inset 0 0 0 8px #fff, 0 6px 14px rgba(44,51,80,.16);
 }
 .backdrop__window--night { background: linear-gradient(180deg,#2b3f6e,#5b74ad); }
-.win-sun { position: absolute; right: 12%; top: 10%; font-size: 26px; animation: bob-slow 5s ease-in-out infinite; }
+.win-sun { position: absolute; right: 12%; top: 10%; font-size: 26px; animation: lh-bob-slow 5s ease-in-out infinite; }
 .win-cloud { position: absolute; height: 16px; width: 52px; border-radius: 99px; background: rgba(255,255,255,.9); }
-.win-cloud--a { top: 34%; animation: drift 22s linear infinite; }
-.win-cloud--b { top: 58%; width: 38px; animation: drift 32s linear infinite 6s; }
-.win-bird { position: absolute; top: 22%; font-size: 15px; animation: drift 26s linear infinite 3s; }
-.win-star { position: absolute; left: 24%; top: 26%; font-size: 16px; animation: twinkle 3s ease-in-out infinite; }
+.win-cloud--a { top: 34%; animation: lh-drift 22s linear infinite; }
+.win-cloud--b { top: 58%; width: 38px; animation: lh-drift 32s linear infinite 6s; }
+.win-bird { position: absolute; top: 22%; font-size: 15px; animation: lh-drift 26s linear infinite 3s; }
+.win-star { position: absolute; left: 24%; top: 26%; font-size: 16px; animation: lh-twinkle 3s ease-in-out infinite; }
 .backdrop__screen {
   position: absolute; right: 5%; top: 17%;
   width: clamp(90px, 18vw, 170px); aspect-ratio: 4/3; border-radius: 12px;
   background: #16233f; box-shadow: inset 0 0 0 7px #cfd8ea, 0 6px 14px rgba(44,51,80,.2);
   padding: 14px; display: flex; flex-direction: column; justify-content: center; gap: 10px;
 }
-.screen-line { height: 6px; border-radius: 99px; background: #4fd0a6; opacity: .8; animation: shimmer 3s linear infinite; background-image: linear-gradient(90deg,#4fd0a6,#8fdcff,#4fd0a6); background-size: 200% 100%; }
+.screen-line { height: 6px; border-radius: 99px; background: #4fd0a6; opacity: .8; animation: lh-shine 3s linear infinite; background-image: linear-gradient(90deg,#4fd0a6,#8fdcff,#4fd0a6); background-size: 200% 100%; }
 .screen-line:nth-child(2) { width: 60%; animation-delay: .6s; }
 .backdrop__poster {
   position: absolute; left: 5%; top: 46%;
@@ -1520,7 +1520,7 @@ button { font-family: inherit; }
   padding: 8px 18px 6px; border-radius: 0 0 12px 12px;
   background: rgba(255,255,255,.75); box-shadow: 0 5px 10px rgba(44,51,80,.12);
 }
-.backdrop__prop { font-size: clamp(20px, 4vw, 32px); animation: bob-slow 4s ease-in-out infinite; }
+.backdrop__prop { font-size: clamp(20px, 4vw, 32px); animation: lh-bob-slow 4s ease-in-out infinite; }
 .backdrop__table {
   position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
   width: min(66%, 560px); height: 12%;
@@ -1552,8 +1552,8 @@ button { font-family: inherit; }
 
 /* Portrait phones: keep the stage generous and the bubbles compact. */
 @media (max-width: 620px) {
-  .bubble-lane { max-width: 66%; }
-  .bubble-lane .bubble { padding: 12px 16px; }
+  .lh-bubble-lane { max-width: 66%; }
+  .lh-bubble-lane .lh-bubble { padding: 12px 16px; }
   .case-panel { max-height: 52vh; max-height: 52dvh; }
   .case-nametag { padding: 6px 14px 6px 8px; }
   .case-nametag__emoji { font-size: 22px; }
@@ -1758,7 +1758,7 @@ let toastLane = null;
 
 function attachFx(el) {
   layer = el;
-  toastLane = h('div', { class: 'toast-lane' });
+  toastLane = h('div', { class: 'lh-toast-lane' });
   document.body.appendChild(toastLane);
 }
 
@@ -1772,7 +1772,7 @@ function confetti({ intensity = 1, duration = 2600 } = {}) {
   if (!layer) return;
   const count = Math.round(60 * intensity);
   for (let i = 0; i < count; i++) {
-    const bit = h('div', { class: 'confetti-bit' });
+    const bit = h('div', { class: 'lh-confetti' });
     const size = rand(8, 16);
     Object.assign(bit.style, {
       left: `${rand(-5, 105)}vw`,
@@ -1806,7 +1806,7 @@ function sparkle(target, { count = 14, glyphs = SPARKLE_GLYPHS } = {}) {
   if (!layer) return;
   const { x, y } = pointOf(target);
   for (let i = 0; i < count; i++) {
-    const s = h('div', { class: 'spark' }, pick(glyphs));
+    const s = h('div', { class: 'lh-spark' }, pick(glyphs));
     s.style.left = `${x}px`;
     s.style.top = `${y}px`;
     s.style.fontSize = `${randI(16, 34)}px`;
@@ -1828,7 +1828,7 @@ function sparkle(target, { count = 14, glyphs = SPARKLE_GLYPHS } = {}) {
 function floatText(target, text, color = '#fff') {
   if (!layer) return;
   const { x, y } = pointOf(target);
-  const el = h('div', { class: 'floater' }, text);
+  const el = h('div', { class: 'lh-floater' }, text);
   el.style.left = `${x}px`;
   el.style.top = `${y}px`;
   el.style.color = color;
@@ -1858,10 +1858,10 @@ function pointOf(target) {
 function toast(text, { icon = '💡', tone = 'warm', ms = 2600, speak = true } = {}) {
   if (!toastLane) return;
   if (speak) say(text);
-  const el = h('div', { class: `toast toast--${tone}` }, h('span', { style: { fontSize: '28px' } }, icon), h('span', {}, text));
+  const el = h('div', { class: `lh-toast lh-toast--${tone}` }, h('span', { style: { fontSize: '28px' } }, icon), h('span', {}, text));
   toastLane.appendChild(el);
   setTimeout(() => {
-    el.classList.add('out');
+    el.classList.add('is-leaving');
     setTimeout(() => el.remove(), 320);
   }, ms);
   // Keep the lane short so the screen never fills with banners.
@@ -2775,7 +2775,7 @@ const ROOMS = {
       { emoji: '🛎️', x: 22, y: 62, size: 30 },
       { emoji: '🪑', x: 62, y: 66, size: 30 },
       { emoji: '🪴', x: 88, y: 62, size: 32 },
-      { emoji: '🧑‍⚕️', x: 36, y: 58, size: 34, anim: 'bob-slow' },
+      { emoji: '🧑‍⚕️', x: 36, y: 58, size: 34, anim: 'lh-bob-slow' },
     ],
   },
   supply: {
@@ -2794,7 +2794,7 @@ const ROOMS = {
     action: 'levels:doctor',
     props: [
       { emoji: '🛏️', x: 30, y: 66, size: 32 },
-      { emoji: '🩺', x: 62, y: 52, size: 26, anim: 'sway' },
+      { emoji: '🩺', x: 62, y: 52, size: 26, anim: 'lh-sway' },
       { emoji: '🧸', x: 84, y: 66, size: 24 },
     ],
   },
@@ -2803,8 +2803,8 @@ const ROOMS = {
     blurb: 'Where furry, feathery patients get better.',
     action: 'levels:vet',
     props: [
-      { emoji: '🐕', x: 30, y: 66, size: 32, anim: 'bob' },
-      { emoji: '🐈', x: 60, y: 66, size: 28, anim: 'bob-slow' },
+      { emoji: '🐕', x: 30, y: 66, size: 32, anim: 'lh-bob' },
+      { emoji: '🐈', x: 60, y: 66, size: 28, anim: 'lh-bob-slow' },
       { emoji: '🦴', x: 84, y: 70, size: 22 },
     ],
   },
@@ -2813,10 +2813,10 @@ const ROOMS = {
     blurb: 'Where much-loved toys are mended and sent home.',
     action: 'levels:toy', wide: true,
     props: [
-      { emoji: '🧸', x: 22, y: 66, size: 30, anim: 'bob' },
+      { emoji: '🧸', x: 22, y: 66, size: 30, anim: 'lh-bob' },
       { emoji: '🤖', x: 46, y: 62, size: 26 },
       { emoji: '🚗', x: 68, y: 68, size: 26 },
-      { emoji: '🪛', x: 88, y: 60, size: 22, anim: 'sway' },
+      { emoji: '🪛', x: 88, y: 60, size: 22, anim: 'lh-sway' },
     ],
   },
   xray: {
@@ -2825,7 +2825,7 @@ const ROOMS = {
     action: 'info', locked: true,
     unlock: { text: 'Finish Doctor Level 5 or Vet Level 5', career: 'doctor', level: 5 },
     props: [
-      { emoji: '🩻', x: 34, y: 58, size: 34, anim: 'twinkle' },
+      { emoji: '🩻', x: 34, y: 58, size: 34, anim: 'lh-twinkle' },
       { emoji: '🖥️', x: 68, y: 64, size: 28 },
     ],
   },
@@ -2836,7 +2836,7 @@ const ROOMS = {
     unlock: { text: 'Finish Doctor Level 7 or Vet Level 8', career: 'doctor', level: 7 },
     props: [
       { emoji: '🔬', x: 30, y: 60, size: 32 },
-      { emoji: '🧪', x: 58, y: 62, size: 26, anim: 'sway' },
+      { emoji: '🧪', x: 58, y: 62, size: 26, anim: 'lh-sway' },
       { emoji: '🧫', x: 80, y: 66, size: 24 },
     ],
   },
@@ -2847,7 +2847,7 @@ const ROOMS = {
     unlock: { text: 'Buy it in the Supply Room', shop: true },
     props: [
       { emoji: '🖼️', x: 34, y: 60, size: 30 },
-      { emoji: '🧲', x: 68, y: 62, size: 28, anim: 'twinkle' },
+      { emoji: '🧲', x: 68, y: 62, size: 28, anim: 'lh-twinkle' },
     ],
   },
   recovery: {
@@ -2856,9 +2856,9 @@ const ROOMS = {
     action: 'info', locked: true,
     unlock: { text: 'Finish Vet Level 6', career: 'vet', level: 6 },
     props: [
-      { emoji: '🐇', x: 28, y: 66, size: 28, anim: 'bob' },
+      { emoji: '🐇', x: 28, y: 66, size: 28, anim: 'lh-bob' },
       { emoji: '🛌', x: 56, y: 66, size: 30 },
-      { emoji: '🐦', x: 82, y: 58, size: 24, anim: 'bob-slow' },
+      { emoji: '🐦', x: 82, y: 58, size: 24, anim: 'lh-bob-slow' },
     ],
   },
   emergency: {
@@ -2867,8 +2867,8 @@ const ROOMS = {
     action: 'info', locked: true,
     unlock: { text: 'Finish Doctor Level 9 or Vet Level 9', career: 'doctor', level: 9 },
     props: [
-      { emoji: '🚑', x: 30, y: 64, size: 32, anim: 'bob' },
-      { emoji: '❤️', x: 62, y: 56, size: 26, anim: 'twinkle' },
+      { emoji: '🚑', x: 30, y: 64, size: 32, anim: 'lh-bob' },
+      { emoji: '❤️', x: 62, y: 56, size: 26, anim: 'lh-twinkle' },
       { emoji: '🧑‍⚕️', x: 84, y: 62, size: 26 },
     ],
   },
@@ -2878,7 +2878,7 @@ const ROOMS = {
     action: 'info', locked: true, wide: true,
     unlock: { text: 'Become a Hospital Hero — Doctor Level 10', career: 'doctor', level: 10 },
     props: [
-      { emoji: '💡', x: 34, y: 46, size: 30, anim: 'twinkle' },
+      { emoji: '💡', x: 34, y: 46, size: 30, anim: 'lh-twinkle' },
       { emoji: '🛏️', x: 50, y: 66, size: 34 },
       { emoji: '⚕️', x: 72, y: 56, size: 28 },
     ],
@@ -2888,7 +2888,7 @@ const ROOMS = {
     blurb: 'Rescue missions land right on the roof!',
     action: 'info', locked: true, roof: true,
     unlock: { text: 'Become a Master Vet — Vet Level 10', career: 'vet', level: 10 },
-    props: [{ emoji: '🚁', x: 50, y: 40, size: 42, anim: 'bob' }],
+    props: [{ emoji: '🚁', x: 50, y: 40, size: 42, anim: 'lh-bob' }],
   },
 };
 
@@ -5947,7 +5947,7 @@ function titleScreen() {
   const state = getState();
   const returning = hasHero();
 
-  const el = h('div', { class: 'screen screen--title' });
+  const el = h('div', { class: 'lh-screen lh-screen--title', 'data-world': 'doctor' });
 
   el.appendChild(h('div', { class: 'town', html: townMarkup() }));
 
@@ -5961,12 +5961,12 @@ function titleScreen() {
       ...'HOSPITAL'.split('').map((c, i) => h('span', { style: { animationDelay: `${0.45 + i * 0.05}s` } }, c))),
     h('p', { class: 'title-sub' }, 'People or pets — everyone needs a hero.'),
     h('button', {
-      class: 'btn btn--sun btn--huge title-cta',
+      class: 'lh-btn lh-btn--secondary lh-btn--lg title-cta',
       onClick: start,
     }, returning ? '▶️ CARRY ON' : '✨ START MY ADVENTURE'),
     returning ? h('div', { class: 'title-returning' },
       h('span', {}, `Welcome back, Dr. ${state.hero.name}!`),
-      h('button', { class: 'btn btn--ghost btn--small', onClick: confirmReset }, '🔄 Start again')) : null,
+      h('button', { class: 'lh-btn lh-btn--quiet lh-btn--sm', onClick: confirmReset }, '🔄 Start again')) : null,
   );
   el.appendChild(stack);
 
@@ -5984,9 +5984,9 @@ function titleScreen() {
       h('div', { style: { fontSize: '58px' } }, '🔄'),
       h('h2', {}, 'Start a brand new hospital?'),
       h('p', {}, 'Your hero, your stars, your coins and all your rooms will be cleared.'),
-      h('div', { class: 'row gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },
-        h('button', { class: 'btn btn--ghost', onClick: () => m.close() }, 'No, keep playing'),
-        h('button', { class: 'btn btn--coral', onClick: () => {
+      h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },
+        h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => m.close() }, 'No, keep playing'),
+        h('button', { class: 'lh-btn lh-btn--alert', onClick: () => {
           resetEverything();
           m.close();
           go('title', {}, { replace: true });
@@ -6189,19 +6189,19 @@ function heroSVG(opts = {}) {
  * present so a child can silence the game from any screen.
  */
 function hud({ title = '', back = null, dark = false, chips = ['stars', 'coins'], extra = [] } = {}) {
-  const bar = h('div', { class: `hud${dark ? ' hud--dark' : ''}` });
+  const bar = h('div', { class: `lh-hud${dark ? ' lh-hud--dark' : ''}` });
 
   if (back) {
     bar.appendChild(h('button', {
-      class: 'iconbtn iconbtn--back', 'aria-label': 'Go back',
+      class: 'lh-iconbtn lh-iconbtn--back', 'aria-label': 'Go back',
       onClick: () => { sfx.tap(); back(); },
     }, '⬅️'));
   }
 
-  if (title) bar.appendChild(h('div', { class: 'hud__title' }, title));
-  bar.appendChild(h('div', { class: 'hud__spacer' }));
+  if (title) bar.appendChild(h('div', { class: 'lh-hud__title' }, title));
+  bar.appendChild(h('div', { class: 'lh-hud__spacer' }));
 
-  if (chips.length) bar.classList.add('hud--chips');
+  if (chips.length) bar.classList.add('lh-hud--chips');
   const chipEls = {};
   chips.forEach((kind) => {
     const el = currencyChip(kind);
@@ -6213,7 +6213,7 @@ function hud({ title = '', back = null, dark = false, chips = ['stars', 'coins']
 
   if (voiceSupported) {
     const voiceBtn = h('button', {
-      class: 'iconbtn', 'aria-label': 'Read the words out loud',
+      class: 'lh-iconbtn', 'aria-label': 'Read the words out loud',
       title: 'Read the words out loud',
       onClick: () => { voiceBtn.textContent = toggleVoice() ? '🗣️' : '🤐'; },
     }, voiceOn() ? '🗣️' : '🤐');
@@ -6221,7 +6221,7 @@ function hud({ title = '', back = null, dark = false, chips = ['stars', 'coins']
   }
 
   const soundBtn = h('button', {
-    class: 'iconbtn', 'aria-label': 'Sound on or off',
+    class: 'lh-iconbtn', 'aria-label': 'Sound on or off',
     onClick: () => {
       const now = toggleSound();
       soundBtn.textContent = now ? '🔊' : '🔇';
@@ -6247,28 +6247,28 @@ const CHIP_META = {
 
 function currencyChip(kind) {
   const meta = CHIP_META[kind];
-  const el = h('div', { class: 'chip', title: meta.label, dataset: { chip: kind } },
-    h('span', { class: 'chip__icon' }, meta.icon),
-    h('span', { class: 'chip__value' }, String(getState().wallet[meta.key] ?? 0)));
+  const el = h('div', { class: 'lh-chip', title: meta.label, dataset: { chip: kind } },
+    h('span', { class: 'lh-chip__icon' }, meta.icon),
+    h('span', { class: 'lh-chip__num' }, String(getState().wallet[meta.key] ?? 0)));
   return el;
 }
 
 function updateChip(el, kind) {
   const meta = CHIP_META[kind];
-  const valueEl = el.querySelector('.chip__value');
+  const valueEl = el.querySelector('.lh-chip__num');
   const next = String(getState().wallet[meta.key] ?? 0);
   if (valueEl.textContent === next) return;
   valueEl.textContent = next;
-  el.classList.remove('chip--bump');
+  el.classList.remove('is-bumping');
   void el.offsetWidth;
-  el.classList.add('chip--bump');
+  el.classList.add('is-bumping');
 }
 
 /** A centred modal. Returns { el, close }. */
 function modal(content, { onClose = null, dismissable = true } = {}) {
-  const box = h('div', { class: 'modal' }, ...(Array.isArray(content) ? content : [content]));
+  const box = h('div', { class: 'lh-modal' }, ...(Array.isArray(content) ? content : [content]));
   const veil = h('div', {
-    class: 'modal-veil',
+    class: 'lh-modal__veil',
     onClick: (ev) => { if (dismissable && ev.target === veil) close(); },
   }, box);
 
@@ -6283,8 +6283,8 @@ function modal(content, { onClose = null, dismissable = true } = {}) {
 
 /** Big rounded section heading used on the hub, shop and bag screens. */
 function sectionTitle(icon, text, sub = null) {
-  return h('div', { class: 'section-title' },
-    h('span', { class: 'section-title__icon' }, icon),
+  return h('div', { class: 'lh-section-title' },
+    h('span', { class: 'lh-section-title__icon' }, icon),
     h('div', {},
       h('h2', {}, text),
       sub ? h('p', {}, sub) : null));
@@ -6293,9 +6293,9 @@ function sectionTitle(icon, text, sub = null) {
 /** Progress bar with a label. */
 function progressBar(done, total, label = null) {
   const pct = total ? Math.round((done / total) * 100) : 0;
-  return h('div', { class: 'progress' },
-    label ? h('div', { class: 'progress__label' }, label, h('span', {}, `${done}/${total}`)) : null,
-    h('div', { class: 'bar' }, h('div', { class: 'bar__fill', style: { width: `${pct}%` } })));
+  return h('div', { class: 'lh-meter' },
+    label ? h('div', { class: 'lh-meter__label' }, label, h('span', {}, `${done}/${total}`)) : null,
+    h('div', { class: 'lh-meter__track' }, h('div', { class: 'lh-meter__fill', style: { width: `${pct}%` } })));
 }
   Object.assign(__x, { heroSVG, hud, currencyChip, modal, sectionTitle, progressBar });
 });
@@ -6351,7 +6351,7 @@ function humanSVG(opts = {}) {
   const armFill = co.value || sc.value;
 
   return `
-<svg viewBox="0 0 200 250" class="charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <defs>
     <linearGradient id="rainbowShoe" x1="0" x2="1">
       <stop offset="0%" stop-color="#ff7a6b"/><stop offset="35%" stop-color="#ffc844"/>
@@ -6362,7 +6362,7 @@ function humanSVG(opts = {}) {
 
   <ellipse cx="100" cy="243" rx="46" ry="7" fill="rgba(44,51,80,.16)"/>
 
-  <g transform="translate(100 128) scale(${scale}) translate(-100 -128)" class="${idle ? 'char-idle' : ''}">
+  <g transform="translate(100 128) scale(${scale}) translate(-100 -128)" class="${idle ? 'lh-char-idle' : ''}">
     ${acc.includes('cape') ? cape(mood) : ''}
 
     <!-- legs + shoes -->
@@ -6395,7 +6395,7 @@ function humanSVG(opts = {}) {
     <rect x="90" y="106" width="20" height="18" rx="8" fill="${sk.shade}"/>
 
     <!-- head -->
-    <g class="char-head">
+    <g class="lh-char-head">
       ${hairBack(hair, hc.value, headR)}
       <circle cx="${HEAD.x}" cy="${HEAD.y}" r="${headR}" fill="${sk.value}"/>
       <ellipse cx="${HEAD.x}" cy="${HEAD.y - headR * 0.5}" rx="${headR * 0.7}" ry="${headR * 0.4}" fill="url(#cheekGlow)"/>
@@ -6827,17 +6827,17 @@ const SHOP_ITEMS = [
 
   /* --- decoration ------------------------------------------------------- */
   { id: 'plant',    category: 'decor', name: 'Big Plant',      icon: '🪴', price: 50,  blurb: 'Green things make rooms happy.',   place: { room: 'doctor', x: 90, y: 62, size: 28 } },
-  { id: 'aquarium', category: 'decor', name: 'Aquarium',       icon: '🐠', price: 260, blurb: 'Bubbly fish everyone loves to watch.', place: { room: 'reception', x: 12, y: 60, size: 30, anim: 'bob-slow' } },
+  { id: 'aquarium', category: 'decor', name: 'Aquarium',       icon: '🐠', price: 260, blurb: 'Bubbly fish everyone loves to watch.', place: { room: 'reception', x: 12, y: 60, size: 30, anim: 'lh-bob-slow' } },
   { id: 'wallart',  category: 'decor', name: 'Wall Art',       icon: '🖼️', price: 80,  blurb: 'A painting of a very brave hamster.', place: { room: 'vet', x: 14, y: 48, size: 24 } },
   { id: 'rainbow',  category: 'decor', name: 'Rainbow Mural',  icon: '🌈', price: 180, blurb: 'Paints the whole reception wall.',  place: { room: 'reception', x: 50, y: 44, size: 34 } },
-  { id: 'fairylights', category: 'decor', name: 'Fairy Lights', icon: '✨', price: 120, blurb: 'Twinkly lights along the ceiling.', place: { room: 'vet', x: 50, y: 42, size: 26, anim: 'twinkle' } },
+  { id: 'fairylights', category: 'decor', name: 'Fairy Lights', icon: '✨', price: 120, blurb: 'Twinkly lights along the ceiling.', place: { room: 'vet', x: 50, y: 42, size: 26, anim: 'lh-twinkle' } },
 
   /* --- toys for patients ------------------------------------------------ */
   { id: 'toybox',   category: 'fun', name: 'Toy Box',        icon: '🧸', price: 100, blurb: 'Something to cuddle before a checkup.', place: { room: 'doctor', x: 76, y: 70, size: 26 } },
-  { id: 'balloons', category: 'fun', name: 'Balloon Bunch',  icon: '🎈', price: 70,  blurb: 'Instantly makes any room a party.', place: { room: 'reception', x: 84, y: 48, size: 28, anim: 'bob' } },
+  { id: 'balloons', category: 'fun', name: 'Balloon Bunch',  icon: '🎈', price: 70,  blurb: 'Instantly makes any room a party.', place: { room: 'reception', x: 84, y: 48, size: 28, anim: 'lh-bob' } },
   { id: 'ballpit',  category: 'fun', name: 'Ball Pit',       icon: '🔴', price: 200, blurb: 'Nobody wants to leave. Ever.', place: { room: 'reception', x: 62, y: 74, size: 26 } },
-  { id: 'chewtoy',  category: 'fun', name: 'Squeaky Toys',   icon: '🦆', price: 60,  blurb: 'Squeak! Tails go wild.', place: { room: 'vet', x: 44, y: 74, size: 22, anim: 'wiggle' } },
-  { id: 'birdperch',category: 'fun', name: 'Bird Perch',     icon: '🦜', price: 150, blurb: 'A swinging branch for feathered friends.', place: { room: 'vet', x: 88, y: 46, size: 26, anim: 'sway' } },
+  { id: 'chewtoy',  category: 'fun', name: 'Squeaky Toys',   icon: '🦆', price: 60,  blurb: 'Squeak! Tails go wild.', place: { room: 'vet', x: 44, y: 74, size: 22, anim: 'lh-wiggle' } },
+  { id: 'birdperch',category: 'fun', name: 'Bird Perch',     icon: '🦜', price: 150, blurb: 'A swinging branch for feathered friends.', place: { room: 'vet', x: 88, y: 46, size: 26, anim: 'lh-sway' } },
 
   /* --- hero outfit ------------------------------------------------------ */
   { id: 'outfit-crown',   category: 'outfit', name: 'Hero Crown',     icon: '👑', price: 300, blurb: 'For the ruler of this hospital.', accessory: 'crown' },
@@ -6885,7 +6885,7 @@ function creatorScreen() {
   let difficulty = state.difficulty || 'little';
   const editing = hasHero();
 
-  const el = h('div', { class: 'screen screen--creator' });
+  const el = h('div', { class: 'lh-screen lh-screen--creator', 'data-world': 'doctor' });
   const bar = hud({
     title: editing ? 'Change my hero' : 'Create your hero',
     back: editing ? () => go('hub', {}, { replace: true }) : () => go('title', {}, { replace: true }),
@@ -6900,7 +6900,7 @@ function creatorScreen() {
 
   const options = h('div', { class: 'creator-options' });
   const grid = h('div', { class: 'creator-grid' }, preview, options);
-  const scroll = h('div', { class: 'screen-scroll' }, grid);
+  const scroll = h('div', { class: 'lh-screen__scroll' }, grid);
   el.appendChild(scroll);
 
   /* ------------------------------------------------------------- preview */
@@ -6912,14 +6912,15 @@ function creatorScreen() {
 
   /* ------------------------------------------------------- option groups */
   function group(icon, title, rowEls) {
-    return h('div', { class: 'option-group' },
-      h('div', { class: 'option-group__head' }, h('span', {}, icon), h('span', {}, title)),
-      h('div', { class: 'option-row' }, ...rowEls));
+    return h('div', { class: 'lh-optgroup' },
+      h('div', { class: 'lh-optgroup__label' }, h('span', {}, icon), h('span', {}, title)),
+      h('div', { class: 'lh-optgroup__row' }, ...rowEls));
   }
 
   function swatch(key, id, styles, content = null, wide = false) {
     const btn = h('button', {
-      class: `swatch${wide ? ' swatch--wide' : ''}${draft[key] === id ? ' swatch--on' : ''}`,
+      class: `lh-swatch${wide ? ' lh-swatch--wide' : ''}`,
+      'aria-pressed': String(draft[key] === id),
       style: styles,
       'aria-label': String(content || id),
       onClick: () => {
@@ -6939,7 +6940,7 @@ function creatorScreen() {
       onInput: (ev) => { draft.name = ev.target.value.slice(0, 12); redraw(); },
     });
     const dice = h('button', {
-      class: 'iconbtn', 'aria-label': 'Pick a name for me',
+      class: 'lh-iconbtn', 'aria-label': 'Pick a name for me',
       onClick: () => { draft.name = pick(NAME_SUGGESTIONS); input.value = draft.name; sfx.select(); redraw(); },
     }, '🎲');
 
@@ -6949,15 +6950,16 @@ function creatorScreen() {
         onClick: () => { draft.name = n; input.value = n; sfx.tap(); redraw(); },
       }, n)));
 
-    return h('div', { class: 'option-group' },
-      h('div', { class: 'option-group__head' }, h('span', {}, '✏️'), h('span', {}, 'My name is…')),
+    return h('div', { class: 'lh-optgroup' },
+      h('div', { class: 'lh-optgroup__label' }, h('span', {}, '✏️'), h('span', {}, 'My name is…')),
       h('div', { class: 'name-row' }, input, dice),
       chips);
   }
 
   function difficultyGroup() {
     const card = (id, icon, title, ages, bullets) => h('button', {
-      class: `diff-card${difficulty === id ? ' diff-card--on' : ''}`,
+      class: 'diff-card',
+      'aria-pressed': String(difficulty === id),
       onClick: () => {
         difficulty = id;
         // Little Helpers get the prompts read aloud by default; explorers do
@@ -6973,8 +6975,8 @@ function creatorScreen() {
         h('p', {}, ages),
         h('p', {}, bullets)));
 
-    return h('div', { class: 'option-group' },
-      h('div', { class: 'option-group__head' }, h('span', {}, '🎚️'), h('span', {}, 'How much help would you like?')),
+    return h('div', { class: 'lh-optgroup' },
+      h('div', { class: 'lh-optgroup__label' }, h('span', {}, '🎚️'), h('span', {}, 'How much help would you like?')),
       h('div', { class: 'difficulty-row' },
         card('little', '🧸', 'Little Helper', 'Ages about 4–6',
           'Arrows and glowing hints, the right tool sparkles, and only two answers to choose from.'),
@@ -6999,16 +7001,17 @@ function creatorScreen() {
       group('✨', 'Something fun', [...ACCESSORIES, ...shopAccessories]
         .map((a) => swatch('accessory', a.id, { background: '#fff' }, a.icon))),
       difficultyGroup(),
-      h('div', { class: 'row gap-m', style: { justifyContent: 'center', padding: '10px 0 30px', flexWrap: 'wrap' } },
-        h('button', { class: 'btn btn--ghost', onClick: randomise }, '🎲 Surprise me!'),
-        h('button', { class: 'btn btn--mint btn--huge', onClick: done }, editing ? '💾 SAVE' : '👍 THAT\'S ME!')),
+      h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', padding: '10px 0 30px', flexWrap: 'wrap' } },
+        h('button', { class: 'lh-btn lh-btn--quiet', onClick: randomise }, '🎲 Surprise me!'),
+        h('button', { class: 'lh-btn lh-btn--primary lh-btn--lg', onClick: done }, editing ? '💾 SAVE' : '👍 THAT\'S ME!')),
     );
     redraw();
   }
 
   function swatchShoe(c) {
     const btn = h('button', {
-      class: `swatch${c.value === 'rainbow' ? ' swatch--rainbow' : ''}${draft.shoes === c.id ? ' swatch--on' : ''}`,
+      class: `lh-swatch${c.value === 'rainbow' ? ' lh-swatch--rainbow' : ''}`,
+      'aria-pressed': String(draft.shoes === c.id),
       style: c.value === 'rainbow' ? {} : { background: c.value },
       'aria-label': c.id,
       onClick: () => { draft.shoes = c.id; sfx.select(); sparkle(btn, { count: 6 }); rebuild(); },
@@ -7073,11 +7076,11 @@ const { confetti, sparkle, toast, flash } = __req("src/core/fx.js");
 function hubScreen({ build = null, highlight = null } = {}) {
   const state = getState();
 
-  const el = h('div', { class: 'screen screen--hub' });
+  const el = h('div', { class: 'lh-screen lh-screen--hub', 'data-world': 'doctor' });
   const bar = hud({ title: 'My Hospital', chips: ['stars', 'kindness', 'coins'], dark: true });
   el.appendChild(bar);
 
-  const scroll = h('div', { class: 'screen-scroll hub-scroll' });
+  const scroll = h('div', { class: 'lh-screen__scroll hub-scroll' });
   el.appendChild(scroll);
 
   /* ------------------------------------------------------- hero + status */
@@ -7095,7 +7098,7 @@ function hubScreen({ build = null, highlight = null } = {}) {
     h('div', { class: 'hub-hero__text' },
       h('h3', {}, heroTitle()),
       h('p', {}, trackLine)),
-    h('button', { class: 'iconbtn', 'aria-label': 'Change my hero', onClick: () => go('creator') }, '🎨')));
+    h('button', { class: 'lh-iconbtn', 'aria-label': 'Change my hero', onClick: () => go('creator') }, '🎨')));
 
   /* ------------------------------------------------------------ building */
   const building = h('div', { class: 'building-wrap' });
@@ -7112,8 +7115,8 @@ function hubScreen({ build = null, highlight = null } = {}) {
 
   /* ------------------------------------------------------------ actions */
   scroll.appendChild(h('div', { class: 'hub-actions' },
-    h('button', { class: 'btn btn--ghost', onClick: () => go('bag') }, '🎒 Doctor Bag'),
-    h('button', { class: 'btn btn--ghost', onClick: () => go('shop') }, '🛒 Supply Room')));
+    h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => go('bag') }, '🎒 Doctor Bag'),
+    h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => go('shop') }, '🛒 Supply Room')));
 
   if (CAREERS.every(isCareerFinished)) {
     scroll.appendChild(h('p', { class: 'empty-note' },
@@ -7164,7 +7167,7 @@ function hubScreen({ build = null, highlight = null } = {}) {
     }
 
     if (isHighlight) {
-      tile.classList.add('level-card--next');
+      tile.classList.add('lh-case--next');
       setTimeout(() => tile.scrollIntoView({ behavior: 'smooth', block: 'center' }), 260);
     }
     return tile;
@@ -7192,7 +7195,7 @@ function hubScreen({ build = null, highlight = null } = {}) {
       h('p', {}, room.blurb),
       usedBy.length ? h('div', { class: 'unlock-strip' },
         ...usedBy.slice(0, 4).map((u) => h('span', { class: 'unlock-chip' }, u))) : null,
-      h('button', { class: 'btn btn--sun', onClick: () => document.querySelector('.modal-veil')?.remove() }, 'Nice! 👍'),
+      h('button', { class: 'lh-btn lh-btn--secondary', onClick: () => document.querySelector('.lh-modal__veil')?.remove() }, 'Nice! 👍'),
     ]);
   }
 
@@ -7246,7 +7249,7 @@ function levelsScreen({ career = 'doctor' } = {}) {
   const track = TRACKS[career];
   if (getState().career !== career) setCareer(career);
 
-  const el = h('div', { class: `screen screen--levels${career === 'vet' ? ' is-vet' : ''}` });
+  const el = h('div', { class: 'lh-screen lh-screen--levels', 'data-world': career });
   const bar = hud({
     title: `${track.icon} ${track.name}`,
     back: () => goHome('hub'),
@@ -7255,7 +7258,7 @@ function levelsScreen({ career = 'doctor' } = {}) {
   });
   el.appendChild(bar);
 
-  const scroll = h('div', { class: 'screen-scroll' });
+  const scroll = h('div', { class: 'lh-screen__scroll' });
   const { done, total } = careerCompletion(career);
 
   scroll.appendChild(h('div', { style: { display: 'grid', placeItems: 'center', padding: '4px 16px 14px' } },
@@ -7273,17 +7276,17 @@ function levelsScreen({ career = 'doctor' } = {}) {
     const isNext = caseDef === nextUp;
 
     const card = h('button', {
-      class: `level-card${completed ? ' level-card--done' : ''}${isNext ? ' level-card--next' : ''}${unlocked ? '' : ' level-card--locked'}`,
+      class: `lh-case${completed ? ' lh-case--done' : ''}${isNext ? ' lh-case--next' : ''}${unlocked ? '' : ' lh-case--locked'}`,
       onClick: () => start(caseDef, unlocked),
     },
       isNext ? h('span', { class: 'level-badge' }, 'PLAY NEXT') : null,
-      h('span', { class: 'level-card__num' }, unlocked ? caseDef.icon : '🔒'),
-      h('div', { class: 'level-card__body' },
+      h('span', { class: 'lh-case__num' }, unlocked ? caseDef.icon : '🔒'),
+      h('div', { class: 'lh-case__body' },
         h('h3', {}, `${caseDef.level}. ${caseDef.title}`),
         h('p', {}, unlocked ? caseDef.tagline : 'Finish the level before this one to meet this patient!'),
-        h('div', { class: 'level-card__teaches' },
+        h('div', { class: 'lh-case__teaches' },
           ...(unlocked ? caseDef.teaches : []).map((t) => h('span', {}, t)))),
-      h('span', { class: 'level-card__state' }, completed ? '⭐' : unlocked ? '▶️' : '🔒'));
+      h('span', { class: 'lh-case__state' }, completed ? '⭐' : unlocked ? '▶️' : '🔒'));
 
     list.appendChild(card);
   });
@@ -7324,11 +7327,11 @@ const { hud, modal } = __req("src/ui/components.js");
 
 function caseScreen({ career, caseId }) {
   const caseDef = getCaseById(caseId);
-  const el = h('div', { class: 'screen' });
+  const el = h('div', { class: 'lh-screen', 'data-world': career });
 
   if (!caseDef) {
     el.appendChild(h('p', { class: 'empty-note' }, 'That patient could not be found.'));
-    el.appendChild(h('button', { class: 'btn', onClick: () => goHome('hub') }, 'Back to my hospital'));
+    el.appendChild(h('button', { class: 'lh-btn', onClick: () => goHome('hub') }, 'Back to my hospital'));
     return { el };
   }
 
@@ -7350,9 +7353,9 @@ function caseScreen({ career, caseId }) {
       h('div', { style: { fontSize: '54px' } }, '🚪'),
       h('h2', {}, 'Leave this patient?'),
       h('p', {}, 'You can come back and start them again any time.'),
-      h('div', { class: 'row gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },
-        h('button', { class: 'btn btn--mint', onClick: () => m.close() }, 'Keep helping'),
-        h('button', { class: 'btn btn--ghost', onClick: () => { m.close(); goHome('hub'); } }, 'Leave')),
+      h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },
+        h('button', { class: 'lh-btn lh-btn--primary', onClick: () => m.close() }, 'Keep helping'),
+        h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => { m.close(); goHome('hub'); } }, 'Leave')),
     ]);
   }
 
@@ -7440,7 +7443,7 @@ function createCaseRunner(caseDef, { onFinish, onQuit }) {
   patientWrap.appendChild(patientEl);
 
   const overlay = h('div', { class: 'case-overlay' });
-  const bubbleLane = h('div', { class: 'bubble-lane' });
+  const bubbleLane = h('div', { class: 'lh-bubble-lane' });
   const scene = h('div', { class: 'case-scene' }, patientWrap, overlay, bubbleLane);
   stage.appendChild(scene);
 
@@ -7451,7 +7454,7 @@ function createCaseRunner(caseDef, { onFinish, onQuit }) {
 
   const promptEl = h('div', { class: 'panel__prompt' });
   const bodyEl = h('div', { class: 'panel__body' });
-  const teachEl = h('div', { class: 'panel__teach hidden' });
+  const teachEl = h('div', { class: 'panel__teach lh-hidden' });
   const panel = h('div', { class: 'case-panel' }, promptEl, bodyEl, teachEl);
 
   const dots = h('div', { class: 'case-dots' });
@@ -7466,21 +7469,21 @@ function createCaseRunner(caseDef, { onFinish, onQuit }) {
 
   function say(who, text, { translate = null, mood = null, sfxName = null, hold = false } = {}) {
     const spoken = fill(text, patient);
-    const bubble = h('div', { class: `bubble bubble--${who}` }, spoken);
+    const bubble = h('div', { class: `lh-bubble lh-bubble--${who}` }, spoken);
     // Animal patients get their line then the translation. Join them without
     // doubling punctuation — "Woof!." is a stumble when it is read aloud.
     speak(translate ? `${spoken.replace(/[\s.]+$/, '')}. ${fill(translate, patient)}` : spoken);
-    if (who === 'narrator' || who === 'nurse') bubble.classList.add('bubble--thought');
+    if (who === 'narrator' || who === 'nurse') bubble.classList.add('lh-bubble--thought');
     bubbleLane.appendChild(bubble);
     if (translate) {
-      bubbleLane.appendChild(h('div', { class: 'bubble bubble--translate' },
-        h('span', { class: 'bubble__tkey' }, '🗣️ '), fill(translate, patient)));
+      bubbleLane.appendChild(h('div', { class: 'lh-bubble lh-bubble--translate' },
+        h('span', { class: 'lh-bubble__tkey' }, '🗣️ '), fill(translate, patient)));
     }
     if (mood) setPatientMood(mood);
     if (sfxName) play(sfxName);
     // Keep the lane readable — only the current line and the one before it.
     while (bubbleLane.children.length > 2) bubbleLane.firstChild.remove();
-    if (!hold) setTimeout(() => bubble.classList.add('bubble--settled'), 40);
+    if (!hold) setTimeout(() => bubble.classList.add('lh-bubble--settled'), 40);
     return bubble;
   }
 
@@ -7489,9 +7492,9 @@ function createCaseRunner(caseDef, { onFinish, onQuit }) {
   function setPatientMood(mood) { setMood(patientEl, patient, mood); }
 
   function react(kind = 'happy') {
-    patientEl.classList.remove('react-happy', 'react-wiggle', 'react-shy');
+    patientEl.classList.remove('lh-react--happy', 'lh-react--wiggle', 'lh-react--shy');
     void patientEl.offsetWidth; // restart the animation
-    patientEl.classList.add(`react-${kind}`);
+    patientEl.classList.add(`lh-react--${kind}`);
   }
 
   function hotspot(name) {
@@ -7519,10 +7522,10 @@ function createCaseRunner(caseDef, { onFinish, onQuit }) {
   }
 
   function teach(text) {
-    if (!text) { teachEl.classList.add('hidden'); return; }
+    if (!text) { teachEl.classList.add('lh-hidden'); return; }
     // Younger players get the fun fact; explorers get it too, with vocabulary.
     teachEl.innerHTML = `<span class="panel__teach-icon">💡</span><span>${fill(text, patient)}</span>`;
-    teachEl.classList.remove('hidden');
+    teachEl.classList.remove('lh-hidden');
     // Read it out — it is the one line in the step actually worth teaching,
     // and a child who cannot read was previously getting nothing from it.
     speak(fill(text, patient));
@@ -7559,7 +7562,7 @@ function createCaseRunner(caseDef, { onFinish, onQuit }) {
    * short and a freshly appended button can otherwise sit below the fold.
    */
   function continueButton(label = 'Next 👉', host = bodyEl) {
-    const btn = h('button', { class: 'btn btn--mint btn--wide', onClick: () => advance() }, label);
+    const btn = h('button', { class: 'lh-btn lh-btn--primary lh-btn--wide', onClick: () => advance() }, label);
     host.appendChild(btn);
     requestAnimationFrame(() => btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
     return btn;
@@ -7579,10 +7582,10 @@ function createCaseRunner(caseDef, { onFinish, onQuit }) {
   const tallyEl = h('div', { class: 'case-tally' });
   function renderTally() {
     tallyEl.innerHTML =
-      `<span class="chip chip--tiny"><span class="chip__icon">⭐</span>${tally.stars}</span>` +
-      `<span class="chip chip--tiny"><span class="chip__icon">❤️</span>${tally.kindness}</span>`;
-    tallyEl.querySelectorAll('.chip').forEach((c) => {
-      c.classList.remove('chip--bump'); void c.offsetWidth; c.classList.add('chip--bump');
+      `<span class="lh-chip lh-chip--tiny"><span class="lh-chip__icon">⭐</span>${tally.stars}</span>` +
+      `<span class="lh-chip lh-chip--tiny"><span class="lh-chip__icon">❤️</span>${tally.kindness}</span>`;
+    tallyEl.querySelectorAll('.lh-chip').forEach((c) => {
+      c.classList.remove('is-bumping'); void c.offsetWidth; c.classList.add('is-bumping');
     });
   }
   renderTally();
@@ -7838,7 +7841,7 @@ function creatureSVG(opts = {}) {
   const headY = 96, headR = s.bigEyes ? 50 : 46;
 
   return `
-<svg viewBox="0 0 200 250" class="charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <defs>
     <radialGradient id="furShine-${species}">
       <stop offset="0%" stop-color="#fff" stop-opacity=".45"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/>
@@ -7847,7 +7850,7 @@ function creatureSVG(opts = {}) {
 
   <ellipse cx="100" cy="240" rx="52" ry="8" fill="rgba(44,51,80,.16)"/>
 
-  <g transform="translate(100 150) scale(${scale}) translate(-100 -150)" class="${idle ? 'char-idle' : ''}">
+  <g transform="translate(100 150) scale(${scale}) translate(-100 -150)" class="${idle ? 'lh-char-idle' : ''}">
     ${tail(s)}
 
     <!-- body -->
@@ -7869,7 +7872,7 @@ function creatureSVG(opts = {}) {
     </g>
 
     <!-- head -->
-    <g class="char-head">
+    <g class="lh-char-head">
       ${ears(s, headY, headR)}
       ${s.mane ? `<circle cx="100" cy="${headY}" r="${headR + 15}" fill="${s.mane}"/>` : ''}
       ${s.yarnHair ? yarnHair(s, headY, headR) : ''}
@@ -7965,8 +7968,8 @@ function ears(s, hy, hr) {
   switch (s.ears) {
     case 'floppy':
       return `<g>
-        <ellipse cx="${100 - hr + 4}" cy="${hy + 8}" rx="15" ry="30" fill="${shade(f)}" class="ear-l"/>
-        <ellipse cx="${100 + hr - 4}" cy="${hy + 8}" rx="15" ry="30" fill="${shade(f)}" class="ear-r"/></g>`;
+        <ellipse cx="${100 - hr + 4}" cy="${hy + 8}" rx="15" ry="30" fill="${shade(f)}" class="lh-ear--l"/>
+        <ellipse cx="${100 + hr - 4}" cy="${hy + 8}" rx="15" ry="30" fill="${shade(f)}" class="lh-ear--r"/></g>`;
     case 'pointy':
       return `<g>
         <path d="M ${100 - hr + 6} ${hy - 22} l -12 -40 l 34 20 z" fill="${f}"/>
@@ -7974,7 +7977,7 @@ function ears(s, hy, hr) {
         <path d="M ${100 + hr - 6} ${hy - 22} l 12 -40 l -34 20 z" fill="${f}"/>
         <path d="M ${100 + hr - 10} ${hy - 24} l 6 -24 l -20 12 z" fill="${tip}" opacity=".65"/></g>`;
     case 'long':
-      return `<g class="ear-bunny">
+      return `<g class="lh-ear--bunny">
         <ellipse cx="78" cy="${hy - 66}" rx="13" ry="42" fill="${f}" transform="rotate(-8 78 ${hy - 66})"/>
         <ellipse cx="78" cy="${hy - 66}" rx="7" ry="32" fill="#ffc9d6" transform="rotate(-8 78 ${hy - 66})"/>
         <ellipse cx="122" cy="${hy - 66}" rx="13" ry="42" fill="${f}" transform="rotate(8 122 ${hy - 66})"/>
@@ -8014,18 +8017,18 @@ function snout(s, mood) {
 function tail(s) {
   switch (s.tail) {
     case 'wag':
-      return `<g class="tail-wag" style="transform-origin:150px 200px">
+      return `<g class="lh-tail-wag" style="transform-origin:150px 200px">
         <path d="M 146 200 q 34 -6 30 -40 q -2 -12 -12 -8 q 6 26 -22 34 z" fill="${s.fur}"/></g>`;
     case 'fluffy':
-      return `<path d="M 148 202 q 40 4 34 -40 q -3 -14 -14 -10 q 8 30 -22 36 z" fill="${shade(s.fur)}" class="tail-wag" style="transform-origin:150px 200px"/>`;
+      return `<path d="M 148 202 q 40 4 34 -40 q -3 -14 -14 -10 q 8 30 -22 36 z" fill="${shade(s.fur)}" class="lh-tail-wag" style="transform-origin:150px 200px"/>`;
     case 'bushy':
-      return `<g class="tail-wag" style="transform-origin:148px 202px">
+      return `<g class="lh-tail-wag" style="transform-origin:148px 202px">
         <ellipse cx="168" cy="180" rx="22" ry="34" fill="${s.fur}" transform="rotate(24 168 180)"/>
         <ellipse cx="176" cy="158" rx="14" ry="16" fill="${s.tips || '#fff'}" opacity=".85"/></g>`;
     case 'puff':
       return `<circle cx="152" cy="204" r="17" fill="#fff" opacity=".95"/>`;
     case 'feather':
-      return `<g class="tail-wag" style="transform-origin:150px 200px">
+      return `<g class="lh-tail-wag" style="transform-origin:150px 200px">
         <path d="M 144 198 l 42 12 l -40 12 z" fill="${shade(s.fur)}"/></g>`;
     default:
       return '';
@@ -8034,8 +8037,8 @@ function tail(s) {
 
 function wings(s) {
   return `<g>
-    <ellipse cx="52" cy="180" rx="18" ry="34" fill="${shade(s.fur)}" class="wing-l" style="transform-origin:60px 156px"/>
-    <ellipse cx="148" cy="180" rx="18" ry="34" fill="${shade(s.fur)}" class="wing-r" style="transform-origin:140px 156px"/>
+    <ellipse cx="52" cy="180" rx="18" ry="34" fill="${shade(s.fur)}" class="lh-wing--l" style="transform-origin:60px 156px"/>
+    <ellipse cx="148" cy="180" rx="18" ry="34" fill="${shade(s.fur)}" class="lh-wing--r" style="transform-origin:140px 156px"/>
   </g>`;
 }
 
@@ -8193,9 +8196,9 @@ function toySVG(opts = {}) {
 /* ------------------------------------------------------------- wrappers */
 
 const frame = (inner, spots, idle) => `
-<svg viewBox="0 0 200 250" class="charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <ellipse cx="100" cy="240" rx="52" ry="8" fill="rgba(44,51,80,.16)"/>
-  <g class="${idle ? 'char-idle' : ''}">${inner}</g>
+  <g class="${idle ? 'lh-char-idle' : ''}">${inner}</g>
   <g class="spots" fill="transparent">${spots}</g>
 </svg>`;
 
@@ -8234,7 +8237,7 @@ function figureSVG(t, mood, idle) {
     ${joint(62, 136)}${joint(138, 136)}
 
     <!-- head -->
-    <g class="char-head">
+    <g class="lh-char-head">
       <path d="M 72 84 q 28 -22 56 0 l 2 -12 q -30 -18 -60 0 z" fill="${t.hair}"/>
       <circle cx="100" cy="98" r="30" fill="${t.skin}"/>
       <path d="M 70 92 q 30 -26 60 0 q -6 -22 -30 -22 q -24 0 -30 22 z" fill="${t.hair}"/>
@@ -8289,7 +8292,7 @@ function robotSVG(t, mood, idle) {
     <circle cx="153" cy="174" r="12" fill="${t.shell}"/>
 
     <!-- head -->
-    <g class="char-head">
+    <g class="lh-char-head">
       <rect x="96" y="46" width="8" height="18" rx="4" fill="${t.shell2}"/>
       <circle cx="100" cy="44" r="8" fill="${t.glow}">
         <animate attributeName="r" values="8;6.4;8" dur="2.6s" repeatCount="indefinite"/>
@@ -8348,7 +8351,7 @@ function dollSVG(t, mood, idle) {
     <circle cx="141" cy="176" r="7" fill="${t.skin}"/>
 
     <!-- head -->
-    <g class="char-head">
+    <g class="lh-char-head">
       <circle cx="100" cy="92" r="27" fill="${t.skin}"/>
       <path d="M 73 90 q 8 -32 27 -32 q 19 0 27 32 q -6 -16 -27 -16 q -21 0 -27 16 z" fill="${t.hair}"/>
       <g transform="translate(100 94)">
@@ -8393,7 +8396,7 @@ function carSVG(t, mood, idle) {
     <!-- char-head is animated in CSS, and a CSS transform on an SVG element
          replaces the transform attribute — so the positioning goes on an inner
          group, where the animation cannot overwrite it. -->
-    <g class="char-head"><g transform="translate(100 146)">
+    <g class="lh-char-head"><g transform="translate(100 146)">
       ${eyes(mood, { w: 15, y: -2, scale: 1 })}
       ${mouth(mood, { y: 12, scale: .8 })}
     </g></g>
@@ -8497,8 +8500,8 @@ function runTalk(step, ctx) {
   const label = WHO_LABEL[step.who];
   ctx.setPrompt(label ? `${label} says…` : null, null, { spoken: false });
 
-  const btn = h('button', { class: 'btn btn--sun btn--wide', onClick: go },
-    h('span', {}, 'Next'), h('span', { class: 'btn__arrow' }, '👉'));
+  const btn = h('button', { class: 'lh-btn lh-btn--secondary lh-btn--wide', onClick: go },
+    h('span', {}, 'Next'), h('span', { class: 'lh-btn__arrow' }, '👉'));
   ctx.bodyEl.appendChild(btn);
 
   // The whole stage is a "next" target too — much easier for small fingers.
@@ -9312,7 +9315,7 @@ function runFind(step, ctx) {
     play('select');
     found++;
     numEl.textContent = String(found);
-    counter.classList.remove('chip--bump'); void counter.offsetWidth; counter.classList.add('chip--bump');
+    counter.classList.remove('is-bumping'); void counter.offsetWidth; counter.classList.add('is-bumping');
 
     if (item.label) ctx.say('narrator', `${step.found || 'Found it!'} ${item.label}`);
 
@@ -9492,7 +9495,7 @@ function runScan(step, ctx) {
     document.addEventListener('pointermove', move);
     document.addEventListener('pointerup', up);
 
-    const fire = h('button', { class: 'btn btn--grape btn--wide scan-fire', onClick: () => {
+    const fire = h('button', { class: 'lh-btn lh-btn--toy lh-btn--wide scan-fire', onClick: () => {
       if (!isOver()) { toast('Line the camera up with the glowing spot first!', { icon: '🎯' }); return; }
       document.removeEventListener('pointermove', move);
       document.removeEventListener('pointerup', up);
@@ -9528,7 +9531,7 @@ function runScan(step, ctx) {
     };
     dial.addEventListener('input', onInput);
 
-    const fire = h('button', { class: 'btn btn--mint btn--wide scan-fire', onClick: () => shoot(() => {}) }, 'Keep twisting the dial…');
+    const fire = h('button', { class: 'lh-btn lh-btn--primary lh-btn--wide scan-fire', onClick: () => shoot(() => {}) }, 'Keep twisting the dial…');
     machine.appendChild(view);
     machine.appendChild(h('div', { class: 'micro-dial-wrap' },
       h('span', {}, '🔎'), dial, h('span', {}, '🔬')));
@@ -9963,7 +9966,7 @@ function runShow(step, ctx) {
   sfx.select();
 
   ctx.bodyEl.appendChild(h('button', {
-    class: 'btn btn--sun btn--wide', onClick: () => { sfx.tap(); ctx.next(); },
+    class: 'lh-btn lh-btn--secondary lh-btn--wide', onClick: () => { sfx.tap(); ctx.next(); },
   }, step.cta || 'Got it! 👍'));
 }
   Object.assign(__x, { runShow });
@@ -9994,7 +9997,7 @@ const { BADGES } = __req("src/ui/screens/bag.js");
 function plural(n, word) { return `${n} ${word}${n === 1 ? '' : 's'}`; }
 
 function resultsScreen({ career, caseDef, result, newTools = [], newRooms = [], progress, replay }) {
-  const el = h('div', { class: 'screen screen--results' });
+  const el = h('div', { class: 'lh-screen lh-screen--results', 'data-world': career });
   // Level 1 of either track is somebody's very first patient — say so.
   const firstEver = caseDef.level === 1 && progress?.firstTime;
 
@@ -10060,7 +10063,7 @@ function resultsScreen({ career, caseDef, result, newTools = [], newRooms = [], 
     h('span', { class: 'unlock-chip__icon' }, ROOMS[r]?.icon || '🏗️'),
     h('span', {}, `${ROOMS[r]?.name || r} unlocked!`))));
 
-  const actions = h('div', { class: 'row gap-m wrap', style: { justifyContent: 'center', marginTop: '16px' } });
+  const actions = h('div', { class: 'lh-row lh-gap-m lh-wrap', style: { justifyContent: 'center', marginTop: '16px' } });
   card.appendChild(actions);
 
   const nextCase = getCase(career, caseDef.level + 1);
@@ -10068,14 +10071,14 @@ function resultsScreen({ career, caseDef, result, newTools = [], newRooms = [], 
 
   if (canPlayNext) {
     actions.appendChild(h('button', {
-      class: 'btn btn--mint', onClick: () => { sfx.select(); go('case', { career, caseId: nextCase.id }, { replace: true }); },
+      class: 'lh-btn lh-btn--primary', onClick: () => { sfx.select(); go('case', { career, caseId: nextCase.id }, { replace: true }); },
     }, `${nextCase.icon} Next patient`));
   }
   actions.appendChild(h('button', {
-    class: 'btn btn--sun', onClick: goToHospital,
+    class: 'lh-btn lh-btn--secondary', onClick: goToHospital,
   }, '🏥 My hospital'));
   actions.appendChild(h('button', {
-    class: 'btn btn--ghost', onClick: () => { sfx.tap(); go('levels', { career }, { replace: true }); },
+    class: 'lh-btn lh-btn--quiet', onClick: () => { sfx.tap(); go('levels', { career }, { replace: true }); },
   }, '📋 All patients'));
 
   function goToHospital() {
@@ -10122,7 +10125,7 @@ function resultsScreen({ career, caseDef, result, newTools = [], newRooms = [], 
           h('div', { class: 'newtool__name' }, tool.name.toUpperCase()),
           h('p', { class: 'newtool__blurb' }, `"${tool.blurb}"`)),
         h('button', {
-          class: 'btn btn--sun btn--huge',
+          class: 'lh-btn lh-btn--secondary lh-btn--lg',
           onClick: () => { sfx.select(); m.close(); resolve(); },
         }, 'ADD TO MY BAG 🎒'),
       ], { dismissable: false, onClose: resolve });
@@ -10159,18 +10162,18 @@ const BADGES = {
 
 function bagScreen() {
   const state = getState();
-  const el = h('div', { class: 'screen screen--bag' });
+  const el = h('div', { class: 'lh-screen lh-screen--bag', 'data-world': 'doctor' });
   const bar = hud({ title: '🎒 My Doctor Bag', back: () => goHome('hub'), dark: true, chips: ['stars', 'kindness'] });
   el.appendChild(bar);
 
-  const scroll = h('div', { class: 'screen-scroll' });
+  const scroll = h('div', { class: 'lh-screen__scroll' });
   const owned = TOOL_ORDER.filter(hasTool).length;
 
   scroll.appendChild(sectionTitle('🩺', 'My equipment', 'Every tool you have collected so far.'));
   scroll.appendChild(h('div', { style: { display: 'grid', placeItems: 'center', padding: '0 16px 12px' } },
     progressBar(owned, TOOL_ORDER.length, 'Collection')));
 
-  const grid = h('div', { class: 'card-grid' });
+  const grid = h('div', { class: 'lh-card-grid' });
   TOOL_ORDER.forEach((id) => {
     const tool = TOOLS[id];
     const got = hasTool(id);
@@ -10188,7 +10191,7 @@ function bagScreen() {
 
   /* ------------------------------------------------------------- badges */
   scroll.appendChild(sectionTitle('🏅', 'My badges', 'Special things you have done.'));
-  const badgeGrid = h('div', { class: 'card-grid' });
+  const badgeGrid = h('div', { class: 'lh-card-grid' });
   Object.entries(BADGES).forEach(([id, b]) => {
     const got = state.badges.includes(id);
     badgeGrid.appendChild(h('div', { class: `kit${got ? '' : ' kit--locked'}` },
@@ -10210,7 +10213,7 @@ function bagScreen() {
         h('div', { class: 'newtool__name' }, tool.name),
         h('p', { class: 'newtool__blurb' }, tool.blurb),
         h('p', { class: 'newtool__demo' }, tool.demo)),
-      h('button', { class: 'btn btn--sun', onClick: () => m.close() }, 'Cool! 👍'),
+      h('button', { class: 'lh-btn lh-btn--secondary', onClick: () => m.close() }, 'Cool! 👍'),
     ]);
   }
 
@@ -10251,15 +10254,15 @@ const { confetti, sparkle, toast } = __req("src/core/fx.js");
 function shopScreen({ category = 'comfort' } = {}) {
   let active = category;
 
-  const el = h('div', { class: 'screen screen--shop' });
+  const el = h('div', { class: 'lh-screen lh-screen--shop', 'data-world': 'doctor' });
   const bar = hud({ title: '🛒 Supply Room', back: () => goHome('hub'), dark: true, chips: ['coins'] });
   el.appendChild(bar);
 
-  const scroll = h('div', { class: 'screen-scroll' });
+  const scroll = h('div', { class: 'lh-screen__scroll' });
   scroll.appendChild(sectionTitle('📦', 'Spend your coins', 'Everything you buy shows up in your hospital!'));
 
   const tabs = h('div', { class: 'shop-tabs' });
-  const grid = h('div', { class: 'card-grid' });
+  const grid = h('div', { class: 'lh-card-grid' });
   scroll.append(tabs, grid);
   el.appendChild(scroll);
 
@@ -10267,7 +10270,9 @@ function shopScreen({ category = 'comfort' } = {}) {
     clear(tabs);
     CATEGORIES.forEach((cat) => {
       tabs.appendChild(h('button', {
-        class: `shop-tab${cat.id === active ? ' shop-tab--on' : ''}`,
+        class: 'shop-tab',
+        role: 'tab',
+        'aria-selected': String(cat.id === active),
         onClick: () => { active = cat.id; sfx.tap(); render(); },
       }, h('span', {}, cat.icon), h('span', {}, cat.name)));
     });

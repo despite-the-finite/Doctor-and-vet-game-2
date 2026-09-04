@@ -124,9 +124,9 @@ export function toySVG(opts = {}) {
 /* ------------------------------------------------------------- wrappers */
 
 const frame = (inner, spots, idle) => `
-<svg viewBox="0 0 200 250" class="charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <ellipse cx="100" cy="240" rx="52" ry="8" fill="rgba(44,51,80,.16)"/>
-  <g class="${idle ? 'char-idle' : ''}">${inner}</g>
+  <g class="${idle ? 'lh-char-idle' : ''}">${inner}</g>
   <g class="spots" fill="transparent">${spots}</g>
 </svg>`;
 
@@ -165,7 +165,7 @@ function figureSVG(t, mood, idle) {
     ${joint(62, 136)}${joint(138, 136)}
 
     <!-- head -->
-    <g class="char-head">
+    <g class="lh-char-head">
       <path d="M 72 84 q 28 -22 56 0 l 2 -12 q -30 -18 -60 0 z" fill="${t.hair}"/>
       <circle cx="100" cy="98" r="30" fill="${t.skin}"/>
       <path d="M 70 92 q 30 -26 60 0 q -6 -22 -30 -22 q -24 0 -30 22 z" fill="${t.hair}"/>
@@ -220,7 +220,7 @@ function robotSVG(t, mood, idle) {
     <circle cx="153" cy="174" r="12" fill="${t.shell}"/>
 
     <!-- head -->
-    <g class="char-head">
+    <g class="lh-char-head">
       <rect x="96" y="46" width="8" height="18" rx="4" fill="${t.shell2}"/>
       <circle cx="100" cy="44" r="8" fill="${t.glow}">
         <animate attributeName="r" values="8;6.4;8" dur="2.6s" repeatCount="indefinite"/>
@@ -279,7 +279,7 @@ function dollSVG(t, mood, idle) {
     <circle cx="141" cy="176" r="7" fill="${t.skin}"/>
 
     <!-- head -->
-    <g class="char-head">
+    <g class="lh-char-head">
       <circle cx="100" cy="92" r="27" fill="${t.skin}"/>
       <path d="M 73 90 q 8 -32 27 -32 q 19 0 27 32 q -6 -16 -27 -16 q -21 0 -27 16 z" fill="${t.hair}"/>
       <g transform="translate(100 94)">
@@ -324,7 +324,7 @@ function carSVG(t, mood, idle) {
     <!-- char-head is animated in CSS, and a CSS transform on an SVG element
          replaces the transform attribute — so the positioning goes on an inner
          group, where the animation cannot overwrite it. -->
-    <g class="char-head"><g transform="translate(100 146)">
+    <g class="lh-char-head"><g transform="translate(100 146)">
       ${eyes(mood, { w: 15, y: -2, scale: 1 })}
       ${mouth(mood, { y: 12, scale: .8 })}
     </g></g>

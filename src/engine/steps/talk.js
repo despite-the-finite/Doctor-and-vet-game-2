@@ -25,8 +25,8 @@ export function runTalk(step, ctx) {
   const label = WHO_LABEL[step.who];
   ctx.setPrompt(label ? `${label} says…` : null, null, { spoken: false });
 
-  const btn = h('button', { class: 'btn btn--sun btn--wide', onClick: go },
-    h('span', {}, 'Next'), h('span', { class: 'btn__arrow' }, '👉'));
+  const btn = h('button', { class: 'lh-btn lh-btn--secondary lh-btn--wide', onClick: go },
+    h('span', {}, 'Next'), h('span', { class: 'lh-btn__arrow' }, '👉'));
   ctx.bodyEl.appendChild(btn);
 
   // The whole stage is a "next" target too — much easier for small fingers.

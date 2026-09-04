@@ -82,7 +82,7 @@ export function runScan(step, ctx) {
     document.addEventListener('pointermove', move);
     document.addEventListener('pointerup', up);
 
-    const fire = h('button', { class: 'btn btn--grape btn--wide scan-fire', onClick: () => {
+    const fire = h('button', { class: 'lh-btn lh-btn--toy lh-btn--wide scan-fire', onClick: () => {
       if (!isOver()) { toast('Line the camera up with the glowing spot first!', { icon: '🎯' }); return; }
       document.removeEventListener('pointermove', move);
       document.removeEventListener('pointerup', up);
@@ -118,7 +118,7 @@ export function runScan(step, ctx) {
     };
     dial.addEventListener('input', onInput);
 
-    const fire = h('button', { class: 'btn btn--mint btn--wide scan-fire', onClick: () => shoot(() => {}) }, 'Keep twisting the dial…');
+    const fire = h('button', { class: 'lh-btn lh-btn--primary lh-btn--wide scan-fire', onClick: () => shoot(() => {}) }, 'Keep twisting the dial…');
     machine.appendChild(view);
     machine.appendChild(h('div', { class: 'micro-dial-wrap' },
       h('span', {}, '🔎'), dial, h('span', {}, '🔬')));

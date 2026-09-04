@@ -53,7 +53,7 @@ export function creatureSVG(opts = {}) {
   const headY = 96, headR = s.bigEyes ? 50 : 46;
 
   return `
-<svg viewBox="0 0 200 250" class="charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <defs>
     <radialGradient id="furShine-${species}">
       <stop offset="0%" stop-color="#fff" stop-opacity=".45"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/>
@@ -62,7 +62,7 @@ export function creatureSVG(opts = {}) {
 
   <ellipse cx="100" cy="240" rx="52" ry="8" fill="rgba(44,51,80,.16)"/>
 
-  <g transform="translate(100 150) scale(${scale}) translate(-100 -150)" class="${idle ? 'char-idle' : ''}">
+  <g transform="translate(100 150) scale(${scale}) translate(-100 -150)" class="${idle ? 'lh-char-idle' : ''}">
     ${tail(s)}
 
     <!-- body -->
@@ -84,7 +84,7 @@ export function creatureSVG(opts = {}) {
     </g>
 
     <!-- head -->
-    <g class="char-head">
+    <g class="lh-char-head">
       ${ears(s, headY, headR)}
       ${s.mane ? `<circle cx="100" cy="${headY}" r="${headR + 15}" fill="${s.mane}"/>` : ''}
       ${s.yarnHair ? yarnHair(s, headY, headR) : ''}
@@ -180,8 +180,8 @@ function ears(s, hy, hr) {
   switch (s.ears) {
     case 'floppy':
       return `<g>
-        <ellipse cx="${100 - hr + 4}" cy="${hy + 8}" rx="15" ry="30" fill="${shade(f)}" class="ear-l"/>
-        <ellipse cx="${100 + hr - 4}" cy="${hy + 8}" rx="15" ry="30" fill="${shade(f)}" class="ear-r"/></g>`;
+        <ellipse cx="${100 - hr + 4}" cy="${hy + 8}" rx="15" ry="30" fill="${shade(f)}" class="lh-ear--l"/>
+        <ellipse cx="${100 + hr - 4}" cy="${hy + 8}" rx="15" ry="30" fill="${shade(f)}" class="lh-ear--r"/></g>`;
     case 'pointy':
       return `<g>
         <path d="M ${100 - hr + 6} ${hy - 22} l -12 -40 l 34 20 z" fill="${f}"/>
@@ -189,7 +189,7 @@ function ears(s, hy, hr) {
         <path d="M ${100 + hr - 6} ${hy - 22} l 12 -40 l -34 20 z" fill="${f}"/>
         <path d="M ${100 + hr - 10} ${hy - 24} l 6 -24 l -20 12 z" fill="${tip}" opacity=".65"/></g>`;
     case 'long':
-      return `<g class="ear-bunny">
+      return `<g class="lh-ear--bunny">
         <ellipse cx="78" cy="${hy - 66}" rx="13" ry="42" fill="${f}" transform="rotate(-8 78 ${hy - 66})"/>
         <ellipse cx="78" cy="${hy - 66}" rx="7" ry="32" fill="#ffc9d6" transform="rotate(-8 78 ${hy - 66})"/>
         <ellipse cx="122" cy="${hy - 66}" rx="13" ry="42" fill="${f}" transform="rotate(8 122 ${hy - 66})"/>
@@ -229,18 +229,18 @@ function snout(s, mood) {
 function tail(s) {
   switch (s.tail) {
     case 'wag':
-      return `<g class="tail-wag" style="transform-origin:150px 200px">
+      return `<g class="lh-tail-wag" style="transform-origin:150px 200px">
         <path d="M 146 200 q 34 -6 30 -40 q -2 -12 -12 -8 q 6 26 -22 34 z" fill="${s.fur}"/></g>`;
     case 'fluffy':
-      return `<path d="M 148 202 q 40 4 34 -40 q -3 -14 -14 -10 q 8 30 -22 36 z" fill="${shade(s.fur)}" class="tail-wag" style="transform-origin:150px 200px"/>`;
+      return `<path d="M 148 202 q 40 4 34 -40 q -3 -14 -14 -10 q 8 30 -22 36 z" fill="${shade(s.fur)}" class="lh-tail-wag" style="transform-origin:150px 200px"/>`;
     case 'bushy':
-      return `<g class="tail-wag" style="transform-origin:148px 202px">
+      return `<g class="lh-tail-wag" style="transform-origin:148px 202px">
         <ellipse cx="168" cy="180" rx="22" ry="34" fill="${s.fur}" transform="rotate(24 168 180)"/>
         <ellipse cx="176" cy="158" rx="14" ry="16" fill="${s.tips || '#fff'}" opacity=".85"/></g>`;
     case 'puff':
       return `<circle cx="152" cy="204" r="17" fill="#fff" opacity=".95"/>`;
     case 'feather':
-      return `<g class="tail-wag" style="transform-origin:150px 200px">
+      return `<g class="lh-tail-wag" style="transform-origin:150px 200px">
         <path d="M 144 198 l 42 12 l -40 12 z" fill="${shade(s.fur)}"/></g>`;
     default:
       return '';
@@ -249,8 +249,8 @@ function tail(s) {
 
 function wings(s) {
   return `<g>
-    <ellipse cx="52" cy="180" rx="18" ry="34" fill="${shade(s.fur)}" class="wing-l" style="transform-origin:60px 156px"/>
-    <ellipse cx="148" cy="180" rx="18" ry="34" fill="${shade(s.fur)}" class="wing-r" style="transform-origin:140px 156px"/>
+    <ellipse cx="52" cy="180" rx="18" ry="34" fill="${shade(s.fur)}" class="lh-wing--l" style="transform-origin:60px 156px"/>
+    <ellipse cx="148" cy="180" rx="18" ry="34" fill="${shade(s.fur)}" class="lh-wing--r" style="transform-origin:140px 156px"/>
   </g>`;
 }
 

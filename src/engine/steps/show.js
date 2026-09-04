@@ -22,6 +22,6 @@ export function runShow(step, ctx) {
   sfx.select();
 
   ctx.bodyEl.appendChild(h('button', {
-    class: 'btn btn--sun btn--wide', onClick: () => { sfx.tap(); ctx.next(); },
+    class: 'lh-btn lh-btn--secondary lh-btn--wide', onClick: () => { sfx.tap(); ctx.next(); },
   }, step.cta || 'Got it! 👍'));
 }

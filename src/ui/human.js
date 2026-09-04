@@ -48,7 +48,7 @@ export function humanSVG(opts = {}) {
   const armFill = co.value || sc.value;
 
   return `
-<svg viewBox="0 0 200 250" class="charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <defs>
     <linearGradient id="rainbowShoe" x1="0" x2="1">
       <stop offset="0%" stop-color="#ff7a6b"/><stop offset="35%" stop-color="#ffc844"/>
@@ -59,7 +59,7 @@ export function humanSVG(opts = {}) {
 
   <ellipse cx="100" cy="243" rx="46" ry="7" fill="rgba(44,51,80,.16)"/>
 
-  <g transform="translate(100 128) scale(${scale}) translate(-100 -128)" class="${idle ? 'char-idle' : ''}">
+  <g transform="translate(100 128) scale(${scale}) translate(-100 -128)" class="${idle ? 'lh-char-idle' : ''}">
     ${acc.includes('cape') ? cape(mood) : ''}
 
     <!-- legs + shoes -->
@@ -92,7 +92,7 @@ export function humanSVG(opts = {}) {
     <rect x="90" y="106" width="20" height="18" rx="8" fill="${sk.shade}"/>
 
     <!-- head -->
-    <g class="char-head">
+    <g class="lh-char-head">
       ${hairBack(hair, hc.value, headR)}
       <circle cx="${HEAD.x}" cy="${HEAD.y}" r="${headR}" fill="${sk.value}"/>
       <ellipse cx="${HEAD.x}" cy="${HEAD.y - headR * 0.5}" rx="${headR * 0.7}" ry="${headR * 0.4}" fill="url(#cheekGlow)"/>

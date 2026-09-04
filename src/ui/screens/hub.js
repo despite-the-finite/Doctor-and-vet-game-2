@@ -21,11 +21,11 @@ import { confetti, sparkle, toast, flash } from '../../core/fx.js';
 export function hubScreen({ build = null, highlight = null } = {}) {
   const state = getState();
 
-  const el = h('div', { class: 'screen screen--hub' });
+  const el = h('div', { class: 'lh-screen lh-screen--hub', 'data-world': 'doctor' });
   const bar = hud({ title: 'My Hospital', chips: ['stars', 'kindness', 'coins'], dark: true });
   el.appendChild(bar);
 
-  const scroll = h('div', { class: 'screen-scroll hub-scroll' });
+  const scroll = h('div', { class: 'lh-screen__scroll hub-scroll' });
   el.appendChild(scroll);
 
   /* ------------------------------------------------------- hero + status */
@@ -43,7 +43,7 @@ export function hubScreen({ build = null, highlight = null } = {}) {
     h('div', { class: 'hub-hero__text' },
       h('h3', {}, heroTitle()),
       h('p', {}, trackLine)),
-    h('button', { class: 'iconbtn', 'aria-label': 'Change my hero', onClick: () => go('creator') }, '🎨')));
+    h('button', { class: 'lh-iconbtn', 'aria-label': 'Change my hero', onClick: () => go('creator') }, '🎨')));
 
   /* ------------------------------------------------------------ building */
   const building = h('div', { class: 'building-wrap' });
@@ -60,8 +60,8 @@ export function hubScreen({ build = null, highlight = null } = {}) {
 
   /* ------------------------------------------------------------ actions */
   scroll.appendChild(h('div', { class: 'hub-actions' },
-    h('button', { class: 'btn btn--ghost', onClick: () => go('bag') }, '🎒 Doctor Bag'),
-    h('button', { class: 'btn btn--ghost', onClick: () => go('shop') }, '🛒 Supply Room')));
+    h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => go('bag') }, '🎒 Doctor Bag'),
+    h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => go('shop') }, '🛒 Supply Room')));
 
   if (CAREERS.every(isCareerFinished)) {
     scroll.appendChild(h('p', { class: 'empty-note' },
@@ -112,7 +112,7 @@ export function hubScreen({ build = null, highlight = null } = {}) {
     }
 
     if (isHighlight) {
-      tile.classList.add('level-card--next');
+      tile.classList.add('lh-case--next');
       setTimeout(() => tile.scrollIntoView({ behavior: 'smooth', block: 'center' }), 260);
     }
     return tile;
@@ -140,7 +140,7 @@ export function hubScreen({ build = null, highlight = null } = {}) {
       h('p', {}, room.blurb),
       usedBy.length ? h('div', { class: 'unlock-strip' },
         ...usedBy.slice(0, 4).map((u) => h('span', { class: 'unlock-chip' }, u))) : null,
-      h('button', { class: 'btn btn--sun', onClick: () => document.querySelector('.modal-veil')?.remove() }, 'Nice! 👍'),
+      h('button', { class: 'lh-btn lh-btn--secondary', onClick: () => document.querySelector('.lh-modal__veil')?.remove() }, 'Nice! 👍'),
     ]);
   }
 

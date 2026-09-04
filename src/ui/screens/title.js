@@ -17,7 +17,7 @@ export function titleScreen() {
   const state = getState();
   const returning = hasHero();
 
-  const el = h('div', { class: 'screen screen--title' });
+  const el = h('div', { class: 'lh-screen lh-screen--title', 'data-world': 'doctor' });
 
   el.appendChild(h('div', { class: 'town', html: townMarkup() }));
 
@@ -31,12 +31,12 @@ export function titleScreen() {
       ...'HOSPITAL'.split('').map((c, i) => h('span', { style: { animationDelay: `${0.45 + i * 0.05}s` } }, c))),
     h('p', { class: 'title-sub' }, 'People or pets — everyone needs a hero.'),
     h('button', {
-      class: 'btn btn--sun btn--huge title-cta',
+      class: 'lh-btn lh-btn--secondary lh-btn--lg title-cta',
       onClick: start,
     }, returning ? '▶️ CARRY ON' : '✨ START MY ADVENTURE'),
     returning ? h('div', { class: 'title-returning' },
       h('span', {}, `Welcome back, Dr. ${state.hero.name}!`),
-      h('button', { class: 'btn btn--ghost btn--small', onClick: confirmReset }, '🔄 Start again')) : null,
+      h('button', { class: 'lh-btn lh-btn--quiet lh-btn--sm', onClick: confirmReset }, '🔄 Start again')) : null,
   );
   el.appendChild(stack);
 
@@ -54,9 +54,9 @@ export function titleScreen() {
       h('div', { style: { fontSize: '58px' } }, '🔄'),
       h('h2', {}, 'Start a brand new hospital?'),
       h('p', {}, 'Your hero, your stars, your coins and all your rooms will be cleared.'),
-      h('div', { class: 'row gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },
-        h('button', { class: 'btn btn--ghost', onClick: () => m.close() }, 'No, keep playing'),
-        h('button', { class: 'btn btn--coral', onClick: () => {
+      h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },
+        h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => m.close() }, 'No, keep playing'),
+        h('button', { class: 'lh-btn lh-btn--alert', onClick: () => {
           resetEverything();
           m.close();
           go('title', {}, { replace: true });

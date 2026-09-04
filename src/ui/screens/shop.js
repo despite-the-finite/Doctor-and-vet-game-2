@@ -16,15 +16,15 @@ import { confetti, sparkle, toast } from '../../core/fx.js';
 export function shopScreen({ category = 'comfort' } = {}) {
   let active = category;
 
-  const el = h('div', { class: 'screen screen--shop' });
+  const el = h('div', { class: 'lh-screen lh-screen--shop', 'data-world': 'doctor' });
   const bar = hud({ title: '🛒 Supply Room', back: () => goHome('hub'), dark: true, chips: ['coins'] });
   el.appendChild(bar);
 
-  const scroll = h('div', { class: 'screen-scroll' });
+  const scroll = h('div', { class: 'lh-screen__scroll' });
   scroll.appendChild(sectionTitle('📦', 'Spend your coins', 'Everything you buy shows up in your hospital!'));
 
   const tabs = h('div', { class: 'shop-tabs' });
-  const grid = h('div', { class: 'card-grid' });
+  const grid = h('div', { class: 'lh-card-grid' });
   scroll.append(tabs, grid);
   el.appendChild(scroll);
 
@@ -32,7 +32,9 @@ export function shopScreen({ category = 'comfort' } = {}) {
     clear(tabs);
     CATEGORIES.forEach((cat) => {
       tabs.appendChild(h('button', {
-        class: `shop-tab${cat.id === active ? ' shop-tab--on' : ''}`,
+        class: 'shop-tab',
+        role: 'tab',
+        'aria-selected': String(cat.id === active),
         onClick: () => { active = cat.id; sfx.tap(); render(); },
       }, h('span', {}, cat.icon), h('span', {}, cat.name)));
     });

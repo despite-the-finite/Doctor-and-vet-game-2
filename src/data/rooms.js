@@ -19,7 +19,7 @@ export const ROOMS = {
       { emoji: '🛎️', x: 22, y: 62, size: 30 },
       { emoji: '🪑', x: 62, y: 66, size: 30 },
       { emoji: '🪴', x: 88, y: 62, size: 32 },
-      { emoji: '🧑‍⚕️', x: 36, y: 58, size: 34, anim: 'bob-slow' },
+      { emoji: '🧑‍⚕️', x: 36, y: 58, size: 34, anim: 'lh-bob-slow' },
     ],
   },
   supply: {
@@ -38,7 +38,7 @@ export const ROOMS = {
     action: 'levels:doctor',
     props: [
       { emoji: '🛏️', x: 30, y: 66, size: 32 },
-      { emoji: '🩺', x: 62, y: 52, size: 26, anim: 'sway' },
+      { emoji: '🩺', x: 62, y: 52, size: 26, anim: 'lh-sway' },
       { emoji: '🧸', x: 84, y: 66, size: 24 },
     ],
   },
@@ -47,8 +47,8 @@ export const ROOMS = {
     blurb: 'Where furry, feathery patients get better.',
     action: 'levels:vet',
     props: [
-      { emoji: '🐕', x: 30, y: 66, size: 32, anim: 'bob' },
-      { emoji: '🐈', x: 60, y: 66, size: 28, anim: 'bob-slow' },
+      { emoji: '🐕', x: 30, y: 66, size: 32, anim: 'lh-bob' },
+      { emoji: '🐈', x: 60, y: 66, size: 28, anim: 'lh-bob-slow' },
       { emoji: '🦴', x: 84, y: 70, size: 22 },
     ],
   },
@@ -57,10 +57,10 @@ export const ROOMS = {
     blurb: 'Where much-loved toys are mended and sent home.',
     action: 'levels:toy', wide: true,
     props: [
-      { emoji: '🧸', x: 22, y: 66, size: 30, anim: 'bob' },
+      { emoji: '🧸', x: 22, y: 66, size: 30, anim: 'lh-bob' },
       { emoji: '🤖', x: 46, y: 62, size: 26 },
       { emoji: '🚗', x: 68, y: 68, size: 26 },
-      { emoji: '🪛', x: 88, y: 60, size: 22, anim: 'sway' },
+      { emoji: '🪛', x: 88, y: 60, size: 22, anim: 'lh-sway' },
     ],
   },
   xray: {
@@ -69,7 +69,7 @@ export const ROOMS = {
     action: 'info', locked: true,
     unlock: { text: 'Finish Doctor Level 5 or Vet Level 5', career: 'doctor', level: 5 },
     props: [
-      { emoji: '🩻', x: 34, y: 58, size: 34, anim: 'twinkle' },
+      { emoji: '🩻', x: 34, y: 58, size: 34, anim: 'lh-twinkle' },
       { emoji: '🖥️', x: 68, y: 64, size: 28 },
     ],
   },
@@ -80,7 +80,7 @@ export const ROOMS = {
     unlock: { text: 'Finish Doctor Level 7 or Vet Level 8', career: 'doctor', level: 7 },
     props: [
       { emoji: '🔬', x: 30, y: 60, size: 32 },
-      { emoji: '🧪', x: 58, y: 62, size: 26, anim: 'sway' },
+      { emoji: '🧪', x: 58, y: 62, size: 26, anim: 'lh-sway' },
       { emoji: '🧫', x: 80, y: 66, size: 24 },
     ],
   },
@@ -91,7 +91,7 @@ export const ROOMS = {
     unlock: { text: 'Buy it in the Supply Room', shop: true },
     props: [
       { emoji: '🖼️', x: 34, y: 60, size: 30 },
-      { emoji: '🧲', x: 68, y: 62, size: 28, anim: 'twinkle' },
+      { emoji: '🧲', x: 68, y: 62, size: 28, anim: 'lh-twinkle' },
     ],
   },
   recovery: {
@@ -100,9 +100,9 @@ export const ROOMS = {
     action: 'info', locked: true,
     unlock: { text: 'Finish Vet Level 6', career: 'vet', level: 6 },
     props: [
-      { emoji: '🐇', x: 28, y: 66, size: 28, anim: 'bob' },
+      { emoji: '🐇', x: 28, y: 66, size: 28, anim: 'lh-bob' },
       { emoji: '🛌', x: 56, y: 66, size: 30 },
-      { emoji: '🐦', x: 82, y: 58, size: 24, anim: 'bob-slow' },
+      { emoji: '🐦', x: 82, y: 58, size: 24, anim: 'lh-bob-slow' },
     ],
   },
   emergency: {
@@ -111,8 +111,8 @@ export const ROOMS = {
     action: 'info', locked: true,
     unlock: { text: 'Finish Doctor Level 9 or Vet Level 9', career: 'doctor', level: 9 },
     props: [
-      { emoji: '🚑', x: 30, y: 64, size: 32, anim: 'bob' },
-      { emoji: '❤️', x: 62, y: 56, size: 26, anim: 'twinkle' },
+      { emoji: '🚑', x: 30, y: 64, size: 32, anim: 'lh-bob' },
+      { emoji: '❤️', x: 62, y: 56, size: 26, anim: 'lh-twinkle' },
       { emoji: '🧑‍⚕️', x: 84, y: 62, size: 26 },
     ],
   },
@@ -122,7 +122,7 @@ export const ROOMS = {
     action: 'info', locked: true, wide: true,
     unlock: { text: 'Become a Hospital Hero — Doctor Level 10', career: 'doctor', level: 10 },
     props: [
-      { emoji: '💡', x: 34, y: 46, size: 30, anim: 'twinkle' },
+      { emoji: '💡', x: 34, y: 46, size: 30, anim: 'lh-twinkle' },
       { emoji: '🛏️', x: 50, y: 66, size: 34 },
       { emoji: '⚕️', x: 72, y: 56, size: 28 },
     ],
@@ -132,7 +132,7 @@ export const ROOMS = {
     blurb: 'Rescue missions land right on the roof!',
     action: 'info', locked: true, roof: true,
     unlock: { text: 'Become a Master Vet — Vet Level 10', career: 'vet', level: 10 },
-    props: [{ emoji: '🚁', x: 50, y: 40, size: 42, anim: 'bob' }],
+    props: [{ emoji: '🚁', x: 50, y: 40, size: 42, anim: 'lh-bob' }],
   },
 };
 

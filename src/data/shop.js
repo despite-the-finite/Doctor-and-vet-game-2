@@ -27,17 +27,17 @@ export const SHOP_ITEMS = [
 
   /* --- decoration ------------------------------------------------------- */
   { id: 'plant',    category: 'decor', name: 'Big Plant',      icon: '🪴', price: 50,  blurb: 'Green things make rooms happy.',   place: { room: 'doctor', x: 90, y: 62, size: 28 } },
-  { id: 'aquarium', category: 'decor', name: 'Aquarium',       icon: '🐠', price: 260, blurb: 'Bubbly fish everyone loves to watch.', place: { room: 'reception', x: 12, y: 60, size: 30, anim: 'bob-slow' } },
+  { id: 'aquarium', category: 'decor', name: 'Aquarium',       icon: '🐠', price: 260, blurb: 'Bubbly fish everyone loves to watch.', place: { room: 'reception', x: 12, y: 60, size: 30, anim: 'lh-bob-slow' } },
   { id: 'wallart',  category: 'decor', name: 'Wall Art',       icon: '🖼️', price: 80,  blurb: 'A painting of a very brave hamster.', place: { room: 'vet', x: 14, y: 48, size: 24 } },
   { id: 'rainbow',  category: 'decor', name: 'Rainbow Mural',  icon: '🌈', price: 180, blurb: 'Paints the whole reception wall.',  place: { room: 'reception', x: 50, y: 44, size: 34 } },
-  { id: 'fairylights', category: 'decor', name: 'Fairy Lights', icon: '✨', price: 120, blurb: 'Twinkly lights along the ceiling.', place: { room: 'vet', x: 50, y: 42, size: 26, anim: 'twinkle' } },
+  { id: 'fairylights', category: 'decor', name: 'Fairy Lights', icon: '✨', price: 120, blurb: 'Twinkly lights along the ceiling.', place: { room: 'vet', x: 50, y: 42, size: 26, anim: 'lh-twinkle' } },
 
   /* --- toys for patients ------------------------------------------------ */
   { id: 'toybox',   category: 'fun', name: 'Toy Box',        icon: '🧸', price: 100, blurb: 'Something to cuddle before a checkup.', place: { room: 'doctor', x: 76, y: 70, size: 26 } },
-  { id: 'balloons', category: 'fun', name: 'Balloon Bunch',  icon: '🎈', price: 70,  blurb: 'Instantly makes any room a party.', place: { room: 'reception', x: 84, y: 48, size: 28, anim: 'bob' } },
+  { id: 'balloons', category: 'fun', name: 'Balloon Bunch',  icon: '🎈', price: 70,  blurb: 'Instantly makes any room a party.', place: { room: 'reception', x: 84, y: 48, size: 28, anim: 'lh-bob' } },
   { id: 'ballpit',  category: 'fun', name: 'Ball Pit',       icon: '🔴', price: 200, blurb: 'Nobody wants to leave. Ever.', place: { room: 'reception', x: 62, y: 74, size: 26 } },
-  { id: 'chewtoy',  category: 'fun', name: 'Squeaky Toys',   icon: '🦆', price: 60,  blurb: 'Squeak! Tails go wild.', place: { room: 'vet', x: 44, y: 74, size: 22, anim: 'wiggle' } },
-  { id: 'birdperch',category: 'fun', name: 'Bird Perch',     icon: '🦜', price: 150, blurb: 'A swinging branch for feathered friends.', place: { room: 'vet', x: 88, y: 46, size: 26, anim: 'sway' } },
+  { id: 'chewtoy',  category: 'fun', name: 'Squeaky Toys',   icon: '🦆', price: 60,  blurb: 'Squeak! Tails go wild.', place: { room: 'vet', x: 44, y: 74, size: 22, anim: 'lh-wiggle' } },
+  { id: 'birdperch',category: 'fun', name: 'Bird Perch',     icon: '🦜', price: 150, blurb: 'A swinging branch for feathered friends.', place: { room: 'vet', x: 88, y: 46, size: 26, anim: 'lh-sway' } },
 
   /* --- hero outfit ------------------------------------------------------ */
   { id: 'outfit-crown',   category: 'outfit', name: 'Hero Crown',     icon: '👑', price: 300, blurb: 'For the ruler of this hospital.', accessory: 'crown' },

@@ -11,7 +11,7 @@ let toastLane = null;
 
 export function attachFx(el) {
   layer = el;
-  toastLane = h('div', { class: 'toast-lane' });
+  toastLane = h('div', { class: 'lh-toast-lane' });
   document.body.appendChild(toastLane);
 }
 
@@ -25,7 +25,7 @@ export function confetti({ intensity = 1, duration = 2600 } = {}) {
   if (!layer) return;
   const count = Math.round(60 * intensity);
   for (let i = 0; i < count; i++) {
-    const bit = h('div', { class: 'confetti-bit' });
+    const bit = h('div', { class: 'lh-confetti' });
     const size = rand(8, 16);
     Object.assign(bit.style, {
       left: `${rand(-5, 105)}vw`,
@@ -59,7 +59,7 @@ export function sparkle(target, { count = 14, glyphs = SPARKLE_GLYPHS } = {}) {
   if (!layer) return;
   const { x, y } = pointOf(target);
   for (let i = 0; i < count; i++) {
-    const s = h('div', { class: 'spark' }, pick(glyphs));
+    const s = h('div', { class: 'lh-spark' }, pick(glyphs));
     s.style.left = `${x}px`;
     s.style.top = `${y}px`;
     s.style.fontSize = `${randI(16, 34)}px`;
@@ -81,7 +81,7 @@ export function sparkle(target, { count = 14, glyphs = SPARKLE_GLYPHS } = {}) {
 export function floatText(target, text, color = '#fff') {
   if (!layer) return;
   const { x, y } = pointOf(target);
-  const el = h('div', { class: 'floater' }, text);
+  const el = h('div', { class: 'lh-floater' }, text);
   el.style.left = `${x}px`;
   el.style.top = `${y}px`;
   el.style.color = color;
@@ -111,10 +111,10 @@ function pointOf(target) {
 export function toast(text, { icon = '💡', tone = 'warm', ms = 2600, speak = true } = {}) {
   if (!toastLane) return;
   if (speak) say(text);
-  const el = h('div', { class: `toast toast--${tone}` }, h('span', { style: { fontSize: '28px' } }, icon), h('span', {}, text));
+  const el = h('div', { class: `lh-toast lh-toast--${tone}` }, h('span', { style: { fontSize: '28px' } }, icon), h('span', {}, text));
   toastLane.appendChild(el);
   setTimeout(() => {
-    el.classList.add('out');
+    el.classList.add('is-leaving');
     setTimeout(() => el.remove(), 320);
   }, ms);
   // Keep the lane short so the screen never fills with banners.

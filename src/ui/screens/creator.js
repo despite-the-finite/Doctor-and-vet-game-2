@@ -23,7 +23,7 @@ export function creatorScreen() {
   let difficulty = state.difficulty || 'little';
   const editing = hasHero();
 
-  const el = h('div', { class: 'screen screen--creator' });
+  const el = h('div', { class: 'lh-screen lh-screen--creator', 'data-world': 'doctor' });
   const bar = hud({
     title: editing ? 'Change my hero' : 'Create your hero',
     back: editing ? () => go('hub', {}, { replace: true }) : () => go('title', {}, { replace: true }),
@@ -38,7 +38,7 @@ export function creatorScreen() {
 
   const options = h('div', { class: 'creator-options' });
   const grid = h('div', { class: 'creator-grid' }, preview, options);
-  const scroll = h('div', { class: 'screen-scroll' }, grid);
+  const scroll = h('div', { class: 'lh-screen__scroll' }, grid);
   el.appendChild(scroll);
 
   /* ------------------------------------------------------------- preview */
@@ -50,14 +50,15 @@ export function creatorScreen() {
 
   /* ------------------------------------------------------- option groups */
   function group(icon, title, rowEls) {
-    return h('div', { class: 'option-group' },
-      h('div', { class: 'option-group__head' }, h('span', {}, icon), h('span', {}, title)),
-      h('div', { class: 'option-row' }, ...rowEls));
+    return h('div', { class: 'lh-optgroup' },
+      h('div', { class: 'lh-optgroup__label' }, h('span', {}, icon), h('span', {}, title)),
+      h('div', { class: 'lh-optgroup__row' }, ...rowEls));
   }
 
   function swatch(key, id, styles, content = null, wide = false) {
     const btn = h('button', {
-      class: `swatch${wide ? ' swatch--wide' : ''}${draft[key] === id ? ' swatch--on' : ''}`,
+      class: `lh-swatch${wide ? ' lh-swatch--wide' : ''}`,
+      'aria-pressed': String(draft[key] === id),
       style: styles,
       'aria-label': String(content || id),
       onClick: () => {
@@ -77,7 +78,7 @@ export function creatorScreen() {
       onInput: (ev) => { draft.name = ev.target.value.slice(0, 12); redraw(); },
     });
     const dice = h('button', {
-      class: 'iconbtn', 'aria-label': 'Pick a name for me',
+      class: 'lh-iconbtn', 'aria-label': 'Pick a name for me',
       onClick: () => { draft.name = pick(NAME_SUGGESTIONS); input.value = draft.name; sfx.select(); redraw(); },
     }, '🎲');
 
@@ -87,15 +88,16 @@ export function creatorScreen() {
         onClick: () => { draft.name = n; input.value = n; sfx.tap(); redraw(); },
       }, n)));
 
-    return h('div', { class: 'option-group' },
-      h('div', { class: 'option-group__head' }, h('span', {}, '✏️'), h('span', {}, 'My name is…')),
+    return h('div', { class: 'lh-optgroup' },
+      h('div', { class: 'lh-optgroup__label' }, h('span', {}, '✏️'), h('span', {}, 'My name is…')),
       h('div', { class: 'name-row' }, input, dice),
       chips);
   }
 
   function difficultyGroup() {
     const card = (id, icon, title, ages, bullets) => h('button', {
-      class: `diff-card${difficulty === id ? ' diff-card--on' : ''}`,
+      class: 'diff-card',
+      'aria-pressed': String(difficulty === id),
       onClick: () => {
         difficulty = id;
         // Little Helpers get the prompts read aloud by default; explorers do
@@ -111,8 +113,8 @@ export function creatorScreen() {
         h('p', {}, ages),
         h('p', {}, bullets)));
 
-    return h('div', { class: 'option-group' },
-      h('div', { class: 'option-group__head' }, h('span', {}, '🎚️'), h('span', {}, 'How much help would you like?')),
+    return h('div', { class: 'lh-optgroup' },
+      h('div', { class: 'lh-optgroup__label' }, h('span', {}, '🎚️'), h('span', {}, 'How much help would you like?')),
       h('div', { class: 'difficulty-row' },
         card('little', '🧸', 'Little Helper', 'Ages about 4–6',
           'Arrows and glowing hints, the right tool sparkles, and only two answers to choose from.'),
@@ -137,16 +139,17 @@ export function creatorScreen() {
       group('✨', 'Something fun', [...ACCESSORIES, ...shopAccessories]
         .map((a) => swatch('accessory', a.id, { background: '#fff' }, a.icon))),
       difficultyGroup(),
-      h('div', { class: 'row gap-m', style: { justifyContent: 'center', padding: '10px 0 30px', flexWrap: 'wrap' } },
-        h('button', { class: 'btn btn--ghost', onClick: randomise }, '🎲 Surprise me!'),
-        h('button', { class: 'btn btn--mint btn--huge', onClick: done }, editing ? '💾 SAVE' : '👍 THAT\'S ME!')),
+      h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', padding: '10px 0 30px', flexWrap: 'wrap' } },
+        h('button', { class: 'lh-btn lh-btn--quiet', onClick: randomise }, '🎲 Surprise me!'),
+        h('button', { class: 'lh-btn lh-btn--primary lh-btn--lg', onClick: done }, editing ? '💾 SAVE' : '👍 THAT\'S ME!')),
     );
     redraw();
   }
 
   function swatchShoe(c) {
     const btn = h('button', {
-      class: `swatch${c.value === 'rainbow' ? ' swatch--rainbow' : ''}${draft.shoes === c.id ? ' swatch--on' : ''}`,
+      class: `lh-swatch${c.value === 'rainbow' ? ' lh-swatch--rainbow' : ''}`,
+      'aria-pressed': String(draft.shoes === c.id),
       style: c.value === 'rainbow' ? {} : { background: c.value },
       'aria-label': c.id,
       onClick: () => { draft.shoes = c.id; sfx.select(); sparkle(btn, { count: 6 }); rebuild(); },
