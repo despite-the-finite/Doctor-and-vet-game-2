@@ -31,7 +31,7 @@ export function hud({ title = '', back = null, dark = false, chips = ['stars', '
 
   if (back) {
     bar.appendChild(h('button', {
-      class: 'lh-iconbtn lh-iconbtn--back', 'aria-label': 'Go back',
+      class: 'lh-btn lh-btn--icon', 'data-role': 'back', 'aria-label': 'Go back',
       onClick: () => { sfx.tap(); back(); },
     }, '⬅️'));
   }
@@ -51,7 +51,7 @@ export function hud({ title = '', back = null, dark = false, chips = ['stars', '
 
   if (voiceSupported) {
     const voiceBtn = h('button', {
-      class: 'lh-iconbtn', 'aria-label': 'Read the words out loud',
+      class: 'lh-btn lh-btn--icon', 'aria-label': 'Read the words out loud',
       title: 'Read the words out loud',
       onClick: () => { voiceBtn.textContent = toggleVoice() ? '🗣️' : '🤐'; },
     }, voiceOn() ? '🗣️' : '🤐');
@@ -59,7 +59,7 @@ export function hud({ title = '', back = null, dark = false, chips = ['stars', '
   }
 
   const soundBtn = h('button', {
-    class: 'lh-iconbtn', 'aria-label': 'Sound on or off',
+    class: 'lh-btn lh-btn--icon', 'aria-label': 'Sound on or off',
     onClick: () => {
       const now = toggleSound();
       soundBtn.textContent = now ? '🔊' : '🔇';
@@ -128,10 +128,19 @@ export function sectionTitle(icon, text, sub = null) {
       sub ? h('p', {}, sub) : null));
 }
 
-/** Progress bar with a label. */
+/** A raised surface. `float` is the translucent panel used over a scene. */
+export function panel(children = [], { float = false, dark = false } = {}) {
+  const kind = `${float ? ' lh-panel--float' : ''}${dark ? ' lh-panel--dark' : ''}`;
+  return h('div', { class: `lh-panel${kind}` }, ...(Array.isArray(children) ? children : [children]));
+}
+
+/** The meter: a label beside a shining track. */
 export function progressBar(done, total, label = null) {
   const pct = total ? Math.round((done / total) * 100) : 0;
-  return h('div', { class: 'lh-meter' },
-    label ? h('div', { class: 'lh-meter__label' }, label, h('span', {}, `${done}/${total}`)) : null,
-    h('div', { class: 'lh-meter__track' }, h('div', { class: 'lh-meter__fill', style: { width: `${pct}%` } })));
+  return h('div', { class: 'lh-meter', role: 'progressbar',
+                    'aria-valuenow': String(done), 'aria-valuemin': '0', 'aria-valuemax': String(total),
+                    'aria-label': label || 'Progress' },
+    label ? h('div', { class: 'lh-meter__label' }, label) : null,
+    h('div', { class: 'lh-meter__track' }, h('div', { class: 'lh-meter__fill', style: { width: `${pct}%` } })),
+    h('div', { class: 'lh-meter__label' }, `${done}/${total}`));
 }

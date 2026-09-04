@@ -55,9 +55,10 @@ export function creatorScreen() {
       h('div', { class: 'lh-optgroup__row' }, ...rowEls));
   }
 
+  // A colour is a swatch; a named choice ("Curly", "No coat") is a pill.
   function swatch(key, id, styles, content = null, wide = false) {
     const btn = h('button', {
-      class: `lh-swatch${wide ? ' lh-swatch--wide' : ''}`,
+      class: wide ? 'lh-pillopt' : 'lh-swatch',
       'aria-pressed': String(draft[key] === id),
       style: styles,
       'aria-label': String(content || id),
@@ -78,7 +79,7 @@ export function creatorScreen() {
       onInput: (ev) => { draft.name = ev.target.value.slice(0, 12); redraw(); },
     });
     const dice = h('button', {
-      class: 'lh-iconbtn', 'aria-label': 'Pick a name for me',
+      class: 'lh-btn lh-btn--icon', 'aria-label': 'Pick a name for me',
       onClick: () => { draft.name = pick(NAME_SUGGESTIONS); input.value = draft.name; sfx.select(); redraw(); },
     }, '🎲');
 

@@ -43,7 +43,7 @@ export function hubScreen({ build = null, highlight = null } = {}) {
     h('div', { class: 'hub-hero__text' },
       h('h3', {}, heroTitle()),
       h('p', {}, trackLine)),
-    h('button', { class: 'lh-iconbtn', 'aria-label': 'Change my hero', onClick: () => go('creator') }, '🎨')));
+    h('button', { class: 'lh-btn lh-btn--icon', 'aria-label': 'Change my hero', onClick: () => go('creator') }, '🎨')));
 
   /* ------------------------------------------------------------ building */
   const building = h('div', { class: 'building-wrap' });
