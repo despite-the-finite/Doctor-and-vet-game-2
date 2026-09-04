@@ -4,193 +4,95 @@
    ========================================================================== */
 
 /* ══════════════════════════════════════════════════════════ TITLE ═══════ */
-.lh-screen--title {
-  background: linear-gradient(180deg, #7fd0ff 0%, #b8e8ff 45%, #ddf6ff 70%, #cbeeb0 70%, #a8dd8b 100%);
-  align-items: center; justify-content: flex-start;
+/* Four depth planes fill the screen; the words and the hero sit on top. */
+.lh-screen--title { background: var(--lh-sky-grad); }
+.lh-screen--title .lh-scene {
+  position: absolute; inset: 0;
+  /* The front door gets a real blue overhead — the doctor world's mist is
+     for its rooms, not for the sky over the town. */
+  background: linear-gradient(180deg,#8FDCF7 0%,#BDEEFB 42%,#E9F8E4 70%,#F6EBD3 100%);
 }
 
-.town { position: absolute; inset: 0; overflow: hidden; }
-
-.sky { position: absolute; inset: 0 0 34% 0; }
-.sun { position: absolute; right: 8%; top: 8%; font-size: clamp(38px, 7vw, 74px); animation: lh-bob-slow 7s ease-in-out infinite; filter: drop-shadow(0 0 26px rgba(255,220,120,.9)); }
-.tw { position: absolute; color: var(--lh-panel); opacity: .5; font-size: 12px; animation: lh-twinkle 3.4s ease-in-out infinite; }
-
-.cloud { position: absolute; height: clamp(22px, 4vw, 40px); border-radius: 99px; background: rgba(255,255,255,.92); box-shadow: 0 6px 14px rgba(80,140,190,.18); }
-.cloud::before, .cloud::after { content: ""; position: absolute; border-radius: 50%; background: inherit; }
-.cloud--1 { width: clamp(90px,18vw,190px); top: 14%; animation: lh-drift-vw 46s linear infinite; }
-.cloud--1::before { width: 60%; height: 170%; left: 12%; top: -70%; }
-.cloud--2 { width: clamp(70px,13vw,140px); top: 32%; animation: lh-drift-vw 66s linear infinite 8s; }
-.cloud--2::before { width: 55%; height: 150%; left: 20%; top: -55%; }
-.cloud--3 { width: clamp(60px,11vw,110px); top: 6%; opacity: .8; animation: lh-drift-vw 82s linear infinite 22s; }
-.cloud--3::before { width: 60%; height: 140%; left: 18%; top: -50%; }
-
-.heli { position: absolute; top: 9%; font-size: clamp(26px, 5vw, 48px); animation: lh-drift-vw 34s linear infinite 4s; filter: drop-shadow(0 6px 8px rgba(0,0,0,.15)); }
-.birds { position: absolute; top: 22%; left: 0; width: 100%; }
-.birds span { position: absolute; font-size: clamp(13px, 2vw, 20px); animation: lh-drift-vw 40s linear infinite; opacity: .85; }
-.birds span:nth-child(2) { top: 26px; }
-.birds span:nth-child(3) { top: 12px; }
-
-.hill { position: absolute; left: -10%; width: 120%; border-radius: 50% 50% 0 0; }
-.hill--back  { bottom: 30%; height: 22%; background: #9ed88b; }
-.hill--front { bottom: 26%; height: 16%; background: #86ca72; }
-
-.tree { position: absolute; bottom: 27%; font-size: clamp(30px, 6vw, 62px); animation: lh-sway 6s ease-in-out infinite; transform-origin: bottom center; }
-.tree--1 { left: 4%; }
-.tree--2 { left: 15%; font-size: clamp(24px, 5vw, 50px); animation-duration: 7.4s; }
-.tree--3 { right: 6%; animation-duration: 8.2s; }
-
-.building {
-  position: absolute; left: 50%; bottom: 21%; transform: translateX(-50%);
-  width: min(56vw, 420px); height: min(27vh, 210px);
-  background: linear-gradient(180deg, var(--lh-panel), #e9f3fb);
-  border-radius: 20px 20px 6px 6px;
-  box-shadow: 0 16px 0 rgba(46,42,68,.1), 0 30px 60px rgba(46,42,68,.25);
+.title-hero {
+  position: absolute; right: 16%; bottom: 112px; width: min(24vw, 300px);
+  z-index: 2; pointer-events: none;
 }
-.roofline {
-  position: absolute; top: -34px; left: 50%; transform: translateX(-50%);
-  display: flex; align-items: center; gap: 12px;
-  padding: 6px 22px; border-radius: 14px;
-  background: linear-gradient(180deg,#ff8f80,#e9584a);
-  box-shadow: 0 6px 0 #c33f33, 0 10px 22px rgba(46,42,68,.25);
+.title-hero__art {
+  animation: lh-breathe 3.8s ease-in-out infinite;
+  transform-origin: bottom center;
+  filter: drop-shadow(0 14px 18px rgba(46,42,68,.22));
 }
-.sign { font-size: 26px; }
-.cross { color: var(--lh-panel); font-size: 26px; font-weight: 900; animation: lh-signblink 2.6s ease-in-out infinite; text-shadow: 0 0 18px rgba(255,255,255,.9); }
-@keyframes lh-signblink { 0%,100% { opacity: 1 } 46% { opacity: 1 } 50% { opacity: .35 } 54% { opacity: 1 } 74% { opacity: .4 } }
-
-.windows { position: absolute; inset: 16% 10% 40% 10%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8% 6%; }
-.win { border-radius: 6px; background: #bfe3ff; box-shadow: inset 0 -4px 0 rgba(0,0,0,.06); animation: lh-winlight 6s ease-in-out infinite; }
-@keyframes lh-winlight { 0%,100% { background: #bfe3ff } 40% { background: #ffe9a8 } 60% { background: #ffe9a8 } }
-
-.vetwindow {
-  position: absolute; right: 8%; bottom: 12%;
-  width: 22%; height: 26%; border-radius: 10px;
-  background: linear-gradient(180deg,#dff6ff,#b9e6ff);
-  box-shadow: inset 0 0 0 5px var(--lh-panel), 0 5px 12px rgba(46,42,68,.16);
-  overflow: hidden; display: grid; place-items: end center;
-}
-.vetdog { font-size: clamp(24px, 5vw, 44px); animation: lh-peek 5.5s ease-in-out infinite; }
-@keyframes lh-peek { 0%,100% { transform: translateY(70%) } 30% { transform: translateY(6%) } 70% { transform: translateY(6%) } }
-
-.doorway {
-  position: absolute; left: 12%; bottom: 0; width: 26%; height: 34%;
-  border-radius: 12px 12px 0 0; background: linear-gradient(180deg,#3f5a86,#28405f);
-  overflow: hidden;
-}
-.doorglow { position: absolute; inset: 0; background: radial-gradient(circle at 50% 90%, rgba(255,220,140,.6), transparent 65%); }
-/* Visitors on the forecourt. These sit on .building, NOT inside .doorway —
-   the doorway clips (overflow:hidden) and sliced-off figures read as
-   disembodied heads. Every glyph here is a whole body for the same reason. */
-.walker {
-  position: absolute; bottom: 3%;
-  font-size: clamp(18px, 3.4vw, 30px);
-  filter: drop-shadow(0 4px 5px rgba(46,42,68,.22));
-}
-/* The walking emoji faces left, so only the one heading right is mirrored. */
-.walker--1 { animation: lh-walk-away-left 13s ease-in-out infinite; }
-.walker--2 { transform: scaleX(-1); animation: lh-walk-away-right 17s ease-in-out infinite 6s; }
-@keyframes lh-walk-away-left {
-  0%   { left: 24%; opacity: 0 }
-  10%  { opacity: .95 }
-  80%  { opacity: .95 }
-  100% { left: 1%; opacity: 0 }
-}
-@keyframes lh-walk-away-right {
-  0%   { left: 26%; opacity: 0 }
-  10%  { opacity: .95 }
-  80%  { opacity: .95 }
-  100% { left: 66%; opacity: 0 }
-}
-
-.road { position: absolute; left: 0; right: 0; bottom: 0; height: 22%; background: linear-gradient(180deg,#8d99ad,#6f7c92); }
-.road::before {
-  content: ""; position: absolute; top: 46%; left: 0; right: 0; height: 6px;
-  background: repeating-linear-gradient(90deg, var(--lh-panel) 0 40px, transparent 40px 88px); opacity: .75;
-}
-.ambulance {
-  position: absolute; bottom: 6%; font-size: clamp(34px, 7vw, 66px);
-  animation: lh-ambulance 16s ease-in-out infinite;
-  filter: drop-shadow(0 6px 8px rgba(0,0,0,.25));
-}
-/* The lh-ambulance glyph faces left on every major platform, so it drives
-   right-to-left: it pulls up at the hospital and then carries on. Animating
-   it the other way made it look like it was reversing the whole way. */
-@keyframes lh-ambulance {
-  0%   { left: 108% }
-  30%  { left: 34% }
-  60%  { left: 34% }
-  100% { left: -22% }
-}
-.paws { position: absolute; bottom: 24%; left: 0; width: 100%; height: 30px; }
-.paws span { position: absolute; font-size: 15px; opacity: 0; animation: lh-pawstep 6s ease-in-out infinite; }
-@keyframes lh-pawstep { 0%,100% { opacity: 0 } 20% { opacity: .55 } 70% { opacity: .25 } }
-
-.patients { position: absolute; bottom: 23%; left: 0; width: 100%; }
-.patient-walk { position: absolute; font-size: clamp(22px, 4vw, 38px); }
-.patient-walk--1 { animation: lh-stroll 24s linear infinite; }
-.patient-walk--2 { animation: lh-stroll 30s linear infinite 9s; }
-@keyframes lh-stroll { from { left: 106% } to { left: -8% } }
-
-.flutter { position: absolute; top: var(--y); font-size: 20px; animation: lh-flutter-path 20s linear infinite; }
-@keyframes lh-flutter-path {
-  0%   { transform: translate(-10vw, 0) rotate(-6deg) }
-  25%  { transform: translate(30vw, -40px) rotate(8deg) }
-  50%  { transform: translate(60vw, 20px) rotate(-8deg) }
-  75%  { transform: translate(90vw, -30px) rotate(6deg) }
-  100% { transform: translate(120vw, 0) rotate(0) }
-}
+.title-hero__art svg { width: 100%; height: auto; display: block; }
 
 .title-stack {
-  position: relative; z-index: 5; text-align: center;
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  padding: clamp(10px, 6vh, 54px) 20px 20px;
-  max-width: 100%;
-}
-/* A soft halo so the lettering stays crisp over the busy little town. */
-.title-stack::before {
-  content: ""; position: absolute; inset: -8% -6%;
-  background: radial-gradient(60% 52% at 50% 40%, rgba(255,255,255,.62), rgba(255,255,255,0) 72%);
-  pointer-events: none; z-index: -1;
-}
-.title-badge { font-size: clamp(32px, 7vw, 64px); animation: lh-bob 3.2s ease-in-out infinite; filter: drop-shadow(0 8px 12px rgba(46,42,68,.3)); }
-.title-word {
-  display: flex; gap: .02em;
-  font-size: clamp(30px, 9vw, 82px); line-height: .96;
-  color: var(--lh-panel);
-  text-shadow: 0 4px 0 #2a6fa0, 0 8px 0 rgba(46,42,68,.28), 0 16px 26px rgba(46,42,68,.35);
-}
-.title-word--big { font-size: clamp(40px, 12.5vw, 112px); color: #ffe27a; text-shadow: 0 5px 0 #d08a12, 0 10px 0 rgba(46,42,68,.25), 0 20px 30px rgba(46,42,68,.35); }
-.title-word span { display: inline-block; animation: lh-letter .7s cubic-bezier(.2,1.5,.4,1) both; }
-@keyframes lh-letter { 0% { transform: translateY(-70px) rotate(-12deg); opacity: 0 } 100% { transform: none; opacity: 1 } }
-.title-sub {
-  margin: 20px 0 18px; font-family: var(--lh-font-display); font-weight: 700;
-  font-size: clamp(15px, 2.6vw, 25px); color: var(--lh-panel);
-  text-shadow: 0 3px 0 rgba(46,42,68,.35);
-  animation: lh-pop .6s .9s cubic-bezier(.2,1.3,.4,1.1) both;
-}
-.title-cta { max-width: min(92vw, 520px); animation: lh-pop .5s .8s cubic-bezier(.2,1.5,.4,1.1) both, lh-cta-pulse 2.6s 1.5s ease-in-out infinite; }
-@keyframes lh-cta-pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.045) } }
-.title-returning {
-  margin-top: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px;
-  font-family: var(--lh-font-display); font-weight: 700; color: var(--lh-panel);
-  text-shadow: 0 2px 0 rgba(46,42,68,.35);
-  animation: lh-pop .5s 1s cubic-bezier(.2,1.3,.4,1.1) both;
+  position: absolute; left: 5.6%; top: 13%; width: min(44vw, 520px);
+  z-index: 3; display: flex; flex-direction: column; align-items: flex-start;
 }
 
-/* Portrait phones: a taller hospital and a slimmer road fill the gap that
-   otherwise opens up between the lettering and the town. */
-@media (orientation: portrait) {
-  .building { bottom: 16%; height: min(25vh, 220px); width: min(70vw, 400px); }
-  .road { height: 16%; }
-  .hill--back { bottom: 22%; }
-  .hill--front { bottom: 17%; }
-  .tree { bottom: 18%; }
-  .patients, .paws { bottom: 14%; }
-  .ambulance { bottom: 4%; }
+.title-kicker {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 9px 20px 9px 10px; border-radius: var(--lh-r-pill);
+  background: rgba(255,255,255,.96); box-shadow: 0 6px 0 rgba(46,42,68,.14);
+  margin-bottom: 20px;
+  font-family: var(--lh-font-display); font-weight: 800;
+  font-size: var(--lh-size-meta); letter-spacing: 1.8px; color: #5F5A7E;
 }
+.title-kicker__mark {
+  width: 38px; height: 38px; border-radius: 50%; background: var(--lh-rasp);
+  display: grid; place-items: center;
+}
+.title-kicker__mark svg { width: 24px; }
+
+.title-wordmark {
+  font-family: var(--lh-font-display); font-weight: 800;
+  line-height: .9; letter-spacing: var(--lh-track-tight);
+  margin: 0; display: flex; flex-direction: column; align-items: flex-start;
+}
+.title-word { display: block; animation: lh-letter .5s cubic-bezier(.2,1.4,.4,1) both; }
+.title-word--1 {
+  font-size: clamp(34px, 5vw, var(--lh-size-title-1)); color: var(--lh-paper);
+  text-shadow: 0 5px 0 var(--lh-doc), 0 10px 20px rgba(46,42,68,.3);
+}
+.title-word--2 {
+  font-size: clamp(50px, 7.5vw, var(--lh-size-hero)); color: var(--lh-star);
+  text-shadow: 0 6px 0 var(--lh-star-deep), 0 14px 26px rgba(46,42,68,.32);
+  animation-delay: .12s;
+}
+.title-word--3 {
+  font-size: clamp(31px, 4.5vw, var(--lh-size-title-2)); color: var(--lh-paper);
+  text-shadow: 0 5px 0 var(--lh-rasp), 0 10px 20px rgba(46,42,68,.3);
+  animation-delay: .24s;
+}
+
+.title-sub {
+  margin: 22px 0 30px;
+  font-family: var(--lh-font-display);
+  font-size: clamp(19px, 2vw, 24px); font-weight: 800; color: #2E4A52;
+  text-shadow: 0 2px 0 rgba(255,255,255,.5); max-width: 26ch;
+}
+
+.title-actions { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+.title-returning { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.title-returning span {
+  font-family: var(--lh-font-display); font-weight: 800; font-size: 18px;
+  color: #2E4A52; text-shadow: 0 2px 0 rgba(255,255,255,.5);
+}
+
 .title-foot {
-  position: absolute; bottom: calc(8px + var(--safe)); left: 0; right: 0;
-  text-align: center; font-size: 12px; color: rgba(46,42,68,.55); z-index: 5;
+  position: absolute; left: 0; bottom: 0; width: 100%; z-index: 3;
+  padding: 12px; text-align: center;
+  font-family: var(--lh-font-display); font-weight: 800;
+  font-size: var(--lh-size-label); color: #EAF6E9;
 }
+
+/* On a narrow screen the hero steps behind the words rather than fighting
+   them, and the wordmark takes the middle. */
+@media (max-width: 820px) {
+  .title-stack { left: 50%; transform: translateX(-50%); width: min(92vw, 520px); align-items: center; text-align: center; top: 9%; }
+  .title-wordmark, .title-actions { align-items: center; }
+  .title-hero { right: 50%; transform: translateX(50%); bottom: 90px; width: min(46vw, 220px); opacity: .5; }
+}
+
 
 /* ══════════════════════════════════════════════════════ CREATOR ═════════ */
 .lh-screen--creator { background: var(--lh-sky-grad); }
@@ -364,6 +266,24 @@
 /* ══════════════════════════════════════════════════ LEVEL SELECT ════════ */
 .lh-screen--levels { background: var(--lh-sky-grad); }
 
+
+/* The world header bar: a band in the world's own hue, so the paper-white
+   name and the drawn mark both have a ground to sit on. */
+.levels-header {
+  background: linear-gradient(180deg, var(--lh-accent-deep), var(--lh-accent));
+  border-radius: 0 0 var(--lh-r-xl) var(--lh-r-xl);
+  box-shadow: 0 8px 0 rgba(46,42,68,.10), var(--lh-air-1);
+  margin-bottom: 18px;
+}
+.levels-header .lh-hud__title {
+  font-size: clamp(24px, 3vw, var(--lh-size-h2));
+  color: var(--lh-paper); text-shadow: 0 3px 0 rgba(31,94,104,.4);
+}
+.levels-world { display: flex; align-items: center; gap: 12px; }
+.levels-world__mark {
+  width: 52px; height: 52px; border-radius: var(--lh-r-xs);
+  background: rgba(255,255,255,.24); display: grid; place-items: center;
+}
 
 .level-list { display: grid; gap: 20px; padding: 20px 16px calc(24px + var(--safe)); width: min(96vw, 760px); margin: 0 auto; }
 

@@ -1,17 +1,22 @@
 /**
- * Title screen.
+ * Title screen — the front door.
  *
- * The brief was "the screen should immediately feel alive", so the background
- * is a living little town: an ambulance pulls up, a helicopter crosses the
- * sky, a dog watches from the vet window, birds and butterflies drift past
- * and the hospital sign blinks.
+ * The town is alive before the child touches anything: clouds drift, the air
+ * ambulance crosses, an ambulance pulls up at the kerb, a dog watches from
+ * the vet window and the hero breathes on the pavement. Four depth planes,
+ * every prop drawn — there is not an emoji in the scene.
  */
-import { h, randI } from '../../core/dom.js';
+import { h } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
 import { go } from '../../core/router.js';
 import { getState, hasHero, resetEverything } from '../../core/state.js';
-import { modal } from '../components.js';
+import { modal, heroSVG } from '../components.js';
 import { confetti } from '../../core/fx.js';
+import { cross } from '../parts.js';
+import {
+  scene, cloud, sunDisc, birds, helicopter, hill, haze,
+  treeRound, treePine, hospital, windowDog, road, ambulance,
+} from '../scene.js';
 
 export function titleScreen() {
   const state = getState();
@@ -19,28 +24,57 @@ export function titleScreen() {
 
   const el = h('div', { class: 'lh-screen lh-screen--title', 'data-world': 'doctor' });
 
-  el.appendChild(h('div', { class: 'town', html: townMarkup() }));
+  el.appendChild(scene({
+    world: 'doctor',
+    sky: [
+      sunDisc({ right: 96, top: 60 }),
+      cloud({ top: 88, w: 230, hgt: 74, opacity: .94, dur: 52 }),
+      cloud({ top: 172, w: 150, hgt: 52, opacity: .8, dur: 74, delay: -26 }),
+      cloud({ top: 44, w: 110, hgt: 40, opacity: .7, dur: 96, delay: -60 }),
+      helicopter({ top: 130 }),
+      birds({ left: 180, top: 120 }),
+    ],
+    far: [
+      hill({ side: 'left', offset: -8, bottom: 210, w: 62, hgt: 230, fill: '#8FD9A0' }),
+      hill({ side: 'right', offset: -12, bottom: 196, w: 58, hgt: 190, fill: '#79CB8D' }),
+      haze({ bottom: 196, hgt: 260, strength: .22 }),
+      treeRound({ side: 'left', offset: 96, bottom: 214 }),
+      treePine({ side: 'right', offset: 120, bottom: 206 }),
+    ],
+    room: [
+      hospital({ bottom: 150 }),
+      `<div style="position:absolute; left:calc(50% - 214px); bottom:216px;">${windowDog({ left: 0, bottom: 0 })}</div>`,
+    ],
+    fore: [
+      road(),
+      ambulance(),
+    ],
+  }));
 
+  /* The hero stands right of centre on the pavement, clear of both the
+     wordmark and the primary button. */
+  el.appendChild(h('div', { class: 'title-hero', html: `<div class="title-hero__art">${heroSVG({ mood: 'happy' })}</div>` }));
+
+  /* ---------------------------------------------------------- the words */
   const stack = h('div', { class: 'title-stack' },
-    h('div', { class: 'title-badge' }, '🏥'),
-    h('h1', { class: 'title-word' },
-      ...'LITTLE'.split('').map((c, i) => h('span', { style: { animationDelay: `${i * 0.06}s` } }, c))),
-    h('h1', { class: 'title-word title-word--big' },
-      ...'HEROES'.split('').map((c, i) => h('span', { style: { animationDelay: `${0.2 + i * 0.06}s` } }, c))),
-    h('h1', { class: 'title-word' },
-      ...'HOSPITAL'.split('').map((c, i) => h('span', { style: { animationDelay: `${0.45 + i * 0.05}s` } }, c))),
+    h('div', { class: 'title-kicker' },
+      h('span', { class: 'title-kicker__mark', html: `<svg viewBox="0 0 40 40">${cross(20, 20, 40, '#fff')}</svg>` }),
+      h('span', {}, 'AGES 4–10')),
+    h('h1', { class: 'title-wordmark' },
+      h('span', { class: 'title-word title-word--1' }, 'LITTLE'),
+      h('span', { class: 'title-word title-word--2' }, 'HEROES'),
+      h('span', { class: 'title-word title-word--3' }, 'HOSPITAL')),
     h('p', { class: 'title-sub' }, 'People or pets — everyone needs a hero.'),
-    h('button', {
-      class: 'lh-btn lh-btn--secondary lh-btn--lg title-cta',
-      onClick: start,
-    }, returning ? '▶️ CARRY ON' : '✨ START MY ADVENTURE'),
-    returning ? h('div', { class: 'title-returning' },
-      h('span', {}, `Welcome back, Dr. ${state.hero.name}!`),
-      h('button', { class: 'lh-btn lh-btn--quiet lh-btn--sm', onClick: confirmReset }, '🔄 Start again')) : null,
-  );
+    h('div', { class: 'title-actions' },
+      h('button', { class: 'lh-btn lh-btn--secondary lh-btn--lg', onClick: start },
+        returning ? 'Carry on' : 'Start my adventure'),
+      returning ? h('div', { class: 'title-returning' },
+        h('button', { class: 'lh-btn lh-btn--quiet lh-btn--sm', onClick: confirmReset }, 'Start again'),
+        h('span', {}, `Welcome back, Dr. ${state.hero.name}!`)) : null));
   el.appendChild(stack);
 
-  el.appendChild(h('div', { class: 'title-foot' }, 'A make-believe hospital. Not real medical advice. 💛'));
+  el.appendChild(h('div', { class: 'title-foot' },
+    'A make-believe hospital. Not real medical advice.'));
 
   function start() {
     sfx.fanfare();
@@ -51,7 +85,6 @@ export function titleScreen() {
   function confirmReset() {
     sfx.tap();
     const m = modal([
-      h('div', { style: { fontSize: '58px' } }, '🔄'),
       h('h2', {}, 'Start a brand new hospital?'),
       h('p', {}, 'Your hero, your stars, your coins and all your rooms will be cleared.'),
       h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },
@@ -65,66 +98,4 @@ export function titleScreen() {
   }
 
   return { el };
-}
-
-/* ----------------------------------------------------------------- scene */
-
-function townMarkup() {
-  const stars = Array.from({ length: 18 }, () =>
-    `<span class="tw" style="left:${randI(2, 98)}%;top:${randI(4, 46)}%;animation-delay:${(Math.random() * 3).toFixed(1)}s">✦</span>`).join('');
-
-  const butterflies = Array.from({ length: 3 }, (_, i) =>
-    `<span class="flutter" style="--y:${randI(52, 74)}%;animation-delay:${i * 5}s;animation-duration:${18 + i * 6}s">🦋</span>`).join('');
-
-  return `
-  <div class="sky">
-    <div class="sun">☀️</div>
-    ${stars}
-    <div class="cloud cloud--1"></div>
-    <div class="cloud cloud--2"></div>
-    <div class="cloud cloud--3"></div>
-    <div class="heli">🚁</div>
-    <div class="birds">
-      <span style="animation-delay:0s">🐦</span>
-      <span style="animation-delay:1.1s">🐦</span>
-      <span style="animation-delay:2.2s">🐦</span>
-    </div>
-  </div>
-
-  <div class="hill hill--back"></div>
-  <div class="hill hill--front"></div>
-
-  <div class="tree tree--1">🌳</div>
-  <div class="tree tree--2">🌲</div>
-  <div class="tree tree--3">🌳</div>
-
-  <div class="building">
-    <div class="roofline">
-      <span class="sign">🏥</span>
-      <span class="cross">✚</span>
-    </div>
-    <div class="windows">
-      ${Array.from({ length: 8 }, (_, i) => `<span class="win" style="animation-delay:${i * 0.7}s"></span>`).join('')}
-    </div>
-    <div class="vetwindow">
-      <span class="vetdog">🐶</span>
-    </div>
-    <div class="doorway">
-      <span class="doorglow"></span>
-    </div>
-    <span class="walker walker--1">🚶</span>
-    <span class="walker walker--2">🚶</span>
-  </div>
-
-  <div class="road"></div>
-  <div class="ambulance">🚑</div>
-  <div class="paws">
-    ${Array.from({ length: 6 }, (_, i) => `<span style="left:${8 + i * 15}%;animation-delay:${(5 - i) * 0.45}s">🐾</span>`).join('')}
-  </div>
-  <div class="patients">
-    <span class="patient-walk patient-walk--1">🚶</span>
-    <span class="patient-walk patient-walk--2">🐕</span>
-  </div>
-  ${butterflies}
-  `;
 }

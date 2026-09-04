@@ -100,9 +100,15 @@ button { font-family: inherit; }
 @keyframes lh-wiggle    { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-6deg) } 75% { transform: rotate(6deg) } }
 @keyframes lh-glow-ring { 0%,100% { box-shadow: 0 0 0 0 rgba(255,216,77,.85) } 50% { box-shadow: 0 0 0 16px rgba(255,216,77,0) } }
 
-/* The design's lh-drift moves a prop across its own box; the town scenery
-   still in place until the scenes are rebuilt crosses the whole viewport. */
+/* The design's lh-drift moves a prop across its own box; scenery that
+   crosses the whole scene — clouds, birds, the helicopter — uses this. */
 @keyframes lh-drift-vw  { from { transform: translateX(-20vw) } to { transform: translateX(120vw) } }
+
+/* The sun's halo breathing. */
+@keyframes lh-halo      { 0%,100% { opacity: .5 } 50% { opacity: 1 } }
+
+/* A vehicle that pulls up, waits, and is gone again. */
+@keyframes lh-drive-in  { 0% { transform: translateX(-60%) } 22%, 100% { transform: translateX(0) } }
 
 .lh-bob { animation: lh-bob 2.6s ease-in-out infinite; }
 

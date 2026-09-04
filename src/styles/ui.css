@@ -152,9 +152,16 @@
   display: grid; place-items: center;
   background: linear-gradient(180deg, var(--lh-accent-tint), var(--lh-doc-mist-2));
   box-shadow: inset 0 -4px 0 rgba(31,94,104,.12);
-  font-size: 40px; line-height: 1;
+  overflow: hidden;
   animation: lh-bob 3s ease-in-out infinite;
 }
+/* The thumb shows the case's own drawn patient, cropped to the face. */
+.lh-case__art svg { width: 185%; height: auto; display: block; transform: translateY(9%); }
+.lh-case__art > svg[viewBox='0 0 40 40'] { width: 44%; transform: none; }
+.lh-case__go { display: grid; place-items: center; width: 44px; height: 44px;
+  border-radius: 50%; background: var(--lh-star); box-shadow: 0 4px 0 var(--lh-star-deep); }
+.lh-case__done { flex: none; font-size: var(--lh-size-meta); font-weight: 800; color: #7A7599; }
+.lh-case__state { flex-direction: column; gap: 4px; }
 .lh-case__body { flex: 1; min-width: 0; }
 .lh-case__title { font-family: var(--lh-font-display); font-weight: 800; font-size: var(--lh-size-card-title); line-height: 1.1; }
 .lh-case__tagline { font-size: var(--lh-size-meta); font-weight: 700; color: #7A7599; margin-top: 4px; }
@@ -226,6 +233,16 @@
 .lh-scene__sky, .lh-scene__far, .lh-scene__room, .lh-scene__fore { position: absolute; inset: 0; }
 .lh-scene__far  { filter: saturate(.88); opacity: .96; }   /* depth haze */
 .lh-scene__grain { position: absolute; inset: 0; pointer-events: none; opacity: .05; mix-blend-mode: multiply; }
+/* Warm key light from above left, cool shade rising from the ground. */
+.lh-scene__light {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(160deg, rgba(255,224,138,.22) 0%, rgba(255,255,255,0) 46%),
+              linear-gradient(0deg, rgba(46,42,68,.14) 0%, rgba(255,255,255,0) 55%);
+}
+.lh-scene__vignette {
+  position: absolute; inset: 0; pointer-events: none;
+  box-shadow: inset 0 0 180px 60px rgba(46,42,68,.10);
+}
 /* Hills/canopies are half-ellipses:
    border-radius: 50% 50% 0 0 / 100% 100% 0 0
    Rooms and scenery are big soft organic shapes; rectangles only

@@ -9,6 +9,7 @@ import { isSupported as voiceSupported, voiceOn, toggleVoice } from '../core/voi
 import { on } from '../core/events.js';
 import { humanSVG } from './human.js';
 import { ownedAccessories } from '../data/shop.js';
+import { icon } from './icons.js';
 
 /** Renders the player's hero with any accessories they have bought. */
 export function heroSVG(opts = {}) {
@@ -32,8 +33,9 @@ export function hud({ title = '', back = null, dark = false, chips = ['stars', '
   if (back) {
     bar.appendChild(h('button', {
       class: 'lh-btn lh-btn--icon', 'data-role': 'back', 'aria-label': 'Go back',
+      html: icon('back'),
       onClick: () => { sfx.tap(); back(); },
-    }, '⬅️'));
+    }));
   }
 
   if (title) bar.appendChild(h('div', { class: 'lh-hud__title' }, title));
@@ -53,19 +55,28 @@ export function hud({ title = '', back = null, dark = false, chips = ['stars', '
     const voiceBtn = h('button', {
       class: 'lh-btn lh-btn--icon', 'aria-label': 'Read the words out loud',
       title: 'Read the words out loud',
-      onClick: () => { voiceBtn.textContent = toggleVoice() ? '🗣️' : '🤐'; },
-    }, voiceOn() ? '🗣️' : '🤐');
+      'aria-pressed': String(voiceOn()),
+      html: icon(voiceOn() ? 'voiceOn' : 'voiceOff'),
+      onClick: () => {
+        const now = toggleVoice();
+        voiceBtn.innerHTML = icon(now ? 'voiceOn' : 'voiceOff');
+        voiceBtn.setAttribute('aria-pressed', String(now));
+      },
+    });
     bar.appendChild(voiceBtn);
   }
 
   const soundBtn = h('button', {
     class: 'lh-btn lh-btn--icon', 'aria-label': 'Sound on or off',
+    'aria-pressed': String(soundOn()),
+    html: icon(soundOn() ? 'soundOn' : 'soundOff'),
     onClick: () => {
       const now = toggleSound();
-      soundBtn.textContent = now ? '🔊' : '🔇';
+      soundBtn.innerHTML = icon(now ? 'soundOn' : 'soundOff');
+      soundBtn.setAttribute('aria-pressed', String(now));
       if (now) sfx.select();
     },
-  }, soundOn() ? '🔊' : '🔇');
+  });
   bar.appendChild(soundBtn);
 
   // Keep the chips live when rewards land while the screen is open.
@@ -78,15 +89,15 @@ export function hud({ title = '', back = null, dark = false, chips = ['stars', '
 }
 
 const CHIP_META = {
-  stars:    { icon: '⭐', key: 'stars',    label: 'Hero Stars' },
-  kindness: { icon: '❤️', key: 'kindness', label: 'Kindness Stars' },
-  coins:    { icon: '🪙', key: 'coins',    label: 'Hospital Coins' },
+  stars:    { mark: 'star',     key: 'stars',    label: 'Hero Stars' },
+  kindness: { mark: 'kindness', key: 'kindness', label: 'Kindness Stars' },
+  coins:    { mark: 'coin',     key: 'coins',    label: 'Hospital Coins' },
 };
 
 export function currencyChip(kind) {
   const meta = CHIP_META[kind];
   const el = h('div', { class: 'lh-chip', title: meta.label, dataset: { chip: kind } },
-    h('span', { class: 'lh-chip__icon' }, meta.icon),
+    h('span', { class: 'lh-chip__icon', html: icon(meta.mark) }),
     h('span', { class: 'lh-chip__num' }, String(getState().wallet[meta.key] ?? 0)));
   return el;
 }

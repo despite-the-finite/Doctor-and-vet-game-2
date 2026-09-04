@@ -9,18 +9,24 @@ import { isLevelUnlocked, isLevelCompleted, careerCompletion, setCareer, getStat
 import { TRACKS } from '../../data/cases/index.js';
 import { hud, progressBar } from '../components.js';
 import { toast } from '../../core/fx.js';
+import { patientMarkup } from '../patients.js';
+import { icon, starRow } from '../icons.js';
 
 export function levelsScreen({ career = 'doctor' } = {}) {
   const track = TRACKS[career];
   if (getState().career !== career) setCareer(career);
 
   const el = h('div', { class: 'lh-screen lh-screen--levels', 'data-world': career });
+  // The world header: its drawn mark in a chip, then the world's name.
   const bar = hud({
-    title: `${track.icon} ${track.name}`,
     back: () => goHome('hub'),
-    dark: true,
     chips: ['stars', 'coins'],
+    extra: [],
   });
+  bar.classList.add('levels-header');
+  bar.insertBefore(h('div', { class: 'levels-world' },
+    h('span', { class: 'levels-world__mark', html: icon(career, { size: 30 }) }),
+    h('div', { class: 'lh-hud__title' }, track.name)), bar.querySelector('.lh-hud__spacer'));
   el.appendChild(bar);
 
   const scroll = h('div', { class: 'lh-screen__scroll' });
@@ -51,13 +57,22 @@ export function levelsScreen({ career = 'doctor' } = {}) {
       onClick: () => start(caseDef, unlocked),
     },
       isNext ? h('span', { class: 'lh-case__flag' }, 'PLAY NEXT') : null,
-      h('span', { class: 'lh-case__art' }, unlocked ? caseDef.icon : '🔒'),
+      h('span', {
+        class: 'lh-case__art',
+        html: unlocked ? patientMarkup(caseDef.patient, completed ? 'happy' : 'calm') : icon('lock', { size: 38 }),
+      }),
       h('div', { class: 'lh-case__body' },
         h('div', { class: 'lh-case__title' }, `${caseDef.level}. ${caseDef.title}`),
         h('div', { class: 'lh-case__tagline' }, tagline),
         h('div', { class: 'lh-case__teaches' },
           ...(unlocked ? caseDef.teaches : []).map((t) => h('span', { class: 'lh-case__tag' }, t)))),
-      h('span', { class: 'lh-case__state' }, completed ? '⭐' : unlocked ? '▶️' : '🔒'));
+      h('span', {
+        class: 'lh-case__state',
+        html: completed ? starRow(caseDef.reward?.stars ?? 3)
+          : unlocked ? `<span class="lh-case__go">${icon('play', { size: 26 })}</span>`
+          : icon('lock', { size: 26 }),
+      }),
+      completed ? h('span', { class: 'lh-case__done' }, 'Helped!') : null);
 
     list.appendChild(card);
   });
