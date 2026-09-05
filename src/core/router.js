@@ -5,6 +5,8 @@
  * Only one is mounted at a time. A shallow history stack powers the always
  * present Back button so a child can never get stuck.
  */
+import { stop as stopSpeaking, setVoiceMode } from './voice.js';
+
 const registry = new Map();
 const stack = [];
 let current = null;
@@ -23,6 +25,12 @@ export function go(name, params = {}, { replace = false } = {}) {
     current.instance.el.remove();
     if (!replace) stack.push({ name: current.name, params: current.params });
   }
+
+  // Whatever was being said belonged to the screen we have just left. Drop it,
+  // and let the incoming screen decide whose voices it wants — a case or the
+  // results screen sets its own track, everything else follows the save file.
+  stopSpeaking();
+  setVoiceMode(null);
 
   const instance = factory(params);
   current = { name, params, instance };

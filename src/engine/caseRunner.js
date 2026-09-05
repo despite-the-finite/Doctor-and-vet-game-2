@@ -15,7 +15,9 @@ import { patientElement, patientMarkup, setMood, patientSound, patientEmoji } fr
 import { TOYS, isToy } from '../ui/toy.js';
 import { isLittle } from '../core/state.js';
 import { fill } from './text.js';
-import { say as speak, sayAll, whenDone as speechDone, stop as stopSpeaking } from '../core/voice.js';
+import { say as speak, sayAll, whenDone as speechDone, stop as stopSpeaking, setVoiceMode } from '../core/voice.js';
+import { withTranslation } from '../dialogue/speech.js';
+import { CONNECTORS } from '../dialogue/common.js';
 import { STEP_RUNNERS } from './steps/index.js';
 
 /** What {species} reads as in a case's text. */
@@ -30,6 +32,9 @@ const TOY_LABELS = {
 };
 
 export function createCaseRunner(caseDef, { onFinish, onQuit }) {
+  // Every track has its own cast, and the case knows which one it belongs to.
+  setVoiceMode(caseDef.career);
+
   /* --- resolve the patient (some cases pick from a pool at random) ------ */
   const chosen = caseDef.patientPool ? pick(caseDef.patientPool) : caseDef.patient;
   const patient = {
@@ -80,8 +85,10 @@ export function createCaseRunner(caseDef, { onFinish, onQuit }) {
     const spoken = fill(text, patient);
     const bubble = h('div', { class: `lh-bubble lh-bubble--${who}` }, spoken);
     // Animal patients get their line then the translation. Join them without
-    // doubling punctuation — "Woof!." is a stumble when it is read aloud.
-    speak(translate ? `${spoken.replace(/[\s.]+$/, '')}. ${fill(translate, patient)}` : spoken);
+    // doubling punctuation — "Woof!." is a stumble when it is read aloud. The
+    // UNFILLED line is the lookup key: it is what the recording was made from.
+    const line = withTranslation(text, translate);
+    speak(fill(line, patient), { key: line, who, patient });
     if (who === 'narrator' || who === 'nurse') bubble.classList.add('lh-bubble--thought');
     bubbleLane.appendChild(bubble);
     if (translate) {
@@ -139,7 +146,7 @@ export function createCaseRunner(caseDef, { onFinish, onQuit }) {
     teachEl.classList.remove('lh-hidden');
     // Read it out — it is the one line in the step actually worth teaching,
     // and a child who cannot read was previously getting nothing from it.
-    speak(fill(text, patient));
+    speak(fill(text, patient), { key: text, who: 'narrator', patient });
   }
 
   /**
@@ -151,10 +158,19 @@ export function createCaseRunner(caseDef, { onFinish, onQuit }) {
    * real one. The labels are spoken after the prompt, so the queue keeps them
    * in the order they appear on screen.
    */
-  function speakOptions(labels, { lead = 'You can pick:' } = {}) {
-    const clean = labels.map((l) => fill(String(l), patient)).filter(Boolean);
+  function speakOptions(labels, { lead = CONNECTORS.chooseLead, who = 'narrator' } = {}) {
+    const clean = labels.map((l) => String(l)).filter(Boolean);
     if (!clean.length) return;
-    sayAll([lead, ...clean.map((l, i) => (i === 0 ? l : `Or: ${l}`))]);
+    // "Or:" is spoken as its own little line rather than glued to the front of
+    // an option, because the options are shuffled — an option has to sound the
+    // same whether it comes first or last, or it would need one recording per
+    // position it could land in.
+    const lines = [{ text: lead, key: lead, options: { who: 'narrator' } }];
+    clean.forEach((label, i) => {
+      if (i) lines.push({ text: CONNECTORS.or, key: CONNECTORS.or, options: { who: 'narrator', repeat: true } });
+      lines.push({ text: fill(label, patient), key: label, options: { who, patient } });
+    });
+    sayAll(lines);
   }
 
   function noteMistake() { tally.mistakes++; }
@@ -162,7 +178,7 @@ export function createCaseRunner(caseDef, { onFinish, onQuit }) {
   function setPrompt(text, sub = null, { spoken = true } = {}) {
     clear(promptEl);
     if (!text) return;
-    if (spoken) speak(fill(text, patient));
+    if (spoken) speak(fill(text, patient), { key: text, who: 'narrator', patient });
     promptEl.appendChild(h('div', { class: 'panel__prompt-main' }, fill(text, patient)));
     if (sub) promptEl.appendChild(h('div', { class: 'panel__prompt-sub' }, fill(sub, patient)));
   }

@@ -8,7 +8,9 @@
 import { h, wait, shuffle } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
 import { toast, sparkle } from '../../core/fx.js';
+import { TOAST_LINES } from '../../dialogue/common.js';
 import { nudge, praise, TRIES_BEFORE_REVEAL } from '../hints.js';
+import { affirmChoice } from '../../dialogue/speech.js';
 
 export function runChoose(step, ctx) {
   ctx.setPrompt(step.prompt, ctx.little ? null : step.subPrompt);
@@ -37,7 +39,7 @@ export function runChoose(step, ctx) {
   ctx.speakOptions(options.map((o) => o.label));
 
   const idle = setTimeout(() => {
-    if (!solved && step.nudge) toast(ctx.fill(step.nudge));
+    if (!solved && step.nudge) toast(ctx.fill(step.nudge), { key: step.nudge });
   }, ctx.little ? 6000 : 13000);
 
   async function choose(opt, card) {
@@ -49,7 +51,8 @@ export function runChoose(step, ctx) {
       sfx.nudge();
       card.classList.add('choice--wobble');
       setTimeout(() => card.classList.remove('choice--wobble'), 520);
-      toast(ctx.fill(step.nudge || nudge()));
+      const line = step.nudge || nudge();
+      toast(ctx.fill(line), { key: line });
       if (tries >= TRIES_BEFORE_REVEAL) grid.querySelector('[data-correct]')?.classList.add('choice--glow');
       return;
     }
@@ -67,11 +70,13 @@ export function runChoose(step, ctx) {
     ctx.award({ stars: step.stars ?? 1 }, card);
     if (step.badge) {
       ctx.badge(step.badge);
-      toast('New badge earned!', { tone: 'good' });
+      toast(TOAST_LINES.newBadge, { tone: 'good' });
     }
     ctx.setPrompt(praise());
+    // Unfilled: ctx.say() fills the tokens and uses the raw line to find the
+    // recording, so this has to be composed the way the generator composed it.
     if (opt.say) ctx.say('narrator', opt.say);
-    else ctx.say('narrator', `Yes — ${ctx.fill(opt.label)}.`);
+    else ctx.say('narrator', affirmChoice(opt.label));
     ctx.react('happy');
     ctx.teach(step.teach || null);
 

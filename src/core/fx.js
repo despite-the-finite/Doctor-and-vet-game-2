@@ -115,9 +115,11 @@ function pointOf(target) {
  * Gentle nudge / praise banner. Never says "wrong" — see the copy in
  * engine/hints.js for the encouraging phrase pool.
  */
-export function toast(text, { mark = null, tone = 'warm', ms = 2600, speak = true } = {}) {
+export function toast(text, { mark = null, tone = 'warm', ms = 2600, speak = true, key = null } = {}) {
   if (!toastLane) return;
-  if (speak) say(text);
+  // `key` is the line BEFORE its {name}/{hero} tokens were filled in — that is
+  // what the recording was made from, so it is how the clip is found.
+  if (speak) say(text, { key: key ?? text });
   // Drawn, never typed: a good-news toast ticks, a nudge lights a lamp.
   const el = h('div', { class: `lh-toast lh-toast--${tone}` },
     h('span', { class: 'lh-toast__mark', html: icon(mark || (tone === 'good' ? 'tick' : 'hint'), { size: 30 }) }),

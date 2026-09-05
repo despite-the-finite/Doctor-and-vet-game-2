@@ -7,10 +7,16 @@ doctor or a vet. Cute patients arrive, the child examines them, chooses tools,
 works out what is wrong, treats them — and every patient helped makes their
 hospital bigger.
 
-**No dependencies. No binary assets.** Every character, room, X-ray and
-microscope slide in the game is drawn with inline SVG and CSS. The source runs
-unbundled in the browser; the one build script simply folds it into a single
-portable file.
+**No dependencies.** Every character, room, X-ray and microscope slide in the
+game is drawn with inline SVG and CSS, and every sound effect is synthesised.
+The source runs unbundled in the browser; the one build script simply folds it
+into a single portable file.
+
+The one set of binary assets is the spoken dialogue: pre-generated ElevenLabs
+voice clips in `public/audio/`, produced by `npm run generate-voices` and played
+as plain MP3s. The game falls back to the browser's own speech synthesis
+wherever a clip is missing, so it works perfectly well with none of them — see
+[AI voice generation](#ai-voice-generation).
 
 ---
 
@@ -102,9 +108,24 @@ src/
     patients.js            patient factory
     backdrop.js            illustrated room interiors
     components.js          HUD, chips, modal, progress bar
+  dialogue/                the voice system (see "AI voice generation" below)
+    speech.js              how a written line becomes a spoken one, and its id
+    characters.js          who speaks: 19 roles across the three tracks
+    voices.js              ← character → ElevenLabs voice id. The file you edit
+    emotions.js            emotional intent → performance tag + settings
+    common.js              praise, nudges, connectors, celebration lines
+    doctor.js vet.js toyDoctor.js   how each track is performed
+    collect.js             finds every line the game can speak (Node only)
+    hash.js                the content hash both the game and the script use
   styles/                  base.css, ui.css, screens.css, case.css
+public/
+  audio/                   generated voice clips + manifest (see its README)
 tools/
   validate-cases.mjs       data checks for patient cases
+  validate-voices.mjs      offline checks on the voice registry and manifest
+  voice-selftest.mjs       replays every spoken line through the real player
+  generate-voices.mjs      dialogue → ElevenLabs → public/audio/
+  list-voices.mjs          your ElevenLabs voices, ready to paste
   build-standalone.mjs     bundles everything into dist/
 ```
 
@@ -116,10 +137,15 @@ There is nothing to build and nothing to install. Edit a file, refresh the
 page.
 
 ```bash
-python3 -m http.server 8000        # serve the source
-node tools/validate-cases.mjs      # check every case's data
-node tools/build-standalone.mjs    # rebuild dist/ (single-file version)
+npm start                          # serve the source on :8000
+npm test                           # case data + voice registry + voice playback
+npm run build                      # rebuild dist/ (single-file version)
 ```
+
+(There is still nothing to install — `package.json` has no dependencies at all,
+and every script is plain Node. The bare commands work too:
+`python3 -m http.server 8000`, `node tools/validate-cases.mjs`,
+`node tools/build-standalone.mjs`.)
 
 `validate-cases.mjs` catches the mistakes that are easy to make when writing a
 new patient: a tool id that does not exist, a hotspot the species does not
@@ -171,6 +197,75 @@ Step types available today: `talk`, `empathy`, `tool`, `choose`, `find`,
 
 ---
 
+## AI voice generation
+
+The game reads itself out loud — every prompt, every patient's line, every fun
+fact — because most of the children playing it cannot read yet. Those lines are
+recorded ahead of time with **ElevenLabs** and shipped as ordinary MP3s.
+
+**The game never calls ElevenLabs.** It plays files. The API key is used by one
+script, on your machine, and is never part of anything the browser loads.
+
+```bash
+cp .env.example .env                 # then paste your ELEVENLABS_API_KEY
+npm run voices:list                  # see your voices, choose the cast
+npm run generate-voices:dry          # what would be generated — costs nothing
+npm run generate-voices              # generate it
+```
+
+### How it works
+
+```
+src/data/cases/*.js      the dialogue, where it has always lived
+src/dialogue/common.js   praise, nudges, the celebration screen
+        │
+        ├─ src/dialogue/collect.js      every line, who says it, how
+        ├─ src/dialogue/characters.js   19 characters across three tracks
+        ├─ src/dialogue/voices.js       character → ElevenLabs voice id
+        ▼
+tools/generate-voices.mjs               only what is new or has changed
+        ▼
+public/audio/**.mp3 + manifest.json + voice-index.json
+        ▼
+src/core/voice.js                       plays the clip, or falls back to the
+                                        browser's own voice if there isn't one
+```
+
+The game finds a clip by hashing the line it is about to speak together with
+the track and the character. The generator hashed it the same way, with the
+same functions (`src/dialogue/speech.js`), so nothing has to be registered or
+kept in sync by hand — and `npm run test:voices` replays all 1,800-odd spoken
+lines through the real player to prove it.
+
+### Three tracks, three casts
+
+The Doctor's ward is warm, calm and reassuring; the Vet's clinic is cheerful
+and energetic and softens whenever an animal is frightened; the Toy Workshop is
+whimsical and storybook-gentle — playful, never zany. They share no voices.
+Each line is performed with an emotion worked out from where it appears: a
+patient with `mood: 'sad'` is spoken `[gently]`, praise is `[cheerfully]`, a
+question is `[encouraging]`.
+
+### Editing dialogue afterwards
+
+Change a line and re-run `npm run generate-voices`: every clip carries a
+fingerprint of the exact text, voice, model and settings it was made from, so
+turning *"Great job helping the puppy!"* into *"Great job! The puppy is feeling
+much better!"* regenerates one file and leaves the other two thousand alone.
+
+### What still needs you
+
+Every character ships with a **stock placeholder voice** so the pipeline runs
+before you have chosen anything — which means the whole cast currently sounds
+like four people doing nineteen parts. Picking the real voices is the step that
+makes it good: `npm run voices:check` lists what is still on a placeholder.
+
+**Full documentation: [docs/VOICES.md](docs/VOICES.md)** — the API key, choosing
+voices, the id scheme, adding a character, models and expression, and what
+should and should not be committed.
+
+---
+
 ## Safety & tone
 
 This is an **imaginative game**, not medical advice — it says so on the title
@@ -185,9 +280,10 @@ tool!"* and, after two tries, quietly shows the answer.
 
 * Every interactive target is at least 56 px and every drag also works as
   two taps.
-* Nothing depends on reading: icons, colour, animation and (synthesised) sound
-  carry the meaning.
+* Nothing depends on reading: icons, colour, animation and spoken dialogue
+  carry the meaning. Every line on screen is read out loud.
 * Sound is off-by-default quiet, synthesised at low gain, and there is a mute
-  button on every single screen.
+  button on every single screen. Effects duck under spoken dialogue, and the
+  voice has its own separate toggle.
 * `prefers-reduced-motion` drops the ambient animation.
 * Back and Home are always visible — a child cannot get stuck on a screen.

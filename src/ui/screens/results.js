@@ -17,13 +17,13 @@ import { ROOMS } from '../../data/rooms.js';
 import { patientMarkup } from '../patients.js';
 import { modal } from '../components.js';
 import { confetti, sparkle, flash } from '../../core/fx.js';
-import { sayAll } from '../../core/voice.js';
+import { sayAll, setVoiceMode } from '../../core/voice.js';
+import { RESULTS_LINES } from '../../dialogue/common.js';
 import { BADGES } from './bag.js';
 
-/** "1 kindness star", "3 kindness stars" — it is read aloud, so it must scan. */
-function plural(n, word) { return `${n} ${word}${n === 1 ? '' : 's'}`; }
-
 export function resultsScreen({ career, caseDef, result, newTools = [], newRooms = [], progress, replay }) {
+  // Still the track we have just been playing — the celebration is in its voice.
+  setVoiceMode(career);
   const el = h('div', { class: 'lh-screen lh-screen--results', 'data-world': career });
   // Level 1 of either track is somebody's very first patient — say so.
   const firstEver = caseDef.level === 1 && progress?.firstTime;
@@ -124,14 +124,14 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
     flash('rgba(255,255,255,.55)', 500);
 
     // Read the celebration out. This is the payoff screen, and it was silent.
+    //
+    // The spoken version is deliberately name-free and number-free: the player
+    // names their own hero and the star count changes every run, so no recorded
+    // line could ever say either. The card on screen still shows both.
     sayAll([
-      heading,
-      firstEver
-        ? 'You helped your first patient. Well done!'
-        : `You helped ${result.patient.name} feel much better!`,
-      `You earned ${plural(result.stars, 'hero star')}`,
-      result.kindness ? `and ${plural(result.kindness, 'kindness star')}` : null,
-      `and ${plural(result.coins, 'hospital coin')}.`,
+      result.perfect ? RESULTS_LINES.perfect : RESULTS_LINES.great,
+      firstEver ? RESULTS_LINES.firstPatient : RESULTS_LINES.helped,
+      RESULTS_LINES.rewards,
     ], { interrupt: true });
 
     await wait(500);
