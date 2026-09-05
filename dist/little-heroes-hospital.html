@@ -316,7 +316,9 @@ button { font-family: inherit; }
 .lh-case__teaches { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .lh-case__tag {                            /* topic chips */
   padding: 4px 12px; border-radius: var(--lh-r-pill);
-  background: #EFEAFB; color: #6B5FA8; font-size: 13px; font-weight: 800;
+  /* The kit file sets this at 13px, but the spec's floor for anything a
+     child reads is 14px, and the floor is the stronger rule. */
+  background: #EFEAFB; color: #6B5FA8; font-size: var(--lh-size-label); font-weight: 800;
 }
 .lh-case__flag {                           /* the PLAY NEXT ribbon */
   position: absolute; left: 20px; top: -13px;
@@ -357,16 +359,27 @@ button { font-family: inherit; }
 
 /* ---------- 5. Option swatches (character creator) ---------- */
 .lh-swatch {
+  position: relative;
   width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
   border: none; padding: 0;
   box-shadow: 0 4px 0 rgba(46,42,68,.20);
+}
+/* The design draws the swatch at 46px (52 for skin) and also asks for a
+   64px tap target on everything. Both hold: the circle stays the size it is
+   drawn, and an invisible hit area around it reaches the minimum. */
+.lh-swatch::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: var(--lh-tap-min); height: var(--lh-tap-min);
+  transform: translate(-50%, -50%);
 }
 .lh-swatch--lg { width: 52px; height: 52px; }
 .lh-swatch--square { border-radius: var(--lh-r-xs); }
 .lh-swatch--rainbow { background: linear-gradient(120deg, var(--lh-rasp), var(--lh-star), var(--lh-vet), var(--lh-sky), var(--lh-toy)); }
 .lh-swatch[aria-pressed='true'] { box-shadow: 0 4px 0 rgba(46,42,68,.20), 0 0 0 5px var(--lh-accent, var(--lh-doc)); }
 .lh-pillopt {
-  padding: 12px 20px; border-radius: var(--lh-r-sm); cursor: pointer;
+  /* The kit's padding gives ~41px; every tap target is at least 64. */
+  padding: 12px 20px; min-height: var(--lh-tap-min);
+  border-radius: var(--lh-r-sm); cursor: pointer;
   border: none;
   background: #F1EDE4; color: var(--lh-ink-soft);
   font-family: var(--lh-font-display); font-weight: 800; font-size: var(--lh-size-body);
@@ -374,7 +387,9 @@ button { font-family: inherit; }
 .lh-pillopt[aria-pressed='true'] { background: var(--lh-accent, var(--lh-doc)); color: var(--lh-paper); }
 .lh-optgroup { padding: 16px 18px; border-radius: var(--lh-r-lg); background: var(--lh-panel); box-shadow: 0 7px 0 #E4DFD4; }
 .lh-optgroup__label { font-family: var(--lh-font-display); font-weight: 800; font-size: 19px; margin-bottom: 12px; }
-.lh-optgroup__row { display: flex; gap: 10px; flex-wrap: wrap; }
+/* 46px circle + 18px gap puts swatch centres 64px apart, so each one's
+   64px hit area abuts its neighbour's instead of stealing from it. */
+.lh-optgroup__row { display: flex; gap: 18px; flex-wrap: wrap; }
 
 /* ---------- 6. Scene layers: every screen is four stacked planes ---------- */
 .lh-scene { position: relative; overflow: hidden; background: var(--lh-sky-grad); }
@@ -680,9 +695,10 @@ button { font-family: inherit; }
 .name-input:focus { outline: none; border-color: var(--lh-sky); }
 .name-chips { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
 .name-chip {
-  border: none; border-radius: var(--lh-r-pill); padding: 8px 14px; min-height: 40px;
+  border: none; border-radius: var(--lh-r-pill); padding: 8px 18px;
+  min-height: var(--lh-tap-min); min-width: var(--lh-tap-min);
   background: var(--lh-panel); box-shadow: 0 3px 0 rgba(46,42,68,.14);
-  font-family: var(--lh-font-display); font-weight: 700; font-size: 15px; cursor: pointer;
+  font-family: var(--lh-font-display); font-weight: 800; font-size: var(--lh-size-meta); cursor: pointer;
 }
 .name-chip:hover { transform: translateY(-2px); }
 
@@ -802,7 +818,7 @@ button { font-family: inherit; }
 .room__count {
   position: absolute; right: 8px; top: 8px;
   padding: 4px 12px; border-radius: var(--lh-r-pill);
-  background: rgba(255,255,255,.94); font-family: var(--lh-font-display); font-weight: 800; font-size: 13px;
+  background: rgba(255,255,255,.94); font-family: var(--lh-font-display); font-weight: 800; font-size: var(--lh-size-label);
   box-shadow: 0 2px 6px rgba(46,42,68,.14);
 }
 
@@ -916,7 +932,7 @@ button { font-family: inherit; }
 .kit:hover { transform: translateY(-4px); }
 .kit__icon { font-size: 44px; filter: drop-shadow(0 4px 4px rgba(46,42,68,.18)); }
 .kit__name { font-family: var(--lh-font-display); font-weight: 800; font-size: 15px; }
-.kit__blurb { font-size: 12px; color: var(--lh-ink-soft); line-height: 1.3; }
+.kit__blurb { font-size: var(--lh-size-label); font-weight: 700; color: var(--lh-ink-soft); line-height: 1.35; }
 .kit--locked { filter: grayscale(.9) opacity(.62); cursor: default; }
 .kit--locked .kit__icon { filter: blur(2.5px) grayscale(1); }
 .kit--locked:hover { transform: none; }
@@ -936,7 +952,8 @@ button { font-family: inherit; }
 
 .shop-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 4px 16px 10px; width: min(96vw,900px); margin: 0 auto; }
 .shop-tab {
-  flex: none; border: none; border-radius: var(--lh-r-pill); padding: 10px 18px; min-height: 48px;
+  flex: none; border: none; border-radius: var(--lh-r-pill); padding: 10px 20px;
+  min-height: var(--lh-tap-min);
   background: rgba(255,255,255,.85); cursor: pointer;
   font-family: var(--lh-font-display); font-weight: 800; font-size: 15px; color: var(--lh-ink);
   box-shadow: 0 4px 0 rgba(46,42,68,.14);
@@ -1097,6 +1114,10 @@ button { font-family: inherit; }
 
 .shop-tab__mark { width: 26px; height: 26px; display: inline-grid; place-items: center; }
 .shop-tab__mark svg { width: 100%; height: 100%; display: block; }
+
+/* The design's two floors, held everywhere: nothing a child reads is under
+   14px, and nothing is under weight 700. */
+.diff-card p, .lh-modal p, .hub-hero__text p, .lh-section-title p { font-weight: 700; }
 
 
 /* ── case.css ─────────────────────────────── */
