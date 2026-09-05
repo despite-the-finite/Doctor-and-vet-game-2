@@ -534,3 +534,55 @@
     touch-action: pan-x;
   }
 }
+
+
+/* ==========================================================================
+   The five beats.
+
+   Each beat of the loop owns an accent, so a child reads where they are in
+   a case from its colour before reading a word:
+     1 who needs help · 2 what is wrong · 3 which tool
+     4 what happens   · 5 better, and rewarded
+   ========================================================================== */
+[data-beat='1'] { --lh-beat: var(--lh-doc); }
+[data-beat='2'] { --lh-beat: var(--lh-marigold-deep); }
+[data-beat='3'] { --lh-beat: var(--lh-vet-forest); }
+[data-beat='4'] { --lh-beat: var(--lh-toy-ink); }
+[data-beat='5'] { --lh-beat: var(--lh-star-deep); }
+
+/* The panel wears the beat as a band along its top edge. */
+.case-panel { border-top: 6px solid var(--lh-beat, var(--lh-doc)); transition: border-color .4s ease; }
+.panel__prompt-main { color: var(--lh-ink); }
+.case-dots .now { background: var(--lh-beat, var(--lh-doc)); }
+
+/* The sore spot: a soft ring that pulses where the child should look. */
+.lh-hotspot { position: absolute; width: 74px; height: 74px; transform: translate(-50%,-50%); pointer-events: none; }
+
+/* Tools are drawn now, so the tray slots hold artwork rather than a glyph. */
+.tool__icon { width: 56px; height: 56px; display: block; }
+.tool__icon svg { width: 100%; height: 100%; display: block; }
+.tool-stuck, .tool-ghost { width: 56px; height: 56px; }
+.tool-stuck svg, .tool-ghost svg { width: 100%; height: 100%; display: block; }
+.spot-marker__dot { width: 44px; height: 44px; display: grid; place-items: center; }
+.spot-marker__dot svg { width: 100%; height: 100%; }
+.gauge__icon { width: 46px; height: 46px; }
+.gauge__icon svg { width: 100%; height: 100%; display: block; }
+.readout__icon { width: 40px; height: 40px; display: block; }
+.readout__icon svg { width: 100%; height: 100%; }
+.panel__teach-icon { width: 26px; height: 26px; display: inline-grid; place-items: center; }
+
+/* The nametag carries the patient's own face. */
+.case-nametag__art { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: block; flex: none; }
+.case-nametag__art svg { width: 190%; height: auto; display: block; transform: translate(-24%, 6%); }
+
+/* Backdrop props are drawn boxes. */
+.backdrop__prop { width: 42px; height: 42px; display: inline-grid; place-items: center; }
+.backdrop__prop svg, .backdrop__poster svg { width: 100%; height: 100%; display: block; }
+.backdrop__poster { display: grid; place-items: center; }
+.win-sun svg, .win-bird svg, .win-star svg { width: 100%; height: 100%; display: block; }
+
+/* The three stars that stamp in on a reward. */
+.lh-stamp-row {
+  position: absolute; transform: translate(-50%,-50%);
+  display: flex; gap: 10px; pointer-events: none;
+}

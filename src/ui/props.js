@@ -14,7 +14,7 @@
 import { humanSVG } from './human.js';
 import { creatureSVG } from './creature.js';
 import { toySVG } from './toy.js';
-import { outline, star } from './parts.js';
+import { outline, star, sparkle as sparkleMark } from './parts.js';
 
 const PAPER = '#FFF9F0';
 const EDGE = '#E4D7C2';
@@ -66,6 +66,92 @@ const DRAWN = {
   '💡': () => `<circle cx="30" cy="24" r="13" fill="#FFE08A" stroke="#D98A19" stroke-width="2.2"/>
     <rect x="24" y="36" width="12" height="9" rx="3" fill="#C9C4E0"/>
     <path d="M22 12 l-5-5 M38 12 l5-5 M30 8 v-6" stroke="#FFD05A" stroke-width="2.6" stroke-linecap="round"/>`,
+
+  '📋': (c) => `<rect x="14" y="10" width="32" height="40" rx="5" fill="${PAPER}" stroke="${EDGE}" stroke-width="2.6"/>
+    <rect x="22" y="6" width="16" height="8" rx="4" fill="${c}"/>
+    <path d="M21 26 h18 M21 34 h18 M21 42 h11" stroke="${outline(c)}" stroke-width="2.6" stroke-linecap="round"/>`,
+  '📗': (c) => `<path d="M14 10 h30 a4 4 0 0 1 4 4 v34 a4 4 0 0 1-4 4H14z" fill="${c}" stroke="${outline(c)}" stroke-width="2.4"/>
+    <rect x="14" y="10" width="7" height="42" fill="${outline(c)}" opacity=".5"/>
+    <path d="M27 22 h14 M27 30 h14" stroke="${PAPER}" stroke-width="2.6" stroke-linecap="round"/>`,
+  '🐾': (c) => `<ellipse cx="30" cy="38" rx="11" ry="9" fill="${outline(c)}"/>
+    <ellipse cx="17" cy="24" rx="4.4" ry="6" fill="${outline(c)}"/><ellipse cx="25" cy="19" rx="4.4" ry="6.4" fill="${outline(c)}"/>
+    <ellipse cx="35" cy="19" rx="4.4" ry="6.4" fill="${outline(c)}"/><ellipse cx="43" cy="24" rx="4.4" ry="6" fill="${outline(c)}"/>`,
+  '🧺': (c) => `<path d="M10 26 h40 l-5 22 a4 4 0 0 1-4 3H19a4 4 0 0 1-4-3z" fill="#E8C08A" stroke="${outline('#E8C08A')}" stroke-width="2.4"/>
+    <path d="M18 26 v26 M30 26 v27 M42 26 v26" stroke="${outline('#E8C08A')}" stroke-width="2" opacity=".7"/>
+    <path d="M18 26 q12-12 24 0" fill="none" stroke="${outline('#E8C08A')}" stroke-width="2.6"/>`,
+  '🧶': (c) => `<circle cx="30" cy="32" r="16" fill="${c}" stroke="${outline(c)}" stroke-width="2.4"/>
+    <path d="M18 26 q12 12 24 0 M18 38 q12-12 24 0" fill="none" stroke="${outline(c)}" stroke-width="2.2" opacity=".8"/>
+    <path d="M44 34 q8 4 6 14" fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/>`,
+  '🔋': (c) => `<rect x="12" y="20" width="32" height="24" rx="6" fill="#8FD9A0" stroke="${outline('#8FD9A0')}" stroke-width="2.4"/>
+    <rect x="44" y="27" width="5" height="10" rx="2.5" fill="${outline('#8FD9A0')}"/>
+    <path d="M30 24 l-5 10 h5 l-3 8 8-11h-5z" fill="#FFD84D" stroke="#E0AE12" stroke-width="1.4" stroke-linejoin="round"/>`,
+  '⏱️': (c) => `<circle cx="30" cy="34" r="16" fill="${PAPER}" stroke="${outline(c)}" stroke-width="2.8"/>
+    <rect x="25" y="10" width="10" height="7" rx="3" fill="${outline(c)}"/>
+    <path d="M30 34 v-9 M30 34 h7" stroke="${c}" stroke-width="3" stroke-linecap="round"/>`,
+  '🧤': (c) => `<path d="M20 50 v-16 q-5-2-5-7 t5-5 v-7 a3.5 3.5 0 0 1 7 0 v5 a3.5 3.5 0 0 1 7 0 v2 a3.5 3.5 0 0 1 7 0 v3 q3 2 3 7 v18z"
+    fill="${c}" stroke="${outline(c)}" stroke-width="2.4" stroke-linejoin="round"/>`,
+  '🌈': () => `<path d="M8 44 a22 22 0 0 1 44 0" fill="none" stroke="#E8556D" stroke-width="5"/>
+    <path d="M14 44 a16 16 0 0 1 32 0" fill="none" stroke="#FFB13B" stroke-width="5"/>
+    <path d="M20 44 a10 10 0 0 1 20 0" fill="none" stroke="#4FBF6E" stroke-width="5"/>
+    <path d="M25 44 a5 5 0 0 1 10 0" fill="none" stroke="#5EC8F0" stroke-width="5"/>`,
+  '🌙': () => `<path d="M38 8a22 22 0 1 0 12 30A18 18 0 0 1 38 8z" fill="#FFE08A" stroke="#D98A19" stroke-width="2.2"/>`,
+  '⭐': () => star(30, 30, 20, { width: 2 }),
+  '🏥': (c) => `<rect x="10" y="22" width="40" height="30" rx="6" fill="${PAPER}" stroke="${EDGE}" stroke-width="2.6"/>
+    <rect x="6" y="14" width="48" height="10" rx="5" fill="${c}"/>
+    <rect x="26" y="30" width="8" height="18" rx="3" fill="#E8556D"/>
+    <rect x="21" y="35" width="18" height="8" rx="3" fill="#E8556D"/>`,
+
+  '🏗️': (c) => `<rect x="10" y="40" width="40" height="10" rx="4" fill="${outline(c)}"/>
+    <path d="M18 40 V12 h6 v28z" fill="${c}"/><path d="M21 12 h26 v5 h-26z" fill="${c}"/>
+    <path d="M44 17 v9" stroke="${outline(c)}" stroke-width="2.6"/><rect x="39" y="26" width="10" height="7" rx="2" fill="${outline(c)}"/>`,
+  '🛋️': (c) => `<rect x="8" y="26" width="44" height="18" rx="8" fill="${c}" stroke="${outline(c)}" stroke-width="2.4"/>
+    <rect x="12" y="18" width="36" height="14" rx="7" fill="${c}" opacity=".7" stroke="${outline(c)}" stroke-width="2.2"/>
+    <rect x="11" y="44" width="6" height="6" rx="2" fill="${outline(c)}"/><rect x="43" y="44" width="6" height="6" rx="2" fill="${outline(c)}"/>`,
+  '🎨': () => `<path d="M30 12 a18 18 0 1 0 5 35 c-4-1.4-2.6-6.4 1.4-6.4h5a9 9 0 0 0 6.4-15.4A18 18 0 0 0 30 12z"
+      fill="${PAPER}" stroke="${EDGE}" stroke-width="2.4"/>
+    <circle cx="21" cy="22" r="3.2" fill="#E8556D"/><circle cx="31" cy="18" r="3.2" fill="#FFB13B"/>
+    <circle cx="40" cy="26" r="3.2" fill="#2FA8A0"/><circle cx="21" cy="34" r="3.2" fill="#A87BF0"/>`,
+  '🎈': (c) => `<ellipse cx="30" cy="24" rx="13" ry="16" fill="${c}" stroke="${outline(c)}" stroke-width="2.4"/>
+    <path d="M30 40 l-3 4 h6z" fill="${outline(c)}"/>
+    <path d="M30 44 q5 8 0 12" fill="none" stroke="${outline(c)}" stroke-width="2" stroke-linecap="round"/>`,
+  '👕': (c) => `<path d="M20 14 h20 l10 8 -6 7 -4-3 v22 h-20 V26 l-4 3 -6-7z"
+    fill="${c}" stroke="${outline(c)}" stroke-width="2.4" stroke-linejoin="round"/>`,
+  '🟡': (c) => `<circle cx="30" cy="30" r="18" fill="#FFD84D" stroke="#E0AE12" stroke-width="2.4"/>`,
+  '🪔': (c) => `<path d="M12 36 h36 q-4 10-18 10 t-18-10z" fill="${c}" stroke="${outline(c)}" stroke-width="2.4"/>
+    <path d="M30 36 v-6" stroke="${outline(c)}" stroke-width="2.6"/>
+    <path d="M30 14 q6 8 0 12 q-6-4 0-12z" fill="#FFD84D"/>`,
+  '🐠': (c) => `<path d="M40 30 q-10-12-24 0 q14 12 24 0z" fill="${c}" stroke="${outline(c)}" stroke-width="2.4"/>
+    <path d="M40 30 l10-8 v16z" fill="${outline(c)}"/><circle cx="22" cy="28" r="2.4" fill="#2E2A44"/>`,
+  '✨': (c) => sparkleMark(30, 26, 8, { fill: '#FFD84D' }) + sparkleMark(45, 42, 5, { fill: '#FFE08A' }),
+  '🔴': (c) => `<circle cx="20" cy="34" r="11" fill="#E8556D"/><circle cx="38" cy="30" r="9" fill="#5EC8F0"/>
+    <circle cx="30" cy="44" r="8" fill="#FFD84D"/>`,
+  '🦆': (c) => `<circle cx="26" cy="26" r="11" fill="#FFD84D" stroke="#E0AE12" stroke-width="2.2"/>
+    <ellipse cx="32" cy="40" rx="15" ry="10" fill="#FFD84D" stroke="#E0AE12" stroke-width="2.2"/>
+    <path d="M15 26 h-8 l4 5z" fill="#FFB13B"/><circle cx="23" cy="24" r="2.2" fill="#2E2A44"/>`,
+  '🦜': (c) => `<ellipse cx="32" cy="34" rx="12" ry="16" fill="#4FBF6E" stroke="${outline('#4FBF6E')}" stroke-width="2.2"/>
+    <circle cx="28" cy="18" r="9" fill="#E8556D"/><path d="M20 18 h-6 l3 5z" fill="#FFB13B"/>
+    <circle cx="25" cy="16" r="2" fill="#2E2A44"/><path d="M40 40 q8 8 4 14" fill="none" stroke="#3EA85D" stroke-width="3" stroke-linecap="round"/>`,
+  '👑': () => `<path d="M12 42 L10 18 l10 8 10-14 10 14 10-8 -2 24z" fill="#FFD84D" stroke="#E0AE12" stroke-width="2.4" stroke-linejoin="round"/>
+    <circle cx="20" cy="34" r="2.6" fill="#E8556D"/><circle cx="30" cy="32" r="2.6" fill="#5EC8F0"/><circle cx="40" cy="34" r="2.6" fill="#A87BF0"/>`,
+  '🦸': (c) => `<path d="M18 14 q12 10 24 0 q6 22-12 36 Q12 36 18 14z" fill="#E8556D" stroke="#B93450" stroke-width="2.4" stroke-linejoin="round"/>`,
+  '🌸': () => `<circle cx="30" cy="30" r="6" fill="#FFD84D"/>
+    <circle cx="30" cy="18" r="7" fill="#FF9EC4"/><circle cx="41" cy="26" r="7" fill="#FF9EC4"/>
+    <circle cx="37" cy="39" r="7" fill="#FF9EC4"/><circle cx="23" cy="39" r="7" fill="#FF9EC4"/>
+    <circle cx="19" cy="26" r="7" fill="#FF9EC4"/>`,
+  '🏅': () => `<circle cx="30" cy="36" r="13" fill="#FFD84D" stroke="#E0AE12" stroke-width="2.4"/>
+    ${star(30, 36, 7, { fill: '#FFF9F0', stroke: '#E0AE12' })}
+    <path d="M22 8 l6 14 M38 8 l-6 14" stroke="#E8556D" stroke-width="5" stroke-linecap="round"/>`,
+  '🪞': (c) => `<ellipse cx="30" cy="26" rx="15" ry="17" fill="#DFF6F4" stroke="${outline(c)}" stroke-width="2.6"/>
+    <path d="M22 20 q5-6 11-4" fill="none" stroke="${PAPER}" stroke-width="3" stroke-linecap="round"/>
+    <rect x="26" y="42" width="8" height="12" rx="3" fill="${outline(c)}"/>`,
+  '🕵️': (c) => `<circle cx="26" cy="30" r="12" fill="none" stroke="${outline(c)}" stroke-width="4"/>
+    <path d="M35 39 l12 12" stroke="${outline(c)}" stroke-width="5" stroke-linecap="round"/>
+    <path d="M14 16 h24 l-3-6 h-18z" fill="${outline(c)}"/>`,
+  '🏆': () => `<path d="M20 12 h20 v10 a10 10 0 0 1-20 0z" fill="#FFD84D" stroke="#E0AE12" stroke-width="2.4"/>
+    <path d="M20 15 h-6 a6 6 0 0 0 6 8z M40 15 h6 a6 6 0 0 1-6 8z" fill="none" stroke="#E0AE12" stroke-width="2.6"/>
+    <rect x="26" y="32" width="8" height="8" fill="#E0AE12"/><rect x="18" y="40" width="24" height="7" rx="3" fill="#FFD84D" stroke="#E0AE12" stroke-width="2.2"/>`,
+  '🌲': () => `<rect x="26" y="40" width="8" height="12" rx="3" fill="#8A5A3B"/>
+    <path d="M30 8 L46 34 H14 Z" fill="#3EA85D"/><path d="M30 22 L42 44 H18 Z" fill="#4FBF6E"/>`,
 
   /* --- equipment: the world hue, lined with a darker tint of itself --- */
   '🩺': (c) => `<path d="M18 12 v14 a12 12 0 0 0 24 0 V12" fill="none" stroke="${c}" stroke-width="4.4" stroke-linecap="round"/>

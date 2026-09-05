@@ -73,6 +73,12 @@ const ICONS = {
     <path d="M20 34 h0" stroke="#8C86AD" stroke-width="3.4" stroke-linecap="round"/>
     <path d="M13 8 l-3-3 M27 8 l3-3 M20 5 v-4" stroke="#FFD05A" stroke-width="2.6" stroke-linecap="round"/>`,
 
+  'magnify-small': (c = INK) => `<circle cx="18" cy="18" r="8" fill="none" stroke="${c}" stroke-width="3.4"/>
+    <path d="M24 24 l8 8" stroke="${c}" stroke-width="4" stroke-linecap="round"/>`,
+  'magnify-big': (c = INK) => `<circle cx="18" cy="18" r="12" fill="none" stroke="${c}" stroke-width="3.4"/>
+    <path d="M27 27 l6 6" stroke="${c}" stroke-width="4" stroke-linecap="round"/>
+    <path d="M13 18 h10 M18 13 v10" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/>`,
+
   dice: () => `<rect x="8" y="8" width="24" height="24" rx="7" fill="#FFF9F0" stroke="#D9CFC0" stroke-width="2.6"/>
     <circle cx="15" cy="15" r="2.4" fill="#4A4667"/><circle cx="25" cy="15" r="2.4" fill="#4A4667"/>
     <circle cx="20" cy="20" r="2.4" fill="#4A4667"/>

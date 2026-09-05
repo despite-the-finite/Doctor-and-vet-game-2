@@ -5,6 +5,8 @@
  * the hospital rooms, outfits appear on the hero, and the one big-ticket item
  * physically builds a new wing.
  */
+import { icon } from '../icons.js';
+import { propMarkup } from '../props.js';
 import { h, clear } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
 import { goHome, go } from '../../core/router.js';
@@ -17,11 +19,11 @@ export function shopScreen({ category = 'comfort' } = {}) {
   let active = category;
 
   const el = h('div', { class: 'lh-screen lh-screen--shop', 'data-world': 'doctor' });
-  const bar = hud({ title: '🛒 Supply Room', back: () => goHome('hub'), dark: true, chips: ['coins'] });
+  const bar = hud({ title: 'Supply Room', back: () => goHome('hub'), dark: true, chips: ['coins'] });
   el.appendChild(bar);
 
   const scroll = h('div', { class: 'lh-screen__scroll' });
-  scroll.appendChild(sectionTitle('📦', 'Spend your coins', 'Everything you buy shows up in your hospital!'));
+  scroll.appendChild(sectionTitle(icon('bag', { size: 30 }), 'Spend your coins', 'Everything you buy shows up in your hospital!'));
 
   const tabs = h('div', { class: 'shop-tabs' });
   const grid = h('div', { class: 'lh-card-grid' });
@@ -36,7 +38,7 @@ export function shopScreen({ category = 'comfort' } = {}) {
         role: 'tab',
         'aria-selected': String(cat.id === active),
         onClick: () => { active = cat.id; sfx.tap(); render(); },
-      }, h('span', {}, cat.icon), h('span', {}, cat.name)));
+      }, h('span', { class: 'shop-tab__mark', html: propMarkup(cat.icon) }), h('span', {}, cat.name)));
     });
   }
 
@@ -58,10 +60,12 @@ export function shopScreen({ category = 'comfort' } = {}) {
         class: `kit buy${owned ? ' buy--owned' : ''}${!owned && !affordable ? ' buy--poor' : ''}`,
         onClick: () => buy(item, card),
       },
-        h('span', { class: 'kit__icon' }, item.icon),
+        h('span', { class: 'kit__icon', html: propMarkup(item.icon) }),
         h('span', { class: 'kit__name' }, item.name),
         h('span', { class: 'kit__blurb' }, item.blurb),
-        h('span', { class: 'buy__price' }, owned ? '✅ Bought!' : `🪙 ${item.price}`));
+        h('span', { class: 'buy__price' },
+        owned ? 'Bought!' : h('span', { class: 'buy__coin', html: icon('coin', { size: 22 }) }),
+        owned ? '' : String(item.price)));
       grid.appendChild(card);
     });
   }

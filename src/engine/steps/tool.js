@@ -5,6 +5,7 @@
  * huge hotspots, drag OR two taps, the right tool glows in Little Helper mode,
  * and picking the wrong tool just gets a friendly "not that one!".
  */
+import { toolArt } from '../../ui/toolart.js';
 import { h, wait } from '../../core/dom.js';
 import { sfx, play } from '../../core/audio.js';
 import { sparkle, toast } from '../../core/fx.js';
@@ -30,7 +31,7 @@ export function runTool(step, ctx) {
   }
   const marker = h('div', { class: 'spot-marker' },
     h('div', { class: 'spot-marker__ring' }),
-    h('div', { class: 'spot-marker__dot' }, tool.icon));
+    h('div', { class: 'spot-marker__dot', html: toolArt(tool) }));
   ctx.overlay.appendChild(marker);
   const positionMarker = () => {
     // Changing the patient's mood re-renders the SVG, so the old hotspot node
@@ -63,10 +64,10 @@ export function runTool(step, ctx) {
     if (!t) return;
     const chip = h('button', {
       class: 'tool' + (id === step.tool ? ' tool--needed' : ''),
-      dataset: { icon: t.icon, tool: id },
+      dataset: { tool: id },
       style: { '--tool-tint': t.tint },
       title: t.name,
-    }, h('span', { class: 'tool__icon' }, t.icon), h('span', { class: 'tool__name' }, t.name));
+    }, h('span', { class: 'tool__icon', html: toolArt(t) }), h('span', { class: 'tool__name' }, t.name));
 
     // Little Helper mode literally points at the right tool.
     if (ctx.little && id === step.tool) chip.classList.add('tool--glow');
@@ -113,7 +114,7 @@ export function runTool(step, ctx) {
     sfx.drop();
 
     // Stick the tool to the patient while it does its job.
-    const stuck = h('div', { class: 'tool-stuck' }, tool.icon);
+    const stuck = h('div', { class: 'tool-stuck', html: toolArt(tool) });
     stuck.style.left = marker.style.left;
     stuck.style.top = marker.style.top;
     ctx.overlay.appendChild(stuck);
@@ -121,15 +122,15 @@ export function runTool(step, ctx) {
     const mode = step.mode || 'drop';
     if (mode === 'hold') {
       holdGauge(ctx.bodyEl, {
-        ms: step.holdMs || 1500, icon: tool.icon,
+        ms: step.holdMs || 1500, art: toolArt(tool),
         label: ctx.little ? 'Press and hold!' : 'Hold still…',
         onDone: complete,
       });
     } else if (mode === 'rub') {
       rubGauge(ctx.bodyEl, {
-        strokes: step.rubs || 6, icon: tool.icon,
+        strokes: step.rubs || 6, art: toolArt(tool),
         label: ctx.little ? 'Swipe side to side!' : 'Gently, back and forth…',
-        onStroke: () => { sparkle(stuck, { count: 4, glyphs: ['✨', '🫧'] }); play('whoosh'); },
+        onStroke: () => { sparkle(stuck, { count: 4 }); play('whoosh'); },
         onDone: complete,
       });
     } else {

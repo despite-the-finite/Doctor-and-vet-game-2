@@ -1,10 +1,11 @@
 /**
- * Celebration effects: confetti, sparkle bursts, floating "+3 ⭐" numbers and
+ * Celebration effects: confetti, sparkle bursts, floating reward text and
  * the toast lane used for gentle nudges. All effects are pure DOM so they
  * inherit the page's reduced-motion settings and cost nothing to load.
  */
 import { h, rand, randI, pick } from './dom.js';
 import { icon } from '../ui/icons.js';
+import { star, sparkle as sparkleMark } from '../ui/parts.js';
 import { say } from './voice.js';
 
 let layer = null;
@@ -53,17 +54,22 @@ export function confetti({ intensity = 1, duration = 2600 } = {}) {
   }
 }
 
-const SPARKLE_GLYPHS = ['✨', '⭐', '💫', '🌟'];
+/* Drawn marks, never typed: a four-pointed twinkle, a star, a heart. */
+const MARKS = {
+  spark: (r) => `<svg viewBox="0 0 24 24" style="width:${r}px">${sparkleMark(12, 12, 5)}</svg>`,
+  star: (r) => `<svg viewBox="0 0 24 24" style="width:${r}px">${star(12, 12, 9)}</svg>`,
+  heart: (r) => `<svg viewBox="0 0 24 24" style="width:${r}px"><path d="M12 20.5 C4 14 5.5 7 10 7c2.2 0 3.4 1.4 2 3 1.4-1.6 4.6-3 6.6-1 C22 11 20 16 12 20.5z" fill="#FF5F8D" stroke="#D8558C" stroke-width="1.2"/></svg>`,
+};
 
 /** A burst of sparkles centred on a screen point (or on an element). */
-export function sparkle(target, { count = 14, glyphs = SPARKLE_GLYPHS } = {}) {
+export function sparkle(target, { count = 14, mark = 'spark' } = {}) {
   if (!layer) return;
+  const draw = MARKS[mark] || MARKS.spark;
   const { x, y } = pointOf(target);
   for (let i = 0; i < count; i++) {
-    const s = h('div', { class: 'lh-spark' }, pick(glyphs));
+    const s = h('div', { class: 'lh-spark', html: draw(randI(18, 34)) });
     s.style.left = `${x}px`;
     s.style.top = `${y}px`;
-    s.style.fontSize = `${randI(16, 34)}px`;
     layer.appendChild(s);
     const angle = (Math.PI * 2 * i) / count + rand(-0.3, 0.3);
     const dist = rand(60, 190);
@@ -78,7 +84,7 @@ export function sparkle(target, { count = 14, glyphs = SPARKLE_GLYPHS } = {}) {
   }
 }
 
-/** Floating "+50 🪙" text that drifts up from a point. */
+/** Floating reward text that drifts up from a point. */
 export function floatText(target, text, color = '#fff') {
   if (!layer) return;
   const { x, y } = pointOf(target);
@@ -93,7 +99,7 @@ export function floatText(target, text, color = '#fff') {
 
 /** Small hearts puffing out — used for kindness moments. */
 export function hearts(target, count = 8) {
-  sparkle(target, { count, glyphs: ['❤️', '💖', '💕', '🧡'] });
+  sparkle(target, { count, mark: 'heart' });
 }
 
 function pointOf(target) {
@@ -132,4 +138,41 @@ export function flash(color = 'rgba(255,255,255,.85)', ms = 420) {
   layer.appendChild(el);
   const anim = el.animate([{ opacity: 0.9 }, { opacity: 0 }], { duration: ms, easing: 'ease-out', fill: 'forwards' });
   anim.onfinish = () => el.remove();
+}
+
+
+/**
+ * One celebration language, everywhere: a star burst from the patient, then
+ * three stars stamping in one at a time. Confetti is not fired here — it is
+ * reserved for a new level or a new room.
+ */
+export function starBurst(target, count = 3) {
+  if (!layer) return;
+  const { x, y } = pointOf(target);
+  for (let i = 0; i < 10; i++) {
+    const el = h('div', { class: 'lh-spark', html: `<svg viewBox="0 0 24 24" style="width:26px">${star(12, 12, 9)}</svg>` });
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    layer.appendChild(el);
+    const a = (Math.PI * 2 * i) / 10 + rand(-0.3, 0.3);
+    const dist = rand(70, 150);
+    el.animate([
+      { transform: 'translate(-50%,-50%) scale(.4)', opacity: 0 },
+      { transform: `translate(calc(-50% + ${Math.cos(a) * dist * 0.5}px), calc(-50% + ${Math.sin(a) * dist * 0.5}px)) scale(1.1)`, opacity: 1, offset: 0.4 },
+      { transform: `translate(calc(-50% + ${Math.cos(a) * dist}px), calc(-50% + ${Math.sin(a) * dist}px)) scale(.5)`, opacity: 0 },
+    ], { duration: 900, easing: 'cubic-bezier(.2,.9,.3,1)' }).onfinish = () => el.remove();
+  }
+
+  // Three stamps, .16s apart, rising — the reward beat of every case.
+  const row = h('div', { class: 'lh-stamp-row' });
+  for (let i = 0; i < count; i++) {
+    row.appendChild(h('div', {
+      class: 'lh-star-stamp',
+      html: `<svg viewBox="0 0 24 24" style="width:54px">${star(12, 12, 10)}</svg>`,
+    }));
+  }
+  row.style.left = `${x}px`;
+  row.style.top = `${y}px`;
+  layer.appendChild(row);
+  setTimeout(() => row.remove(), 1800);
 }

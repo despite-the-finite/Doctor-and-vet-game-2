@@ -11,6 +11,9 @@ import { toySVG, TOYS, isToy } from './toy.js';
 import { raw } from '../core/dom.js';
 
 export function patientMarkup(patient, mood = 'happy') {
+  // Cases that pick from a `patientPool` have no single patient until the
+  // runner chooses one, so callers can legitimately have nothing to draw.
+  if (!patient?.kind) return humanSVG({ mood });
   if (patient.kind === 'human') {
     return humanSVG({ ...(patient.look || {}), mood });
   }

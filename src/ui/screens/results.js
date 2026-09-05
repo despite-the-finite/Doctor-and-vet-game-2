@@ -5,6 +5,8 @@
  * their own "NEW TOOL!" moment, then new rooms send the player back to the
  * hospital to watch them being built.
  */
+import { icon } from '../icons.js';
+import { toolArt } from '../toolart.js';
 import { h, wait } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
 import { go, goHome } from '../../core/router.js';
@@ -48,16 +50,16 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
   card.appendChild(rewards);
 
   const pills = [
-    { icon: '⭐', value: `+${result.stars}`, label: 'Hero Stars' },
-    result.kindness ? { icon: '❤️', value: `+${result.kindness}`, label: 'Kindness Stars' } : null,
-    { icon: '🪙', value: `+${result.coins}`, label: 'Hospital Coins' },
+    { mark: 'star', value: `+${result.stars}`, label: 'Hero Stars' },
+    result.kindness ? { mark: 'kindness', value: `+${result.kindness}`, label: 'Kindness Stars' } : null,
+    { mark: 'coin', value: `+${result.coins}`, label: 'Hospital Coins' },
   ].filter(Boolean);
 
   pills.forEach((p, i) => {
     rewards.appendChild(h('div', {
       class: 'reward-pill', style: { animationDelay: `${0.25 + i * 0.22}s` },
     },
-      h('span', { class: 'reward-pill__icon' }, p.icon),
+      h('span', { class: 'reward-pill__icon', html: icon(p.mark) }),
       h('span', { class: 'reward-pill__value' }, p.value),
       h('span', { class: 'reward-pill__label' }, p.label)));
   });
@@ -70,7 +72,7 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
   if (result.badges?.length) {
     card.appendChild(h('div', { class: 'badge-strip' },
       ...result.badges.map((b) => h('span', { class: 'badge-pill' },
-        `${BADGES[b]?.icon || '🏅'} ${BADGES[b]?.name || b}`))));
+        `${BADGES[b]?.name || b}`))));
   }
 
   const unlockStrip = h('div', { class: 'unlock-strip' });
@@ -78,14 +80,18 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
 
   if (progress?.newLevel) {
     const next = getCase(career, progress.unlockedLevel);
+    const nextPatient = next?.patient || next?.patientPool?.[0] || null;
     if (next) {
       unlockStrip.appendChild(h('div', { class: 'unlock-chip' },
-        h('span', { class: 'unlock-chip__icon' }, next.icon),
+        // Some cases pick their patient from a pool, so there may be no
+        // single one to draw — show the first of the pool when that happens.
+        h('span', { class: 'unlock-chip__icon',
+                    html: nextPatient ? patientMarkup(nextPatient, 'happy') : icon('tick') }),
         h('span', {}, `New patient: ${next.title}`)));
     }
   }
   newRooms.forEach((r) => unlockStrip.appendChild(h('div', { class: 'unlock-chip' },
-    h('span', { class: 'unlock-chip__icon' }, ROOMS[r]?.icon || '🏗️'),
+    h('span', { class: 'unlock-chip__icon', html: icon('tick') }),
     h('span', {}, `${ROOMS[r]?.name || r} unlocked!`))));
 
   const actions = h('div', { class: 'lh-row lh-gap-m lh-wrap', style: { justifyContent: 'center', marginTop: '16px' } });
@@ -97,7 +103,7 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
   if (canPlayNext) {
     actions.appendChild(h('button', {
       class: 'lh-btn lh-btn--primary', onClick: () => { sfx.select(); go('case', { career, caseId: nextCase.id }, { replace: true }); },
-    }, `${nextCase.icon} Next patient`));
+    }, 'Next patient'));
   }
   actions.appendChild(h('button', {
     class: 'lh-btn lh-btn--secondary', onClick: goToHospital,
@@ -146,13 +152,13 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
       const m = modal([
         h('div', { class: 'newtool' },
           h('div', { class: 'newtool__kicker' }, 'NEW TOOL!'),
-          h('div', { class: 'newtool__icon' }, tool.icon),
+          h('div', { class: 'newtool__icon', html: toolArt(tool) }),
           h('div', { class: 'newtool__name' }, tool.name.toUpperCase()),
           h('p', { class: 'newtool__blurb' }, `"${tool.blurb}"`)),
         h('button', {
           class: 'lh-btn lh-btn--secondary lh-btn--lg',
           onClick: () => { sfx.select(); m.close(); resolve(); },
-        }, 'ADD TO MY BAG 🎒'),
+        }, 'ADD TO MY BAG'),
       ], { dismissable: false, onClose: resolve });
       sparkle(m.box, { count: 18 });
     });

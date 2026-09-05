@@ -1,11 +1,14 @@
 /**
  * Illustrated room interiors used as the stage behind a patient.
  *
- * Pure CSS + emoji props: walls, skirting, a window with a live sky, and a
- * few pieces of furniture. Each room has its own palette so the X-Ray Room
- * genuinely feels different from the Vet Room.
+ * Walls, skirting, a window with a live sky, and a few pieces of furniture.
+ * Each room has its own palette so the X-Ray Room genuinely feels different
+ * from the Vet Room. Every prop is drawn — the emoji below are the lookup
+ * keys into ui/props.js, not what gets rendered.
  */
 import { h } from '../core/dom.js';
+import { propMarkup } from './props.js';
+import { star, sparkle as sparkleMark } from './parts.js';
 
 const SCENES = {
   doctor:    { wall: '#dff2ff', wall2: '#bfe4ff', floor: '#f4dfc4', props: ['🪴', '🧸', '📋'], poster: '🌈', sky: 'day' },
@@ -30,14 +33,18 @@ export function backdrop(roomId) {
     <div class="backdrop__wall"></div>
     <div class="backdrop__floor"></div>
     ${s.sky !== 'none' ? `<div class="backdrop__window backdrop__window--${s.sky}">
-      <div class="win-sun">${s.sky === 'night' ? '🌙' : '☀️'}</div>
+      <div class="win-sun">${s.sky === 'night'
+        ? '<svg viewBox="0 0 40 40"><path d="M27 6a15 15 0 1 0 8 20A12 12 0 0 1 27 6z" fill="#FFE08A"/></svg>'
+        : '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="11" fill="#FFE08A"/></svg>'}</div>
       <div class="win-cloud win-cloud--a"></div>
       <div class="win-cloud win-cloud--b"></div>
-      ${s.sky === 'day' ? '<div class="win-bird">🕊️</div>' : '<div class="win-star">✨</div>'}
+      ${s.sky === 'day'
+        ? '<div class="win-bird"><svg viewBox="0 0 40 20"><path d="M4 12 q8-9 16 0 q8-9 16 0" fill="none" stroke="#4A4667" stroke-width="3" stroke-linecap="round"/></svg></div>'
+        : `<div class="win-star"><svg viewBox="0 0 40 40">${sparkleMark(20, 20, 6)}</svg></div>`}
     </div>` : `<div class="backdrop__screen"><div class="screen-line"></div><div class="screen-line"></div></div>`}
-    <div class="backdrop__poster">${s.poster}</div>
+    <div class="backdrop__poster">${propMarkup(s.poster, { accent: s.wall2 })}</div>
     <div class="backdrop__shelf">
-      ${s.props.map((p, i) => `<span class="backdrop__prop" style="animation-delay:${i * 0.4}s">${p}</span>`).join('')}
+      ${s.props.map((prop, i) => `<span class="backdrop__prop" style="animation-delay:${i * 0.4}s">${propMarkup(prop, { accent: s.wall2 })}</span>`).join('')}
     </div>
     <div class="backdrop__table"></div>
   `;

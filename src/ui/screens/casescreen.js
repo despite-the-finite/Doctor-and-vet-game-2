@@ -29,7 +29,7 @@ export function caseScreen({ career, caseId }) {
   const replay = isLevelCompleted(career, caseDef.id);
 
   const bar = hud({
-    title: `${caseDef.icon} ${caseDef.title}`,
+    title: caseDef.title,
     back: confirmQuit,
     dark: true,
     chips: [],
@@ -41,7 +41,6 @@ export function caseScreen({ career, caseId }) {
 
   function confirmQuit() {
     const m = modal([
-      h('div', { style: { fontSize: '54px' } }, '🚪'),
       h('h2', {}, 'Leave this patient?'),
       h('p', {}, 'You can come back and start them again any time.'),
       h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },

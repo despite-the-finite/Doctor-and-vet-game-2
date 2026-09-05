@@ -10,7 +10,7 @@ import { sfx } from '../../core/audio.js';
 import { kindPraise } from '../hints.js';
 
 export function runEmpathy(step, ctx) {
-  ctx.setPrompt(step.prompt, '💗 Every answer here is a kind one.');
+  ctx.setPrompt(step.prompt, 'Every answer here is a kind one.');
   if (step.mood) ctx.setMood(step.mood);
 
   const options = ctx.little ? step.options.slice(0, 2) : step.options;

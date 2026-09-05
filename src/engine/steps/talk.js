@@ -3,6 +3,7 @@
  * Animal patients get a translation bubble underneath so a child who cannot
  * read still gets the joke from the icons and the sound.
  */
+import { icon } from '../../ui/icons.js';
 import { h } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
 
@@ -26,7 +27,7 @@ export function runTalk(step, ctx) {
   ctx.setPrompt(label ? `${label} says…` : null, null, { spoken: false });
 
   const btn = h('button', { class: 'lh-btn lh-btn--secondary lh-btn--wide', onClick: go },
-    h('span', {}, 'Next'), h('span', { class: 'lh-btn__arrow' }, '👉'));
+    h('span', {}, 'Next'), h('span', { class: 'lh-btn__arrow', html: icon('play', { size: 22, color: '#fff' }) }));
   ctx.bodyEl.appendChild(btn);
 
   // The whole stage is a "next" target too — much easier for small fingers.

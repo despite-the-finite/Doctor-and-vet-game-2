@@ -547,3 +547,28 @@
   90%     { opacity: 0; transform: scale(.8) translateY(-14px) }
 }
 .newtool__demo { font-style: italic; color: var(--lh-ink-soft); font-size: var(--step-0); margin: 6px 0 0; }
+
+
+/* Drawn marks inside the results chips and pills. */
+.unlock-chip__icon { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; flex: none; background: var(--lh-accent-tint, var(--lh-doc-mist)); }
+.unlock-chip__icon svg { width: 190%; height: auto; display: block; transform: translateY(8%); }
+.unlock-chip__icon > svg[viewBox='0 0 40 40'] { width: 62%; transform: none; }
+.reward-pill__icon { width: 30px; height: 30px; display: grid; place-items: center; }
+.reward-pill__icon svg { width: 100%; height: 100%; }
+.kit__icon { width: 64px; height: 64px; display: grid; place-items: center; margin: 0 auto; }
+.kit__icon svg { width: 100%; height: 100%; display: block; }
+.kit__lock { display: grid; place-items: center; }
+.newtool__icon { width: 84px; height: 84px; display: grid; place-items: center; margin: 0 auto; }
+.newtool__icon svg { width: 100%; height: 100%; }
+.tool-demo__tool { width: 54px; height: 54px; display: grid; place-items: center; }
+.tool-demo__tool svg, .tool-demo__patient svg, .tool-demo__pet svg { width: 100%; height: 100%; display: block; }
+.tool-demo__patient, .tool-demo__pet { width: 56px; height: 56px; display: grid; place-items: end center; overflow: hidden; }
+.tool-demo__spark { display: grid; place-items: center; }
+.buy__coin { display: inline-grid; place-items: center; vertical-align: middle; margin-right: 4px; }
+.lh-section-title__icon { display: grid; place-items: center; }
+.lh-section-title__icon svg { width: 30px; height: 30px; }
+.lh-btn__mark { display: inline-grid; place-items: center; }
+.lh-btn__mark svg, .lh-btn__arrow svg { width: 100%; height: 100%; display: block; }
+
+.shop-tab__mark { width: 26px; height: 26px; display: inline-grid; place-items: center; }
+.shop-tab__mark svg { width: 100%; height: 100%; display: block; }

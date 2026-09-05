@@ -59,7 +59,9 @@ export function levelsScreen({ career = 'doctor' } = {}) {
       isNext ? h('span', { class: 'lh-case__flag' }, 'PLAY NEXT') : null,
       h('span', {
         class: 'lh-case__art',
-        html: unlocked ? patientMarkup(caseDef.patient, completed ? 'happy' : 'calm') : icon('lock', { size: 38 }),
+        html: unlocked
+          ? patientMarkup(caseDef.patient || caseDef.patientPool?.[0], completed ? 'happy' : 'calm')
+          : icon('lock', { size: 38 }),
       }),
       h('div', { class: 'lh-case__body' },
         h('div', { class: 'lh-case__title' }, `${caseDef.level}. ${caseDef.title}`),

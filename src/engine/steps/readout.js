@@ -2,12 +2,13 @@
  * The little result panel a tool shows after it is used — the "payoff" moment.
  * Each `readout.kind` gets its own animated presentation.
  */
+import { toolArt } from '../../ui/toolart.js';
 import { h } from '../../core/dom.js';
 
 export function readout(spec, tool, ctx) {
   const card = h('div', { class: 'readout', style: { '--tint': tool.tint } });
   const head = h('div', { class: 'readout__head' },
-    h('span', { class: 'readout__icon' }, tool.icon),
+    h('span', { class: 'readout__icon', html: toolArt(tool) }),
     h('span', {}, spec.label || tool.readout?.label || tool.name));
   card.appendChild(head);
 

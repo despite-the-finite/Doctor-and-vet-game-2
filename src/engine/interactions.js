@@ -24,7 +24,7 @@ export function makeDraggable(chip, { getTargets, onPick, onDrop, onCancel, laye
   const targetsNow = () => getTargets() || [];
 
   function makeGhost(x, y) {
-    ghost = h('div', { class: 'tool-ghost' }, chip.dataset.icon || '🔧');
+    ghost = h('div', { class: 'tool-ghost', html: chip.querySelector('.tool__icon')?.innerHTML || '' });
     (layer || document.body).appendChild(ghost);
     moveGhost(x, y);
   }
@@ -141,9 +141,9 @@ export function makeDraggable(chip, { getTargets, onPick, onDrop, onCancel, laye
  * Press-and-hold gauge. Progress is kept if the child lets go, so nobody has
  * to start over — releasing just pauses.
  */
-export function holdGauge(host, { ms = 1500, label = 'Hold still…', icon = '🩺', onDone }) {
+export function holdGauge(host, { ms = 1500, label = 'Hold still…', art = '', onDone }) {
   const ring = h('div', { class: 'gauge gauge--hold' },
-    h('div', { class: 'gauge__icon' }, icon),
+    h('div', { class: 'gauge__icon', html: art }),
     h('svg', { class: 'gauge__ring', viewBox: '0 0 100 100', html:
       `<circle cx="50" cy="50" r="43" class="gauge__track"/>
        <circle cx="50" cy="50" r="43" class="gauge__fill"/>` }),
@@ -196,9 +196,9 @@ export function holdGauge(host, { ms = 1500, label = 'Hold still…', icon = '�
  * Counts direction changes rather than distance, so a small wiggly finger
  * works just as well as a big confident swipe.
  */
-export function rubGauge(host, { strokes = 6, label = 'Rub gently!', icon = '🧼', onStroke, onDone }) {
+export function rubGauge(host, { strokes = 6, label = 'Rub gently!', art = '', onStroke, onDone }) {
   const pad = h('div', { class: 'gauge gauge--rub' },
-    h('div', { class: 'gauge__icon gauge__icon--rub' }, icon),
+    h('div', { class: 'gauge__icon gauge__icon--rub', html: art }),
     h('div', { class: 'gauge__label' }, label),
     h('div', { class: 'gauge__pips' }, ...Array.from({ length: strokes }, () => h('i'))));
   host.appendChild(pad);
