@@ -623,6 +623,33 @@ button { font-family: inherit; }
   .creator-grid { grid-template-columns: minmax(260px, 380px) 1fr; padding: 0 26px 26px; }
 }
 
+/* All eight groups sit above the fold: two columns, wide ones spanning. */
+.creator-options { display: grid; gap: 14px; grid-template-columns: 1fr; align-content: start; }
+@media (min-width: 720px) {
+  .creator-options { grid-template-columns: 1fr 1fr; }
+  .lh-optgroup--wide { grid-column: 1 / -1; }
+}
+
+/* The action bar is a pinned row, not an absolute footer — that clipped. */
+.creator-bar {
+  flex: none; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 14px 26px calc(14px + var(--safe));
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 -8px 0 rgba(46,42,68,.06), 0 -18px 30px rgba(46,42,68,.10);
+}
+.creator-bar .lh-btn { white-space: nowrap; flex: none; }
+.creator-bar__go {
+  background: linear-gradient(180deg,#5FD8B4,#3FC79E); color: #0C4A3A;
+  padding: 20px 56px; box-shadow: 0 8px 0 #2E9E7C, var(--lh-air-2), var(--lh-gloss);
+  text-shadow: none;
+}
+.creator-bar__go:active { box-shadow: 0 3px 0 #2E9E7C, var(--lh-air-1), var(--lh-gloss); }
+.creator-bar__note {
+  flex: 1; min-width: 140px;
+  font-family: var(--lh-font-display); font-weight: 800;
+  font-size: var(--lh-size-label); color: var(--lh-ink-mute);
+}
+
 .hero-preview {
   position: sticky; top: 0;
   display: flex; flex-direction: column; align-items: center; gap: 10px;
@@ -661,6 +688,10 @@ button { font-family: inherit; }
   transition: transform .14s;
 }
 .diff-card:hover { transform: translateY(-3px); }
+.diff-card h3 { font-size: var(--lh-size-body-lg); }
+.diff-card__ages { font-size: 15px; font-weight: 800; margin: 2px 0 6px; }
+.diff-card__ages--little { color: #B07A12; }
+.diff-card__ages--explorer { color: var(--lh-doc); }
 .diff-card[aria-pressed='true'] { box-shadow: 0 6px 0 var(--lh-doc-deep), 0 0 0 5px rgba(63,208,166,.4); background: linear-gradient(180deg,#f2fffa,#dcfbee); }
 .diff-card__icon { font-size: 38px; }
 .diff-card h3 { font-size: var(--step-1); }
@@ -669,11 +700,55 @@ button { font-family: inherit; }
 /* ══════════════════════════════════════════════════════ CAREER ══════════ */
 /* ══════════════════════════════════════════════════════ HUB ═════════════ */
 .lh-screen--hub { background: var(--lh-sky-grad); }
-.hub-scroll { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.hub-scroll { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+
+/* Three world doors, with the growing-hospital panel floating beside them. */
+.hub-top {
+  width: min(96vw, 1180px); display: flex; gap: 18px; align-items: stretch;
+  flex-wrap: wrap; padding: 0 8px;
+}
+.hub-doors { flex: 1 1 640px; display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+
+.hub-door {
+  position: relative; overflow: hidden; cursor: pointer; border: none; padding: 0;
+  height: 230px; border-radius: var(--lh-r-xl);
+  background: linear-gradient(180deg, var(--lh-accent), var(--lh-accent-deep));
+  box-shadow: 0 10px 0 var(--lh-accent-ink), 0 20px 32px rgba(46,42,68,.24);
+  transition: transform .16s cubic-bezier(.2,1.4,.4,1);
+}
+.hub-door:hover { transform: translateY(-4px); }
+.hub-door:active { transform: translateY(5px); }
+.hub-door:focus-visible { outline: 4px solid var(--lh-ink); outline-offset: 4px; }
+.hub-door__room { position: absolute; inset: 0; }
+.hub-door__head {
+  position: absolute; left: 0; top: 0; width: 100%;
+  padding: 16px 20px; display: flex; align-items: center; gap: 10px; text-align: left;
+}
+.hub-door__mark {
+  width: 44px; height: 44px; flex: none; border-radius: var(--lh-r-xs);
+  background: rgba(255,255,255,.22); display: grid; place-items: center;
+}
+.hub-door__title {
+  font-family: var(--lh-font-display); font-weight: 800;
+  font-size: 25px; color: var(--lh-paper);
+}
+.hub-door__sub { font-size: var(--lh-size-label); font-weight: 800; color: var(--lh-accent-tint); }
+.hub-door__go {
+  position: absolute; right: 16px; bottom: 16px;
+  padding: 9px 18px; border-radius: var(--lh-r-pill);
+  background: var(--lh-star); color: var(--lh-star-ink);
+  font-family: var(--lh-font-display); font-weight: 800; font-size: var(--lh-size-meta);
+  box-shadow: 0 5px 0 var(--lh-star-deep);
+}
+
+.hub-progress { flex: 0 1 322px; min-width: 260px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+.hub-progress h3 { font-size: var(--lh-size-body-lg); }
+
 
 .building-wrap { width: min(96vw, 720px); padding: 4px 8px 10px; }
 
 .floor {
+  margin-bottom: 8px;
   display: grid; gap: 8px; margin-bottom: 8px;
 }
 .floor--1 { grid-template-columns: 1fr; }
@@ -682,7 +757,7 @@ button { font-family: inherit; }
 .room {
   position: relative; overflow: hidden;
   border: none; border-radius: var(--lh-r-sm);
-  min-height: clamp(96px, 15vh, 150px);
+  min-height: 84px;
   cursor: pointer; padding: 0;
   box-shadow: 0 7px 0 rgba(46,42,68,.16), 0 14px 26px rgba(46,42,68,.16);
   transition: transform .16s cubic-bezier(.3,1.4,.5,1), box-shadow .16s;
@@ -693,7 +768,14 @@ button { font-family: inherit; }
 .room:focus-visible { outline: 4px solid var(--lh-ink); outline-offset: 3px; }
 .room__wall { position: absolute; inset: 0; background: linear-gradient(180deg, var(--wall), var(--tint)); }
 .room__floorline { position: absolute; left: 0; right: 0; bottom: 0; height: 22%; background: rgba(46,42,68,.1); }
-.room__prop { position: absolute; transform: translate(-50%,-50%); filter: drop-shadow(0 3px 3px rgba(46,42,68,.18)); }
+.room__prop {
+  position: absolute; transform: translate(-50%,-50%);
+  display: grid; place-items: center;
+  filter: drop-shadow(0 3px 3px rgba(46,42,68,.18));
+}
+.room__prop svg { width: 100%; height: 100%; display: block; }
+/* A living prop is a whole character, so it hangs from its feet. */
+.room__prop--living { transform: translate(-50%,-72%); }
 .room__label {
   position: absolute; left: 8px; top: 8px;
   display: flex; align-items: center; gap: 6px;
@@ -717,39 +799,36 @@ button { font-family: inherit; }
 }
 
 .room--locked { cursor: pointer; }
-.room--locked .room__wall { filter: grayscale(.75) brightness(.86); }
-.room--locked::after {
-  content: ""; position: absolute; inset: 0;
-  background:
-    repeating-linear-gradient(45deg, rgba(255,200,68,.24) 0 18px, rgba(46,42,68,.16) 18px 36px);
-}
+.room--locked { box-shadow: var(--lh-inset); }
+.room--locked .room__wall { display: none; }
 .room__lock {
   position: absolute; inset: 0; z-index: 2;
-  background: radial-gradient(70% 70% at 50% 50%, rgba(38,45,72,.62), rgba(38,45,72,.34));
+  background: var(--lh-locked-fill);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-  color: var(--lh-panel); text-shadow: 0 3px 0 rgba(46,42,68,.5); text-align: center; padding: 8px;
+  color: var(--lh-ink-mute); text-align: center; padding: 8px; padding: 8px;
 }
-.room__lock-icon { font-size: clamp(26px, 5vw, 42px); animation: lh-bob-slow 3s ease-in-out infinite; }
-.room__lock-name { font-family: var(--lh-font-display); font-weight: 800; font-size: clamp(13px, 2.4vw, 19px); }
+.room__lock-icon { display: grid; place-items: center; animation: lh-bob-slow 3s ease-in-out infinite; }
+.room__lock-name { font-family: var(--lh-font-display); font-weight: 800; font-size: 15px; color: var(--lh-ink-mute); }
 .room__lock-how {
-  font-size: clamp(11px, 1.8vw, 13px); line-height: 1.25; opacity: .96;
-  max-width: 24ch; text-wrap: balance;
+  font-size: var(--lh-size-label); font-weight: 800; line-height: 1.25;
+  color: var(--lh-ink-faint); max-width: 26ch; text-wrap: balance;
 }
 
 .room--roof {
-  min-height: clamp(66px, 10vh, 110px);
+  min-height: 92px;
   background: transparent; box-shadow: none;
   border-radius: var(--lh-r-sm) var(--lh-r-sm) 0 0;
 }
 .room--roof .room__wall { background: linear-gradient(180deg, transparent, rgba(255,255,255,.4)); }
 
 .roof-cap {
-  height: 22px; border-radius: 14px 14px 0 0;
-  background: linear-gradient(180deg,#ff8f80,#e9584a);
-  box-shadow: 0 5px 0 #c33f33;
+  height: 44px; border-radius: 20px 20px 0 0;
+  background: linear-gradient(180deg, var(--lh-accent), var(--lh-accent-deep));
+  box-shadow: 0 6px 0 var(--lh-accent-ink);
   margin-bottom: 8px;
-  display: grid; place-items: center; color: var(--lh-panel); font-weight: 900; font-size: 14px;
-  font-family: var(--lh-font-display); letter-spacing: 2px;
+  display: grid; place-items: center; color: var(--lh-paper);
+  font-family: var(--lh-font-display); font-weight: 800; font-size: var(--lh-size-meta);
+  letter-spacing: var(--lh-track-caps);
 }
 .hub-ground {
   height: 26px; border-radius: 0 0 20px 20px;
@@ -1598,7 +1677,7 @@ function boot() {
   window.__go = go;
 
   // Global unlock announcements, wherever they happen.
-  on('unlock:room', (room) => toast(`${room.icon} ${room.name} unlocked!`, { icon: '🎉', tone: 'good' }));
+  on('unlock:room', (room) => toast(`${room.name} unlocked!`, { tone: 'good' }));
 
   // Keep the layout honest when a phone rotates or a keyboard opens.
   const setVH = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
@@ -1685,6 +1764,7 @@ __def("src/core/fx.js", function (__x, __req) {
  * inherit the page's reduced-motion settings and cost nothing to load.
  */
 const { h, rand, randI, pick } = __req("src/core/dom.js");
+const { icon } = __req("src/ui/icons.js");
 const { say } = __req("src/core/voice.js");
 
 let layer = null;
@@ -1789,10 +1869,13 @@ function pointOf(target) {
  * Gentle nudge / praise banner. Never says "wrong" — see the copy in
  * engine/hints.js for the encouraging phrase pool.
  */
-function toast(text, { icon = '💡', tone = 'warm', ms = 2600, speak = true } = {}) {
+function toast(text, { mark = null, tone = 'warm', ms = 2600, speak = true } = {}) {
   if (!toastLane) return;
   if (speak) say(text);
-  const el = h('div', { class: `lh-toast lh-toast--${tone}` }, h('span', { style: { fontSize: '28px' } }, icon), h('span', {}, text));
+  // Drawn, never typed: a good-news toast ticks, a nudge lights a lamp.
+  const el = h('div', { class: `lh-toast lh-toast--${tone}` },
+    h('span', { class: 'lh-toast__mark', html: icon(mark || (tone === 'good' ? 'tick' : 'hint'), { size: 30 }) }),
+    h('span', {}, text));
   toastLane.appendChild(el);
   setTimeout(() => {
     el.classList.add('is-leaving');
@@ -1895,6 +1978,285 @@ function shuffle(arr) {
   return out;
 }
   Object.assign(__x, { h, svg, raw, $, $$, clear, wait, rand, randI, pick, shuffle });
+});
+
+__def("src/ui/icons.js", function (__x, __req) {
+/**
+ * Drawn icons.
+ *
+ * There is no emoji in the rendered game and no icon font: every mark here is
+ * inline SVG, stroked 3–5.5px with round caps and joins, filled in a world
+ * hue with a darker tint of the same hue as its line.
+ *
+ * `icon(name)` returns markup for a 40x40 box unless the icon says otherwise.
+ * Anything unknown falls back to a friendly dot rather than a broken glyph.
+ */
+const { star } = __req("src/ui/parts.js");
+
+const INK = '#4A4667';
+
+const svg = (inner, { box = '0 0 40 40', size = 30, cls = '' } = {}) =>
+  `<svg viewBox="${box}" class="${cls}" style="width:${size}px;height:${size}px;display:block" aria-hidden="true">${inner}</svg>`;
+
+const ICONS = {
+  /* ---- navigation & chrome ---- */
+  back: (c = INK) => `<path d="M23 11 L14 20 L23 29" fill="none" stroke="${c}" stroke-width="5"
+    stroke-linecap="round" stroke-linejoin="round"/>`,
+
+  soundOn: (c = INK) => `<path d="M10 15 h6 l8-6 v22 l-8-6 h-6 z" fill="${c}"/>
+    <path d="M29 14 q5 6 0 12" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
+  soundOff: (c = INK) => `<path d="M10 15 h6 l8-6 v22 l-8-6 h-6 z" fill="${c}"/>
+    <path d="M28 15 l8 10 M36 15 l-8 10" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
+
+  voiceOn: (c = INK) => `<rect x="15" y="7" width="10" height="18" rx="5" fill="${c}"/>
+    <path d="M12 22 a8 8 0 0 0 16 0" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M20 30 v4" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
+  voiceOff: (c = INK) => `<rect x="15" y="7" width="10" height="18" rx="5" fill="${c}" opacity=".45"/>
+    <path d="M12 22 a8 8 0 0 0 16 0" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round" opacity=".45"/>
+    <path d="M9 9 l22 22" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
+
+  palette: () => `<path d="M20 6 a14 14 0 1 0 4 27.5 c-3-1-2-5 1-5 h4 a7 7 0 0 0 5-12 A14 14 0 0 0 20 6z"
+      fill="#FFF9F0" stroke="${INK}" stroke-width="2.6"/>
+    <circle cx="14" cy="15" r="2.6" fill="#E8556D"/><circle cx="22" cy="12" r="2.6" fill="#FFB13B"/>
+    <circle cx="28" cy="18" r="2.6" fill="#2FA8A0"/><circle cx="14" cy="24" r="2.6" fill="#A87BF0"/>`,
+
+  lock: (c = '#B4AC9C') => `<rect x="10" y="18" width="20" height="15" rx="5" fill="${c}"/>
+    <path d="M15 18 v-4 a5 5 0 0 1 10 0 v4" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>
+    <circle cx="20" cy="25" r="2.6" fill="#FFF9F0"/>`,
+
+  play: (c = '#6B4300') => `<path d="M15 11 L30 20 L15 29 z" fill="${c}"/>`,
+
+  tick: (c = '#2E7D4F') => `<path d="M11 21 l6 6 12-14" fill="none" stroke="${c}" stroke-width="5"
+    stroke-linecap="round" stroke-linejoin="round"/>`,
+
+  /* ---- currencies ---- */
+  star: () => star(12, 12, 9.4, { width: 1.4 }),
+  kindness: () => `<path d="M12 20.5 C4 14 5.5 7 10 7 c2.2 0 3.4 1.4 2 3 1.4-1.6 4.6-3 6.6-1
+      C22 11 20 16 12 20.5z" fill="#FF5F8D" stroke="#D8558C" stroke-width="1.2"/>`,
+  coin: () => `<circle cx="12" cy="12" r="9" fill="#FFC463" stroke="#D98A19" stroke-width="1.6"/>
+    <circle cx="12" cy="12" r="5.4" fill="#FFE0A3"/>`,
+
+  /* ---- the three worlds ---- */
+  doctor: (c = '#FFF9F0') => `<path d="M13 9 v13 a7 7 0 0 0 14 0 V9" fill="none" stroke="${c}"
+      stroke-width="3.6" stroke-linecap="round"/>
+    <circle cx="20" cy="30" r="6" fill="none" stroke="${c}" stroke-width="3.6"/>`,
+  vet: (c = '#FFF9F0') => `<ellipse cx="20" cy="26" rx="8" ry="7" fill="${c}"/>
+    <ellipse cx="11" cy="16" rx="3.4" ry="4.6" fill="${c}"/><ellipse cx="17" cy="12" rx="3.4" ry="4.8" fill="${c}"/>
+    <ellipse cx="24" cy="12" rx="3.4" ry="4.8" fill="${c}"/><ellipse cx="30" cy="16" rx="3.4" ry="4.6" fill="${c}"/>`,
+  toy: (c = '#FFF9F0') => `<circle cx="20" cy="21" r="10" fill="${c}"/>
+    <circle cx="11" cy="12" r="5" fill="${c}"/><circle cx="29" cy="12" r="5" fill="${c}"/>
+    <circle cx="16" cy="19" r="1.8" fill="#8F5FD6"/><circle cx="24" cy="19" r="1.8" fill="#8F5FD6"/>
+    <path d="M17 25 q3 3 6 0" fill="none" stroke="#8F5FD6" stroke-width="2" stroke-linecap="round"/>`,
+
+  /* ---- shop / bag ---- */
+  bag: () => `<path d="M7 13 h26 l-3 21 h-20z" fill="#FFB13B" stroke="#D98A19" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M14 13 v-3 a6 6 0 0 1 12 0 v3" fill="none" stroke="#D98A19" stroke-width="3"/>`,
+  hint: () => `<circle cx="20" cy="17" r="9" fill="#FFE08A" stroke="#D98A19" stroke-width="2.2"/>
+    <rect x="16" y="26" width="8" height="6" rx="2.4" fill="#C9C4E0"/>
+    <path d="M20 34 h0" stroke="#8C86AD" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M13 8 l-3-3 M27 8 l3-3 M20 5 v-4" stroke="#FFD05A" stroke-width="2.6" stroke-linecap="round"/>`,
+
+  dice: () => `<rect x="8" y="8" width="24" height="24" rx="7" fill="#FFF9F0" stroke="#D9CFC0" stroke-width="2.6"/>
+    <circle cx="15" cy="15" r="2.4" fill="#4A4667"/><circle cx="25" cy="15" r="2.4" fill="#4A4667"/>
+    <circle cx="20" cy="20" r="2.4" fill="#4A4667"/>
+    <circle cx="15" cy="25" r="2.4" fill="#4A4667"/><circle cx="25" cy="25" r="2.4" fill="#4A4667"/>`,
+
+  kit: () => `<rect x="8" y="14" width="24" height="20" rx="6" fill="#E8556D"/>
+    <path d="M14 14 v-3 a6 6 0 0 1 12 0 v3" fill="none" stroke="#E8556D" stroke-width="3.4"/>
+    <rect x="17" y="20" width="6" height="10" rx="3" fill="#FFF9F0"/>
+    <rect x="15" y="23" width="10" height="4" rx="2" fill="#FFF9F0"/>`,
+};
+
+/** Markup for a named icon. */
+function icon(name, { size = 30, color = null, box = '0 0 40 40' } = {}) {
+  const draw = ICONS[name];
+  if (!draw) return svg(`<circle cx="20" cy="20" r="8" fill="${INK}" opacity=".3"/>`, { size, box });
+  const currency = name === 'star' || name === 'coin' || name === 'kindness';
+  return svg(color ? draw(color) : draw(), { size, box: currency ? '0 0 24 24' : box });
+}
+
+/** A row of `total` stars with `earned` of them filled. */
+function starRow(earned, total = 3, size = 26) {
+  let out = '';
+  for (let i = 0; i < total; i++) {
+    const on = i < earned;
+    out += svg(star(12, 12, 9.4, {
+      fill: on ? '#FFD84D' : '#E4DED2',
+      stroke: on ? '#E0AE12' : '#CFC7B8',
+      width: 1.4,
+    }), { size, box: '0 0 24 24', cls: on ? 'lh-star-stamp' : '' });
+  }
+  return `<span style="display:inline-flex;gap:5px">${out}</span>`;
+}
+  Object.assign(__x, { ICONS, icon, starRow });
+});
+
+__def("src/ui/parts.js", function (__x, __req) {
+/**
+ * Shared SVG primitives.
+ *
+ * One proportion rule holds across all three worlds: big head, soft body, no
+ * visible foot detail. Everything drawn in the game is assembled from the
+ * pieces below, so a human, an animal and a toy are the same figure with
+ * different parts bolted on.
+ *
+ * Reference viewBoxes: humans `0 0 120 190`, animals and toys `0 0 130 190`.
+ * Outlines are always a darker tint of the fill — never black, never grey.
+ */
+
+const INK = '#2E2A44';
+
+/** Read a hex colour, long or short form, as [r, g, b]. */
+function rgb(c) {
+  let h = c.replace('#', '');
+  if (h.length === 3) h = h.split('').map((v) => v + v).join('');
+  return h.match(/../g).map((v) => parseInt(v, 16));
+}
+
+const hex2 = (v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0');
+
+/** Mix two hex colours. `t` of 0 keeps `a`, 1 gives `b`. */
+function mix(a, b, t) {
+  const [r1, g1, b1] = rgb(a);
+  const [r2, g2, b2] = rgb(b);
+  const ch = (x, y) => hex2(x + (y - x) * t);
+  return `#${ch(r1, r2)}${ch(g1, g2)}${ch(b1, b2)}`;
+}
+
+/**
+ * The outline for a fill: the same hue, taken darker.
+ *
+ * Mixing toward ink would drain the colour to grey, and the design is
+ * explicit that an outline is a darker tint of its fill — never black,
+ * never grey. So darken in HSL and leave the hue where it is.
+ */
+function outline(fill, amount = 0.34) {
+  const [r, g, b] = rgb(fill).map((v) => v / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  const d = max - min;
+  let hue = 0;
+  const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+  if (d !== 0) {
+    if (max === r) hue = ((g - b) / d) % 6;
+    else if (max === g) hue = (b - r) / d + 2;
+    else hue = (r - g) / d + 4;
+    hue *= 60;
+    if (hue < 0) hue += 360;
+  }
+  /* A near-neutral fill has no hue to darken into, and the design never
+     wants a grey line, so it takes the warm ink-violet instead. */
+  if (s < 0.08) return mix(fill, '#8C86AD', amount + 0.12);
+  /* Calibrated against the design's own pair: fur #F7DDBB is outlined
+     #C29061 — lightness down about a third, saturation down a little more. */
+  const l2 = l * (1 - amount);
+  const s2 = Math.max(0, s * (1 - amount * 1.2));
+  const c = (1 - Math.abs(2 * l2 - 1)) * s2;
+  const x = c * (1 - Math.abs(((hue / 60) % 2) - 1));
+  const m = l2 - c / 2;
+  const [rr, gg, bb] = hue < 60 ? [c, x, 0] : hue < 120 ? [x, c, 0] : hue < 180 ? [0, c, x]
+    : hue < 240 ? [0, x, c] : hue < 300 ? [x, 0, c] : [c, 0, x];
+  return `#${hex2((rr + m) * 255)}${hex2((gg + m) * 255)}${hex2((bb + m) * 255)}`;
+}
+
+/** The soft ellipse that plants a character on the ground. */
+function contactShadow(cx, cy, rx = 34, ry = 7) {
+  return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="rgba(46,42,68,.12)"/>`;
+}
+
+/** A head. Big, round, and the anchor every other part hangs off. */
+function head(cx, cy, r, fill, { line = null, lineWidth = 2.4 } = {}) {
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}"
+    stroke="${line || outline(fill)}" stroke-width="${lineWidth}"/>`;
+}
+
+/** A soft tapered body, narrower at the shoulder than the base. */
+function body(cx, top, bottom, halfTop, halfBottom, fill, { line = null } = {}) {
+  const l = line || outline(fill);
+  return `<path d="M ${cx - halfBottom} ${bottom}
+    q ${-4} ${-(bottom - top) * 0.82} ${halfBottom - halfTop} ${-(bottom - top)}
+    h ${halfTop * 2}
+    q ${halfBottom - halfTop + 4} ${(bottom - top) * 0.82} ${halfBottom - halfTop} ${bottom - top} z"
+    fill="${fill}" stroke="${l}" stroke-width="2.6" stroke-linejoin="round"/>`;
+}
+
+/** An ear: a rotated ellipse, leaning out from the head. */
+function ear(cx, cy, fill, { rx = 11, ry = 20, angle = 14, line = null, inner = null } = {}) {
+  const l = line || outline(fill);
+  const shell = `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}"
+    stroke="${l}" stroke-width="2.2" transform="rotate(${angle} ${cx} ${cy})"/>`;
+  if (!inner) return shell;
+  return shell + `<ellipse cx="${cx}" cy="${cy}" rx="${rx * 0.5}" ry="${ry * 0.55}" fill="${inner}"
+    transform="rotate(${angle} ${cx} ${cy})"/>`;
+}
+
+/** An arm or a leg — a round-capped stroke, so there is no foot to draw. */
+function limb(d, fill, { width = 14 } = {}) {
+  return `<path d="${d}" fill="none" stroke="${fill}" stroke-width="${width}"
+    stroke-linecap="round" stroke-linejoin="round"/>`;
+}
+
+/** A tail that wags. */
+function tail(d, fill, { width = 12, wag = true } = {}) {
+  const anim = wag ? ' class="lh-tail-wag"' : '';
+  return `<g${anim} style="transform-origin:${d.split(' ')[1]}px ${d.split(' ')[2]}px">
+    <path d="${d}" fill="none" stroke="${fill}" stroke-width="${width}" stroke-linecap="round"/>
+  </g>`;
+}
+
+/** A five-pointed star. The reward language of the whole game. */
+function star(cx, cy, r, { fill = '#FFD84D', stroke = '#E0AE12', width = 1.2 } = {}) {
+  const pts = [];
+  for (let i = 0; i < 10; i++) {
+    const rad = i % 2 ? r * 0.45 : r;
+    const a = (Math.PI / 5) * i - Math.PI / 2;
+    pts.push(`${(cx + Math.cos(a) * rad).toFixed(2)},${(cy + Math.sin(a) * rad).toFixed(2)}`);
+  }
+  return `<polygon points="${pts.join(' ')}" fill="${fill}" stroke="${stroke}"
+    stroke-width="${width}" stroke-linejoin="round"/>`;
+}
+
+/** A four-pointed sparkle that twinkles on its own clock. */
+function sparkle(cx, cy, r, { fill = '#FFD84D', dur = '2s' } = {}) {
+  return `<path d="M ${cx} ${cy - r * 2} l ${r} ${r} ${r} ${r * 0.5} -${r} ${r * 0.5} -${r} ${r * 2}
+    -${r} -${r * 2} -${r} -${r * 0.5} ${r} -${r * 0.5} z" fill="${fill}" opacity=".9">
+    <animate attributeName="opacity" values=".25;1;.25" dur="${dur}" repeatCount="indefinite"/>
+  </path>`;
+}
+
+/** The red cross plate that marks the hospital. */
+function cross(cx, cy, size, fill = '#E8556D') {
+  const t = size * 0.2;       /* arm thickness */
+  const l = size * 0.733;     /* arm length */
+  return `<rect x="${cx - t / 2}" y="${cy - l / 2}" width="${t}" height="${l}" rx="${t / 2}" fill="${fill}"/>
+          <rect x="${cx - l / 2}" y="${cy - t / 2}" width="${l}" height="${t}" rx="${t / 2}" fill="${fill}"/>`;
+}
+
+/** The belly patch a soft toy wears, with its stitching. */
+function bellyPatch(cx, cy, fill = '#F3EBFF', { rx = 18, ry = 17, stitch = null } = {}) {
+  const seam = stitch
+    ? `<path d="M ${cx - rx} ${cy} a ${rx} ${ry} 0 0 0 ${rx * 2} 0" fill="none"
+         stroke="${stitch}" stroke-width="2.4" stroke-dasharray="5 6" opacity=".5" stroke-linecap="round"/>`
+    : '';
+  return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}"/>${seam}`;
+}
+
+/** A run of stitching along a seam. */
+function stitching(d, color = '#8F5FD6') {
+  return `<path d="${d}" fill="none" stroke="${color}" stroke-width="2.4"
+    stroke-dasharray="5 6" stroke-linecap="round" opacity=".5"/>`;
+}
+
+/** A pair of eyes that blink on their own clock. */
+function blinker(inner, dur = '5s') {
+  return `<g class="lh-blink" style="animation:lh-blink ${dur} infinite">${inner}</g>`;
+}
+
+/** Wrap a group so it breathes from its feet. */
+function breathing(inner, { dur = '3.4s', origin = 'bottom center' } = {}) {
+  return `<g style="animation:lh-breathe ${dur} ease-in-out infinite; transform-origin:${origin}">${inner}</g>`;
+}
+  Object.assign(__x, { INK, mix, outline, contactShadow, head, body, ear, limb, tail, star, sparkle, cross, bellyPatch, stitching, blinker, breathing });
 });
 
 __def("src/core/voice.js", function (__x, __req) {
@@ -6878,275 +7240,6 @@ function ownedAccessories(purchased) {
   Object.assign(__x, { CATEGORIES, SHOP_ITEMS, itemsIn, getItem, placedItemsFor, ownedAccessories });
 });
 
-__def("src/ui/icons.js", function (__x, __req) {
-/**
- * Drawn icons.
- *
- * There is no emoji in the rendered game and no icon font: every mark here is
- * inline SVG, stroked 3–5.5px with round caps and joins, filled in a world
- * hue with a darker tint of the same hue as its line.
- *
- * `icon(name)` returns markup for a 40x40 box unless the icon says otherwise.
- * Anything unknown falls back to a friendly dot rather than a broken glyph.
- */
-const { star } = __req("src/ui/parts.js");
-
-const INK = '#4A4667';
-
-const svg = (inner, { box = '0 0 40 40', size = 30, cls = '' } = {}) =>
-  `<svg viewBox="${box}" class="${cls}" style="width:${size}px;height:${size}px;display:block" aria-hidden="true">${inner}</svg>`;
-
-const ICONS = {
-  /* ---- navigation & chrome ---- */
-  back: (c = INK) => `<path d="M23 11 L14 20 L23 29" fill="none" stroke="${c}" stroke-width="5"
-    stroke-linecap="round" stroke-linejoin="round"/>`,
-
-  soundOn: (c = INK) => `<path d="M10 15 h6 l8-6 v22 l-8-6 h-6 z" fill="${c}"/>
-    <path d="M29 14 q5 6 0 12" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
-  soundOff: (c = INK) => `<path d="M10 15 h6 l8-6 v22 l-8-6 h-6 z" fill="${c}"/>
-    <path d="M28 15 l8 10 M36 15 l-8 10" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
-
-  voiceOn: (c = INK) => `<rect x="15" y="7" width="10" height="18" rx="5" fill="${c}"/>
-    <path d="M12 22 a8 8 0 0 0 16 0" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>
-    <path d="M20 30 v4" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
-  voiceOff: (c = INK) => `<rect x="15" y="7" width="10" height="18" rx="5" fill="${c}" opacity=".45"/>
-    <path d="M12 22 a8 8 0 0 0 16 0" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round" opacity=".45"/>
-    <path d="M9 9 l22 22" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
-
-  palette: () => `<path d="M20 6 a14 14 0 1 0 4 27.5 c-3-1-2-5 1-5 h4 a7 7 0 0 0 5-12 A14 14 0 0 0 20 6z"
-      fill="#FFF9F0" stroke="${INK}" stroke-width="2.6"/>
-    <circle cx="14" cy="15" r="2.6" fill="#E8556D"/><circle cx="22" cy="12" r="2.6" fill="#FFB13B"/>
-    <circle cx="28" cy="18" r="2.6" fill="#2FA8A0"/><circle cx="14" cy="24" r="2.6" fill="#A87BF0"/>`,
-
-  lock: (c = '#B4AC9C') => `<rect x="10" y="18" width="20" height="15" rx="5" fill="${c}"/>
-    <path d="M15 18 v-4 a5 5 0 0 1 10 0 v4" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>
-    <circle cx="20" cy="25" r="2.6" fill="#FFF9F0"/>`,
-
-  play: (c = '#6B4300') => `<path d="M15 11 L30 20 L15 29 z" fill="${c}"/>`,
-
-  tick: (c = '#2E7D4F') => `<path d="M11 21 l6 6 12-14" fill="none" stroke="${c}" stroke-width="5"
-    stroke-linecap="round" stroke-linejoin="round"/>`,
-
-  /* ---- currencies ---- */
-  star: () => star(12, 12, 9.4, { width: 1.4 }),
-  kindness: () => `<path d="M12 20.5 C4 14 5.5 7 10 7 c2.2 0 3.4 1.4 2 3 1.4-1.6 4.6-3 6.6-1
-      C22 11 20 16 12 20.5z" fill="#FF5F8D" stroke="#D8558C" stroke-width="1.2"/>`,
-  coin: () => `<circle cx="12" cy="12" r="9" fill="#FFC463" stroke="#D98A19" stroke-width="1.6"/>
-    <circle cx="12" cy="12" r="5.4" fill="#FFE0A3"/>`,
-
-  /* ---- the three worlds ---- */
-  doctor: (c = '#FFF9F0') => `<path d="M13 9 v13 a7 7 0 0 0 14 0 V9" fill="none" stroke="${c}"
-      stroke-width="3.6" stroke-linecap="round"/>
-    <circle cx="20" cy="30" r="6" fill="none" stroke="${c}" stroke-width="3.6"/>`,
-  vet: (c = '#FFF9F0') => `<ellipse cx="20" cy="26" rx="8" ry="7" fill="${c}"/>
-    <ellipse cx="11" cy="16" rx="3.4" ry="4.6" fill="${c}"/><ellipse cx="17" cy="12" rx="3.4" ry="4.8" fill="${c}"/>
-    <ellipse cx="24" cy="12" rx="3.4" ry="4.8" fill="${c}"/><ellipse cx="30" cy="16" rx="3.4" ry="4.6" fill="${c}"/>`,
-  toy: (c = '#FFF9F0') => `<circle cx="20" cy="21" r="10" fill="${c}"/>
-    <circle cx="11" cy="12" r="5" fill="${c}"/><circle cx="29" cy="12" r="5" fill="${c}"/>
-    <circle cx="16" cy="19" r="1.8" fill="#8F5FD6"/><circle cx="24" cy="19" r="1.8" fill="#8F5FD6"/>
-    <path d="M17 25 q3 3 6 0" fill="none" stroke="#8F5FD6" stroke-width="2" stroke-linecap="round"/>`,
-
-  /* ---- shop / bag ---- */
-  bag: () => `<path d="M7 13 h26 l-3 21 h-20z" fill="#FFB13B" stroke="#D98A19" stroke-width="2.6" stroke-linejoin="round"/>
-    <path d="M14 13 v-3 a6 6 0 0 1 12 0 v3" fill="none" stroke="#D98A19" stroke-width="3"/>`,
-  kit: () => `<rect x="8" y="14" width="24" height="20" rx="6" fill="#E8556D"/>
-    <path d="M14 14 v-3 a6 6 0 0 1 12 0 v3" fill="none" stroke="#E8556D" stroke-width="3.4"/>
-    <rect x="17" y="20" width="6" height="10" rx="3" fill="#FFF9F0"/>
-    <rect x="15" y="23" width="10" height="4" rx="2" fill="#FFF9F0"/>`,
-};
-
-/** Markup for a named icon. */
-function icon(name, { size = 30, color = null, box = '0 0 40 40' } = {}) {
-  const draw = ICONS[name];
-  if (!draw) return svg(`<circle cx="20" cy="20" r="8" fill="${INK}" opacity=".3"/>`, { size, box });
-  const currency = name === 'star' || name === 'coin' || name === 'kindness';
-  return svg(color ? draw(color) : draw(), { size, box: currency ? '0 0 24 24' : box });
-}
-
-/** A row of `total` stars with `earned` of them filled. */
-function starRow(earned, total = 3, size = 26) {
-  let out = '';
-  for (let i = 0; i < total; i++) {
-    const on = i < earned;
-    out += svg(star(12, 12, 9.4, {
-      fill: on ? '#FFD84D' : '#E4DED2',
-      stroke: on ? '#E0AE12' : '#CFC7B8',
-      width: 1.4,
-    }), { size, box: '0 0 24 24', cls: on ? 'lh-star-stamp' : '' });
-  }
-  return `<span style="display:inline-flex;gap:5px">${out}</span>`;
-}
-  Object.assign(__x, { ICONS, icon, starRow });
-});
-
-__def("src/ui/parts.js", function (__x, __req) {
-/**
- * Shared SVG primitives.
- *
- * One proportion rule holds across all three worlds: big head, soft body, no
- * visible foot detail. Everything drawn in the game is assembled from the
- * pieces below, so a human, an animal and a toy are the same figure with
- * different parts bolted on.
- *
- * Reference viewBoxes: humans `0 0 120 190`, animals and toys `0 0 130 190`.
- * Outlines are always a darker tint of the fill — never black, never grey.
- */
-
-const INK = '#2E2A44';
-
-/** Read a hex colour, long or short form, as [r, g, b]. */
-function rgb(c) {
-  let h = c.replace('#', '');
-  if (h.length === 3) h = h.split('').map((v) => v + v).join('');
-  return h.match(/../g).map((v) => parseInt(v, 16));
-}
-
-const hex2 = (v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0');
-
-/** Mix two hex colours. `t` of 0 keeps `a`, 1 gives `b`. */
-function mix(a, b, t) {
-  const [r1, g1, b1] = rgb(a);
-  const [r2, g2, b2] = rgb(b);
-  const ch = (x, y) => hex2(x + (y - x) * t);
-  return `#${ch(r1, r2)}${ch(g1, g2)}${ch(b1, b2)}`;
-}
-
-/**
- * The outline for a fill: the same hue, taken darker.
- *
- * Mixing toward ink would drain the colour to grey, and the design is
- * explicit that an outline is a darker tint of its fill — never black,
- * never grey. So darken in HSL and leave the hue where it is.
- */
-function outline(fill, amount = 0.34) {
-  const [r, g, b] = rgb(fill).map((v) => v / 255);
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  const l = (max + min) / 2;
-  const d = max - min;
-  let hue = 0;
-  const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
-  if (d !== 0) {
-    if (max === r) hue = ((g - b) / d) % 6;
-    else if (max === g) hue = (b - r) / d + 2;
-    else hue = (r - g) / d + 4;
-    hue *= 60;
-    if (hue < 0) hue += 360;
-  }
-  /* A near-neutral fill has no hue to darken into, and the design never
-     wants a grey line, so it takes the warm ink-violet instead. */
-  if (s < 0.08) return mix(fill, '#8C86AD', amount + 0.12);
-  /* Calibrated against the design's own pair: fur #F7DDBB is outlined
-     #C29061 — lightness down about a third, saturation down a little more. */
-  const l2 = l * (1 - amount);
-  const s2 = Math.max(0, s * (1 - amount * 1.2));
-  const c = (1 - Math.abs(2 * l2 - 1)) * s2;
-  const x = c * (1 - Math.abs(((hue / 60) % 2) - 1));
-  const m = l2 - c / 2;
-  const [rr, gg, bb] = hue < 60 ? [c, x, 0] : hue < 120 ? [x, c, 0] : hue < 180 ? [0, c, x]
-    : hue < 240 ? [0, x, c] : hue < 300 ? [x, 0, c] : [c, 0, x];
-  return `#${hex2((rr + m) * 255)}${hex2((gg + m) * 255)}${hex2((bb + m) * 255)}`;
-}
-
-/** The soft ellipse that plants a character on the ground. */
-function contactShadow(cx, cy, rx = 34, ry = 7) {
-  return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="rgba(46,42,68,.12)"/>`;
-}
-
-/** A head. Big, round, and the anchor every other part hangs off. */
-function head(cx, cy, r, fill, { line = null, lineWidth = 2.4 } = {}) {
-  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}"
-    stroke="${line || outline(fill)}" stroke-width="${lineWidth}"/>`;
-}
-
-/** A soft tapered body, narrower at the shoulder than the base. */
-function body(cx, top, bottom, halfTop, halfBottom, fill, { line = null } = {}) {
-  const l = line || outline(fill);
-  return `<path d="M ${cx - halfBottom} ${bottom}
-    q ${-4} ${-(bottom - top) * 0.82} ${halfBottom - halfTop} ${-(bottom - top)}
-    h ${halfTop * 2}
-    q ${halfBottom - halfTop + 4} ${(bottom - top) * 0.82} ${halfBottom - halfTop} ${bottom - top} z"
-    fill="${fill}" stroke="${l}" stroke-width="2.6" stroke-linejoin="round"/>`;
-}
-
-/** An ear: a rotated ellipse, leaning out from the head. */
-function ear(cx, cy, fill, { rx = 11, ry = 20, angle = 14, line = null, inner = null } = {}) {
-  const l = line || outline(fill);
-  const shell = `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}"
-    stroke="${l}" stroke-width="2.2" transform="rotate(${angle} ${cx} ${cy})"/>`;
-  if (!inner) return shell;
-  return shell + `<ellipse cx="${cx}" cy="${cy}" rx="${rx * 0.5}" ry="${ry * 0.55}" fill="${inner}"
-    transform="rotate(${angle} ${cx} ${cy})"/>`;
-}
-
-/** An arm or a leg — a round-capped stroke, so there is no foot to draw. */
-function limb(d, fill, { width = 14 } = {}) {
-  return `<path d="${d}" fill="none" stroke="${fill}" stroke-width="${width}"
-    stroke-linecap="round" stroke-linejoin="round"/>`;
-}
-
-/** A tail that wags. */
-function tail(d, fill, { width = 12, wag = true } = {}) {
-  const anim = wag ? ' class="lh-tail-wag"' : '';
-  return `<g${anim} style="transform-origin:${d.split(' ')[1]}px ${d.split(' ')[2]}px">
-    <path d="${d}" fill="none" stroke="${fill}" stroke-width="${width}" stroke-linecap="round"/>
-  </g>`;
-}
-
-/** A five-pointed star. The reward language of the whole game. */
-function star(cx, cy, r, { fill = '#FFD84D', stroke = '#E0AE12', width = 1.2 } = {}) {
-  const pts = [];
-  for (let i = 0; i < 10; i++) {
-    const rad = i % 2 ? r * 0.45 : r;
-    const a = (Math.PI / 5) * i - Math.PI / 2;
-    pts.push(`${(cx + Math.cos(a) * rad).toFixed(2)},${(cy + Math.sin(a) * rad).toFixed(2)}`);
-  }
-  return `<polygon points="${pts.join(' ')}" fill="${fill}" stroke="${stroke}"
-    stroke-width="${width}" stroke-linejoin="round"/>`;
-}
-
-/** A four-pointed sparkle that twinkles on its own clock. */
-function sparkle(cx, cy, r, { fill = '#FFD84D', dur = '2s' } = {}) {
-  return `<path d="M ${cx} ${cy - r * 2} l ${r} ${r} ${r} ${r * 0.5} -${r} ${r * 0.5} -${r} ${r * 2}
-    -${r} -${r * 2} -${r} -${r * 0.5} ${r} -${r * 0.5} z" fill="${fill}" opacity=".9">
-    <animate attributeName="opacity" values=".25;1;.25" dur="${dur}" repeatCount="indefinite"/>
-  </path>`;
-}
-
-/** The red cross plate that marks the hospital. */
-function cross(cx, cy, size, fill = '#E8556D') {
-  const t = size * 0.2;       /* arm thickness */
-  const l = size * 0.733;     /* arm length */
-  return `<rect x="${cx - t / 2}" y="${cy - l / 2}" width="${t}" height="${l}" rx="${t / 2}" fill="${fill}"/>
-          <rect x="${cx - l / 2}" y="${cy - t / 2}" width="${l}" height="${t}" rx="${t / 2}" fill="${fill}"/>`;
-}
-
-/** The belly patch a soft toy wears, with its stitching. */
-function bellyPatch(cx, cy, fill = '#F3EBFF', { rx = 18, ry = 17, stitch = null } = {}) {
-  const seam = stitch
-    ? `<path d="M ${cx - rx} ${cy} a ${rx} ${ry} 0 0 0 ${rx * 2} 0" fill="none"
-         stroke="${stitch}" stroke-width="2.4" stroke-dasharray="5 6" opacity=".5" stroke-linecap="round"/>`
-    : '';
-  return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${fill}"/>${seam}`;
-}
-
-/** A run of stitching along a seam. */
-function stitching(d, color = '#8F5FD6') {
-  return `<path d="${d}" fill="none" stroke="${color}" stroke-width="2.4"
-    stroke-dasharray="5 6" stroke-linecap="round" opacity=".5"/>`;
-}
-
-/** A pair of eyes that blink on their own clock. */
-function blinker(inner, dur = '5s') {
-  return `<g class="lh-blink" style="animation:lh-blink ${dur} infinite">${inner}</g>`;
-}
-
-/** Wrap a group so it breathes from its feet. */
-function breathing(inner, { dur = '3.4s', origin = 'bottom center' } = {}) {
-  return `<g style="animation:lh-breathe ${dur} ease-in-out infinite; transform-origin:${origin}">${inner}</g>`;
-}
-  Object.assign(__x, { INK, mix, outline, contactShadow, head, body, ear, limb, tail, star, sparkle, cross, bellyPatch, stitching, blinker, breathing });
-});
-
 __def("src/ui/scene.js", function (__x, __req) {
 /**
  * Scenes: the four depth planes every screen is built from.
@@ -7376,6 +7469,7 @@ const { go } = __req("src/core/router.js");
 const { getState, setHero, setDifficulty, hasHero, setVoice } = __req("src/core/state.js");
 const { hud, heroSVG } = __req("src/ui/components.js");
 const { sparkle } = __req("src/core/fx.js");
+const { icon } = __req("src/ui/icons.js");
 const { SKIN_TONES, HAIR_COLORS, HAIR_STYLES, SCRUB_COLORS, COAT_COLORS, SHOE_COLORS, GLASSES, ACCESSORIES, ACCESSORY_LABELS, NAME_SUGGESTIONS, defaultHero } = __req("src/data/characters.js");
 const { ownedAccessories } = __req("src/data/shop.js");
 
@@ -7403,24 +7497,30 @@ function creatorScreen() {
   const scroll = h('div', { class: 'lh-screen__scroll' }, grid);
   el.appendChild(scroll);
 
+  el.appendChild(h('div', { class: 'creator-bar' },
+    h('button', { class: 'lh-btn lh-btn--quiet', onClick: randomise }, 'Surprise me!'),
+    h('button', { class: 'lh-btn lh-btn--primary creator-bar__go', onClick: done },
+      editing ? 'SAVE' : "THAT'S ME!"),
+    h('span', { class: 'creator-bar__note' }, 'You can change any of this later.')));
+
   /* ------------------------------------------------------------- preview */
   function redraw() {
     art.innerHTML = heroSVG({ ...draft, mood: 'happy', age: 'adult' });
     clear(nameLabel);
-    nameLabel.append(h('span', {}, '🩺'), h('span', {}, `Dr. ${draft.name || '…'}`));
+    nameLabel.append(h('span', {}, `Dr. ${draft.name || '…'}`));
   }
 
   /* ------------------------------------------------------- option groups */
-  function group(icon, title, rowEls) {
-    return h('div', { class: 'lh-optgroup' },
-      h('div', { class: 'lh-optgroup__label' }, h('span', {}, icon), h('span', {}, title)),
+  function group(title, rowEls, { wide = false } = {}) {
+    return h('div', { class: `lh-optgroup${wide ? ' lh-optgroup--wide' : ''}` },
+      h('div', { class: 'lh-optgroup__label' }, title),
       h('div', { class: 'lh-optgroup__row' }, ...rowEls));
   }
 
   // A colour is a swatch; a named choice ("Curly", "No coat") is a pill.
-  function swatch(key, id, styles, content = null, wide = false) {
+  function swatch(key, id, styles, content = null, wide = false, large = false) {
     const btn = h('button', {
-      class: wide ? 'lh-pillopt' : 'lh-swatch',
+      class: wide ? 'lh-pillopt' : `lh-swatch${large ? ' lh-swatch--lg' : ''}`,
       'aria-pressed': String(draft[key] === id),
       style: styles,
       'aria-label': String(content || id),
@@ -7443,7 +7543,8 @@ function creatorScreen() {
     const dice = h('button', {
       class: 'lh-btn lh-btn--icon', 'aria-label': 'Pick a name for me',
       onClick: () => { draft.name = pick(NAME_SUGGESTIONS); input.value = draft.name; sfx.select(); redraw(); },
-    }, '🎲');
+      html: icon('dice', { size: 28 }),
+    });
 
     const chips = h('div', { class: 'name-chips' },
       ...NAME_SUGGESTIONS.slice(0, 8).map((n) => h('button', {
@@ -7451,14 +7552,14 @@ function creatorScreen() {
         onClick: () => { draft.name = n; input.value = n; sfx.tap(); redraw(); },
       }, n)));
 
-    return h('div', { class: 'lh-optgroup' },
-      h('div', { class: 'lh-optgroup__label' }, h('span', {}, '✏️'), h('span', {}, 'My name is…')),
+    return h('div', { class: 'lh-optgroup lh-optgroup--wide' },
+      h('div', { class: 'lh-optgroup__label' }, 'My name is…'),
       h('div', { class: 'name-row' }, input, dice),
       chips);
   }
 
   function difficultyGroup() {
-    const card = (id, icon, title, ages, bullets) => h('button', {
+    const card = (id, title, ages, bullets) => h('button', {
       class: 'diff-card',
       'aria-pressed': String(difficulty === id),
       onClick: () => {
@@ -7470,18 +7571,17 @@ function creatorScreen() {
         rebuild();
       },
     },
-      h('span', { class: 'diff-card__icon' }, icon),
       h('div', {},
         h('h3', {}, title),
-        h('p', {}, ages),
+        h('p', { class: `diff-card__ages diff-card__ages--${id}` }, ages),
         h('p', {}, bullets)));
 
-    return h('div', { class: 'lh-optgroup' },
-      h('div', { class: 'lh-optgroup__label' }, h('span', {}, '🎚️'), h('span', {}, 'How much help would you like?')),
+    return h('div', { class: 'lh-optgroup lh-optgroup--wide' },
+      h('div', { class: 'lh-optgroup__label' }, 'How much help would you like?'),
       h('div', { class: 'difficulty-row' },
-        card('little', '🧸', 'Little Helper', 'Ages about 4–6',
+        card('little', 'Little Helper', 'Ages about 4–6',
           'Arrows and glowing hints, the right tool sparkles, and only two answers to choose from.'),
-        card('explorer', '🔬', 'Medical Explorer', 'Ages about 7–10',
+        card('explorer', 'Medical Explorer', 'Ages about 7–10',
           'More tools, more answers, real medical words and fewer hints. You can change this any time.')));
   }
 
@@ -7490,21 +7590,22 @@ function creatorScreen() {
     const shopAccessories = ownedAccessories(getState().purchased)
       .map((a) => ACCESSORY_LABELS[a]).filter(Boolean);
 
+    // The design's order, and every option id read straight from
+    // data/characters.js — never re-authored here.
     options.append(
       nameGroup(),
-      group('🎨', 'Skin', SKIN_TONES.map((s) => swatch('skin', s.id, { background: s.value }))),
-      group('💇', 'Hair style', HAIR_STYLES.map((s) => swatch('hair', s.id, { background: '#fff' }, s.label, true))),
-      group('🌈', 'Hair colour', HAIR_COLORS.map((c) => swatch('hairColor', c.id, { background: c.value }))),
-      group('👓', 'Glasses', GLASSES.map((g) => swatch('glasses', g.id, { background: '#fff' }, g.icon))),
-      group('👕', 'Scrubs', SCRUB_COLORS.map((c) => swatch('scrubs', c.id, { background: c.value }))),
-      group('🥼', 'Lab coat', COAT_COLORS.map((c) => swatch('coat', c.id, { background: c.value || '#f1f4fa' }, c.value ? null : '🚫', !c.value))),
-      group('👟', 'Shoes', SHOE_COLORS.map(swatchShoe)),
-      group('✨', 'Something fun', [...ACCESSORIES, ...shopAccessories]
-        .map((a) => swatch('accessory', a.id, { background: '#fff' }, a.icon))),
+      group('Skin', SKIN_TONES.map((s) => swatch('skin', s.id, { background: s.value }, null, false, true))),
+      group('Hair colour', HAIR_COLORS.map((c) => swatch('hairColor', c.id, { background: c.value }))),
+      group('Hair style', HAIR_STYLES.map((s) => swatch('hair', s.id, {}, s.label, true)), { wide: true }),
+      group('Scrubs', SCRUB_COLORS.map((c) => swatch('scrubs', c.id, { background: c.value }))),
+      group('Lab coat', COAT_COLORS.map((c) => c.value
+        ? swatch('coat', c.id, { background: c.value })
+        : swatch('coat', c.id, {}, c.label, true))),
+      group('Glasses', GLASSES.map((g) => swatch('glasses', g.id, {}, g.label, true))),
+      group('Shoes', SHOE_COLORS.map(swatchShoe)),
+      group('Something fun', [...ACCESSORIES, ...shopAccessories]
+        .map((a) => swatch('accessory', a.id, {}, a.label, true)), { wide: true }),
       difficultyGroup(),
-      h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', padding: '10px 0 30px', flexWrap: 'wrap' } },
-        h('button', { class: 'lh-btn lh-btn--quiet', onClick: randomise }, '🎲 Surprise me!'),
-        h('button', { class: 'lh-btn lh-btn--primary lh-btn--lg', onClick: done }, editing ? '💾 SAVE' : '👍 THAT\'S ME!')),
     );
     redraw();
   }
@@ -7571,8 +7672,10 @@ const { getState, hasRoom, careerCompletion, isCareerFinished, heroTitle } = __r
 const { FLOORS, ROOMS } = __req("src/data/rooms.js");
 const { placedItemsFor } = __req("src/data/shop.js");
 const { TRACKS, CAREERS } = __req("src/data/cases/index.js");
-const { hud, heroSVG, modal } = __req("src/ui/components.js");
+const { hud, heroSVG, modal, progressBar } = __req("src/ui/components.js");
 const { confetti, sparkle, toast, flash } = __req("src/core/fx.js");
+const { icon } = __req("src/ui/icons.js");
+const { propMarkup, isLivingProp } = __req("src/ui/props.js");
 
 function hubScreen({ build = null, highlight = null } = {}) {
   const state = getState();
@@ -7590,16 +7693,46 @@ function hubScreen({ build = null, highlight = null } = {}) {
   const trackLine = CAREERS
     .map((id) => {
       const { done, total } = careerCompletion(id);
-      return `${TRACKS[id].icon} ${TRACKS[id].verb} ${done}/${total}`;
+      return `${TRACKS[id].verb} ${done}/${total}`;
     })
-    .join('   •   ');
+    .join(' · ');
 
   scroll.appendChild(h('div', { class: 'hub-hero' },
     h('div', { class: 'hub-hero__art', html: heroSVG({ mood: 'happy' }) }),
     h('div', { class: 'hub-hero__text' },
       h('h3', {}, heroTitle()),
       h('p', {}, trackLine)),
-    h('button', { class: 'lh-btn lh-btn--icon', 'aria-label': 'Change my hero', onClick: () => go('creator') }, '🎨')));
+    h('button', {
+      class: 'lh-btn lh-btn--icon', 'aria-label': 'Change my hero',
+      html: icon('palette'), onClick: () => go('creator'),
+    })));
+
+  /* ------------------------------------------------------- world doors */
+  // Three drawn room mouths, each in its world's hue. A child knows where
+  // they are before reading a word.
+  const doors = h('div', { class: 'hub-doors' });
+  CAREERS.forEach((id) => {
+    const track = TRACKS[id];
+    const { done, total } = careerCompletion(id);
+    doors.appendChild(h('button', {
+      class: 'hub-door', 'data-world': id,
+      'aria-label': `${track.name} — ${done} of ${total} helped`,
+      onClick: () => { sfx.select(); go('levels', { career: id }); },
+    },
+      h('div', { class: 'hub-door__room', html: doorRoom(id) }),
+      h('div', { class: 'hub-door__head' },
+        h('span', { class: 'hub-door__mark', html: icon(id, { size: 26 }) }),
+        h('div', {},
+          h('div', { class: 'hub-door__title' }, track.name),
+          h('div', { class: 'hub-door__sub' }, `${track.blurb.replace(/\.$/, '')} · ${done}/${total}`))),
+      h('span', { class: 'hub-door__go' }, done ? 'Continue' : 'Start')));
+  });
+
+  scroll.appendChild(h('div', { class: 'hub-top' },
+    doors,
+    h('div', { class: 'lh-panel lh-panel--float hub-progress' },
+      h('h3', {}, 'Your hospital is growing'),
+      progressBar(openRooms(), Object.keys(ROOMS).length, 'Rooms open'))));
 
   /* ------------------------------------------------------------ building */
   const building = h('div', { class: 'building-wrap' });
@@ -7616,13 +7749,17 @@ function hubScreen({ build = null, highlight = null } = {}) {
 
   /* ------------------------------------------------------------ actions */
   scroll.appendChild(h('div', { class: 'hub-actions' },
-    h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => go('bag') }, '🎒 Doctor Bag'),
-    h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => go('shop') }, '🛒 Supply Room')));
+    h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => go('bag') },
+      h('span', { class: 'lh-btn__mark', html: icon('kit', { size: 26 }) }), 'Doctor Bag'),
+    h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => go('shop') },
+      h('span', { class: 'lh-btn__mark', html: icon('bag', { size: 26 }) }), 'Supply Room')));
 
   if (CAREERS.every(isCareerFinished)) {
     scroll.appendChild(h('p', { class: 'empty-note' },
-      '🏆 You have helped every single patient. You are a true Little Hero!'));
+      'You have helped every single patient. You are a true Little Hero!'));
   }
+
+  function openRooms() { return Object.keys(ROOMS).filter((id) => hasRoom(id)).length; }
 
   /* --------------------------------------------------------- room tiles */
   function roomTile(room, isHighlight) {
@@ -7643,26 +7780,31 @@ function hubScreen({ build = null, highlight = null } = {}) {
         emoji: i.icon, x: i.place.x, y: i.place.y, size: i.place.size, anim: i.place.anim,
       }))];
       props.forEach((p) => {
+        const size = (p.size || 26) * (isLivingProp(p.emoji) ? 2.6 : 1.8);
         tile.appendChild(h('span', {
-          class: `room__prop${p.anim ? ` ${p.anim}` : ''}`,
+          class: `room__prop${isLivingProp(p.emoji) ? ' room__prop--living' : ''}`,
           style: {
-            left: `${p.x}%`, top: `${p.y}%`, fontSize: `${p.size || 26}px`,
+            left: `${p.x}%`, top: `${p.y}%`, width: `${size}px`, height: `${size}px`,
             animation: p.anim ? `${p.anim} ${3 + Math.random() * 2}s ease-in-out infinite` : '',
           },
-        }, p.emoji));
+          html: propMarkup(p.emoji, { accent: room.tint }),
+        }));
       });
 
-      tile.appendChild(h('div', { class: 'room__label' }, h('span', {}, room.icon), h('span', {}, room.name)));
+      tile.appendChild(h('div', { class: 'room__label' }, room.name));
 
       if (room.action?.startsWith('levels:')) {
         const career = room.action.split(':')[1];
         const { done, total } = careerCompletion(career);
-        tile.appendChild(h('div', { class: 'room__count' }, `⭐ ${done}/${total}`));
+        tile.appendChild(h('div', { class: 'room__count' }, `${done}/${total}`));
       }
-      tile.appendChild(h('div', { class: 'room__go' }, room.action === 'shop' ? '🛒' : room.action === 'bag' ? '🎒' : '👉'));
+      tile.appendChild(h('div', {
+        class: 'room__go',
+        html: icon(room.action === 'shop' ? 'bag' : room.action === 'bag' ? 'kit' : 'play', { size: 24 }),
+      }));
     } else {
       tile.appendChild(h('div', { class: 'room__lock' },
-        h('div', { class: 'room__lock-icon' }, '🔒'),
+        h('div', { class: 'room__lock-icon', html: icon('lock', { size: 34 }) }),
         h('div', { class: 'room__lock-name' }, room.name),
         h('div', { class: 'room__lock-how' }, room.unlock?.text || 'Keep helping patients!')));
     }
@@ -7678,7 +7820,7 @@ function hubScreen({ build = null, highlight = null } = {}) {
     sfx.tap();
     if (!unlocked) {
       sfx.nudge();
-      toast(room.unlock?.text || 'Help more patients to open this room!', { icon: '🔒' });
+      toast(room.unlock?.text || 'Help more patients to open this room!');
       return;
     }
     if (room.action === 'shop') return go('shop');
@@ -7689,14 +7831,14 @@ function hubScreen({ build = null, highlight = null } = {}) {
 
   function showRoomInfo(room) {
     const usedBy = Object.values(TRACKS)
-      .flatMap((t) => t.cases.filter((c) => c.room === room.id).map((c) => `${t.icon} ${c.title}`));
+      .flatMap((t) => t.cases.filter((c) => c.room === room.id).map((c) => c.title));
     modal([
-      h('div', { style: { fontSize: '62px' } }, room.icon),
+      h('div', { class: 'room-info__art', html: propMarkup(room.props?.[0]?.emoji || room.icon, { accent: room.tint }) }),
       h('h2', {}, room.name),
       h('p', {}, room.blurb),
       usedBy.length ? h('div', { class: 'unlock-strip' },
         ...usedBy.slice(0, 4).map((u) => h('span', { class: 'unlock-chip' }, u))) : null,
-      h('button', { class: 'lh-btn lh-btn--secondary', onClick: () => document.querySelector('.lh-modal__veil')?.remove() }, 'Nice! 👍'),
+      h('button', { class: 'lh-btn lh-btn--secondary', onClick: () => document.querySelector('.lh-modal__veil')?.remove() }, 'Nice!'),
     ]);
   }
 
@@ -7706,20 +7848,16 @@ function hubScreen({ build = null, highlight = null } = {}) {
       const tile = building.querySelector(`[data-room="${id}"]`);
       if (!tile) continue;
       tile.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      const site = h('div', { class: 'construction' }, h('span', {}, '🚧'));
+      const site = h('div', { class: 'construction', html: propMarkup('🧰', { accent: ROOMS[id].tint }) });
       tile.appendChild(site);
       sfx.build();
-      await wait(500);
-      site.firstChild.textContent = '🔨';
-      await wait(500);
-      site.firstChild.textContent = '🏗️';
-      await wait(500);
+      await wait(1500);
       site.remove();
       flash('rgba(255,255,255,.6)', 400);
       sfx.unlock();
       sparkle(tile, { count: 20 });
       confetti({ intensity: 0.8, duration: 2000 });
-      toast(`${ROOMS[id].icon} ${ROOMS[id].name} is open!`, { icon: '🎉', tone: 'good', ms: 3200 });
+      toast(`${ROOMS[id].name} is open!`, { tone: 'good', ms: 3200 });
       await wait(900);
     }
   }
@@ -7730,157 +7868,182 @@ function hubScreen({ build = null, highlight = null } = {}) {
     destroy: () => bar.dispose?.(),
   };
 }
+
+
+/* ------------------------------------------------------------ the doors */
+
+/**
+ * A world door is a drawn room mouth: a floor, a band of the world's own
+ * light, and whoever is waiting in there. Big soft shapes only —
+ * rectangles appear inside furniture, not as the room itself.
+ */
+function doorRoom(world) {
+  if (world === 'doctor') {
+    return `
+      <div style="position:absolute;left:0;bottom:0;width:100%;height:57%;
+        background:linear-gradient(180deg,#DFF6F4,#C4EDE9)"></div>
+      <div style="position:absolute;left:0;bottom:52%;width:100%;height:12px;background:#FFB13B"></div>
+      <div style="position:absolute;left:8%;bottom:16%;width:42%;height:23%;
+        border-radius:16px 16px 6px 6px;background:#FFF9F0;box-shadow:0 5px 0 #CFE4E1"></div>
+      <div style="position:absolute;left:11%;bottom:34%;width:36%;height:8%;
+        border-radius:9px;background:#5EC8F0"></div>
+      <div style="position:absolute;right:9%;bottom:15%;width:28%;
+        animation:lh-bob-slow 3.4s ease-in-out infinite">${propMarkup('🧑‍⚕️')}</div>`;
+  }
+  if (world === 'vet') {
+    return `
+      <div style="position:absolute;left:0;bottom:0;width:100%;height:55%;
+        background:linear-gradient(180deg,#E4F7E9,#CCEFCF)"></div>
+      <div style="position:absolute;left:-10%;bottom:48%;width:70%;height:24%;
+        border-radius:50% 50% 0 0 / 100% 100% 0 0;background:#9BDC5A"></div>
+      <div style="position:absolute;right:-8%;bottom:46%;width:58%;height:19%;
+        border-radius:50% 50% 0 0 / 100% 100% 0 0;background:#7FCF8C"></div>
+      <div style="position:absolute;left:6%;bottom:13%;width:30%;
+        animation:lh-bob 3s ease-in-out infinite">${propMarkup('🐕')}</div>
+      <div style="position:absolute;right:8%;bottom:14%;width:24%;
+        animation:lh-bob-slow 4.2s ease-in-out infinite">${propMarkup('🐈')}</div>`;
+  }
+  return `
+    <div style="position:absolute;left:0;bottom:0;width:100%;height:55%;
+      background:linear-gradient(180deg,#F3EBFF,#E4D4FA)"></div>
+    <div style="position:absolute;left:-6%;bottom:50%;width:112%;height:16%;
+      border-radius:50% 50% 0 0 / 100% 100% 0 0;background:#C9A0F5"></div>
+    <div style="position:absolute;left:8%;bottom:15%;width:40%;height:20%;
+      border-radius:14px;background:#FFF9F0;box-shadow:0 5px 0 #DCC8F2"></div>
+    <div style="position:absolute;right:10%;bottom:14%;width:28%;
+      animation:lh-bob 3.2s ease-in-out infinite">${propMarkup('🧸')}</div>`;
+}
   Object.assign(__x, { hubScreen });
 });
 
-__def("src/ui/screens/levels.js", function (__x, __req) {
+__def("src/ui/props.js", function (__x, __req) {
 /**
- * Level select for one career track.
- * Completed cases can always be replayed (they just award fewer coins).
- */
-const { h } = __req("src/core/dom.js");
-const { sfx } = __req("src/core/audio.js");
-const { go, goHome } = __req("src/core/router.js");
-const { isLevelUnlocked, isLevelCompleted, careerCompletion, setCareer, getState } = __req("src/core/state.js");
-const { TRACKS } = __req("src/data/cases/index.js");
-const { hud, progressBar } = __req("src/ui/components.js");
-const { toast } = __req("src/core/fx.js");
-const { patientMarkup } = __req("src/ui/patients.js");
-const { icon, starRow } = __req("src/ui/icons.js");
-
-function levelsScreen({ career = 'doctor' } = {}) {
-  const track = TRACKS[career];
-  if (getState().career !== career) setCareer(career);
-
-  const el = h('div', { class: 'lh-screen lh-screen--levels', 'data-world': career });
-  // The world header: its drawn mark in a chip, then the world's name.
-  const bar = hud({
-    back: () => goHome('hub'),
-    chips: ['stars', 'coins'],
-    extra: [],
-  });
-  bar.classList.add('levels-header');
-  bar.insertBefore(h('div', { class: 'levels-world' },
-    h('span', { class: 'levels-world__mark', html: icon(career, { size: 30 }) }),
-    h('div', { class: 'lh-hud__title' }, track.name)), bar.querySelector('.lh-hud__spacer'));
-  el.appendChild(bar);
-
-  const scroll = h('div', { class: 'lh-screen__scroll' });
-  const { done, total } = careerCompletion(career);
-
-  scroll.appendChild(h('div', { style: { padding: '4px 16px 14px', width: 'min(96vw, 760px)', margin: '0 auto' } },
-    progressBar(done, total, `${track.blurb}`)));
-
-  const list = h('div', { class: 'level-list' });
-
-  // Exactly one card wears the "PLAY NEXT" badge: the first one still to do.
-  const nextUp = track.cases.find(
-    (c) => isLevelUnlocked(career, c.level) && !isLevelCompleted(career, c.id));
-
-  track.cases.forEach((caseDef) => {
-    const unlocked = isLevelUnlocked(career, caseDef.level);
-    const completed = isLevelCompleted(career, caseDef.id);
-    const isNext = caseDef === nextUp;
-
-    // Locked copy is the requirement, never a scold.
-    const tagline = unlocked
-      ? caseDef.tagline
-      : `Finish ${track.name} Level ${caseDef.level - 1}`;
-
-    const card = h('button', {
-      class: `lh-case${completed ? ' lh-case--done' : ''}${isNext ? ' lh-case--next' : ''}${unlocked ? '' : ' lh-case--locked'}`,
-      'aria-disabled': String(!unlocked),
-      onClick: () => start(caseDef, unlocked),
-    },
-      isNext ? h('span', { class: 'lh-case__flag' }, 'PLAY NEXT') : null,
-      h('span', {
-        class: 'lh-case__art',
-        html: unlocked ? patientMarkup(caseDef.patient, completed ? 'happy' : 'calm') : icon('lock', { size: 38 }),
-      }),
-      h('div', { class: 'lh-case__body' },
-        h('div', { class: 'lh-case__title' }, `${caseDef.level}. ${caseDef.title}`),
-        h('div', { class: 'lh-case__tagline' }, tagline),
-        h('div', { class: 'lh-case__teaches' },
-          ...(unlocked ? caseDef.teaches : []).map((t) => h('span', { class: 'lh-case__tag' }, t)))),
-      h('span', {
-        class: 'lh-case__state',
-        html: completed ? starRow(caseDef.reward?.stars ?? 3)
-          : unlocked ? `<span class="lh-case__go">${icon('play', { size: 26 })}</span>`
-          : icon('lock', { size: 26 }),
-      }),
-      completed ? h('span', { class: 'lh-case__done' }, 'Helped!') : null);
-
-    list.appendChild(card);
-  });
-
-  scroll.appendChild(list);
-  el.appendChild(scroll);
-
-  function start(caseDef, unlocked) {
-    if (!unlocked) {
-      sfx.nudge();
-      toast('Finish the level before this one first!', { icon: '🔒' });
-      return;
-    }
-    sfx.select();
-    go('case', { career, caseId: caseDef.id });
-  }
-
-  return { el, destroy: () => bar.dispose?.() };
-}
-  Object.assign(__x, { levelsScreen });
-});
-
-__def("src/ui/patients.js", function (__x, __req) {
-/**
- * Patient factory — turns the `patient` block of a case into a DOM element.
+ * Room props, drawn.
  *
- * A patient is just data:
- *   { kind: 'human' | <species>, name, look: {...}, voice }
- * so a new patient never needs new rendering code.
+ * `data/rooms.js` and `data/shop.js` name each prop with an emoji. Those
+ * strings are the authored data and stay exactly as they are — this module
+ * is the lookup that turns one into artwork, so nothing in the game renders
+ * a typed glyph.
+ *
+ * Furniture is paper with a tinted hard edge; equipment takes the world hue
+ * with a darker tint of itself as its line. Living props are drawn by the
+ * character renderers the rest of the game already uses, so the puppy in the
+ * vet room is the same puppy a child treats in a case.
  */
 const { humanSVG } = __req("src/ui/human.js");
-const { creatureSVG, SPECIES } = __req("src/ui/creature.js");
-const { toySVG, TOYS, isToy } = __req("src/ui/toy.js");
-const { raw } = __req("src/core/dom.js");
+const { creatureSVG } = __req("src/ui/creature.js");
+const { toySVG } = __req("src/ui/toy.js");
+const { outline, star } = __req("src/ui/parts.js");
 
-function patientMarkup(patient, mood = 'happy') {
-  if (patient.kind === 'human') {
-    return humanSVG({ ...(patient.look || {}), mood });
-  }
-  // Toys come in five body plans — plush, action figure, robot, doll and car —
-  // so they route through their own renderer rather than the animal one.
-  if (isToy(patient.kind)) {
-    return toySVG({ kind: patient.kind, mood, ...(patient.look || {}) });
-  }
-  return creatureSVG({ species: patient.kind, mood, ...(patient.look || {}) });
+const PAPER = '#FFF9F0';
+const EDGE = '#E4D7C2';
+const INK = '#2E2A44';
+
+/** Living props come straight from the character system. */
+const LIVING = {
+  '🧑‍⚕️': () => humanSVG({ mood: 'happy', age: 'adult', coat: 'coat-white', scrubs: 'scrub-mint', hair: 'short', hairColor: 'hair-brown', skin: 'skin3', accessory: 'stetho' }),
+  '🐕': () => creatureSVG({ species: 'dog', mood: 'happy' }),
+  '🐈': () => creatureSVG({ species: 'cat', mood: 'calm' }),
+  '🐇': () => creatureSVG({ species: 'bunny', mood: 'happy' }),
+  '🐦': () => creatureSVG({ species: 'bird', mood: 'happy' }),
+  '🧸': () => toySVG({ kind: 'teddy', mood: 'happy' }),
+  '🤖': () => toySVG({ kind: 'robot', mood: 'calm' }),
+  '🚗': () => toySVG({ kind: 'car', mood: 'happy' }),
+};
+
+/** Everything else is drawn here, in a 60x60 box. */
+const DRAWN = {
+  /* --- furniture: paper, with a tinted hard edge --- */
+  '🛏️': (c) => `<rect x="6" y="26" width="48" height="22" rx="6" fill="${PAPER}"/>
+    <rect x="6" y="44" width="48" height="6" rx="3" fill="${EDGE}"/>
+    <rect x="8" y="18" width="18" height="12" rx="5" fill="${c}" opacity=".5"/>
+    <rect x="4" y="22" width="6" height="28" rx="3" fill="${EDGE}"/>`,
+  '🛌': (c) => DRAWN['🛏️'](c),
+  '🪑': () => `<rect x="16" y="30" width="28" height="8" rx="4" fill="${PAPER}"/>
+    <rect x="16" y="36" width="28" height="4" rx="2" fill="${EDGE}"/>
+    <rect x="38" y="10" width="8" height="22" rx="4" fill="${PAPER}"/>
+    <rect x="19" y="38" width="5" height="14" rx="2.5" fill="${EDGE}"/>
+    <rect x="36" y="38" width="5" height="14" rx="2.5" fill="${EDGE}"/>`,
+  '🪴': () => `<path d="M18 34 h24 l-4 18 h-16z" fill="#E8A05C" stroke="${outline('#E8A05C')}" stroke-width="2"/>
+    <circle cx="30" cy="22" r="12" fill="#4FBF6E"/><circle cx="20" cy="28" r="8" fill="#5FCB7C"/>
+    <circle cx="40" cy="28" r="8" fill="#5FCB7C"/>`,
+  '🖼️': (c) => `<rect x="10" y="12" width="40" height="32" rx="6" fill="${PAPER}" stroke="${EDGE}" stroke-width="3"/>
+    <circle cx="24" cy="24" r="5" fill="#FFD84D"/>
+    <path d="M14 40 l10-12 8 8 6-6 8 10z" fill="${c}" opacity=".7"/>`,
+  '🛎️': () => `<path d="M14 36 a16 16 0 0 1 32 0z" fill="${PAPER}" stroke="${EDGE}" stroke-width="2.6"/>
+    <rect x="10" y="36" width="40" height="6" rx="3" fill="${EDGE}"/>
+    <circle cx="30" cy="16" r="4" fill="#E8556D"/>`,
+  '📦': () => `<rect x="10" y="22" width="40" height="26" rx="5" fill="#E8C08A" stroke="${outline('#E8C08A')}" stroke-width="2.2"/>
+    <path d="M10 30 h40" stroke="${outline('#E8C08A')}" stroke-width="2.2"/>
+    <rect x="26" y="22" width="8" height="26" fill="#FFD9A6"/>`,
+  '🧰': (c) => `<rect x="10" y="26" width="40" height="22" rx="6" fill="${c}" stroke="${outline(c)}" stroke-width="2.4"/>
+    <path d="M22 26 v-4 a8 8 0 0 1 16 0 v4" fill="none" stroke="${outline(c)}" stroke-width="3"/>
+    <rect x="26" y="32" width="8" height="12" rx="3" fill="${PAPER}"/>
+    <rect x="22" y="36" width="16" height="4" rx="2" fill="${PAPER}"/>`,
+  '🧻': () => `<rect x="18" y="16" width="24" height="30" rx="6" fill="${PAPER}" stroke="${EDGE}" stroke-width="2.4"/>
+    <ellipse cx="30" cy="16" rx="12" ry="4" fill="#F0EAE0"/><circle cx="30" cy="16" r="3.4" fill="${EDGE}"/>`,
+  '💡': () => `<circle cx="30" cy="24" r="13" fill="#FFE08A" stroke="#D98A19" stroke-width="2.2"/>
+    <rect x="24" y="36" width="12" height="9" rx="3" fill="#C9C4E0"/>
+    <path d="M22 12 l-5-5 M38 12 l5-5 M30 8 v-6" stroke="#FFD05A" stroke-width="2.6" stroke-linecap="round"/>`,
+
+  /* --- equipment: the world hue, lined with a darker tint of itself --- */
+  '🩺': (c) => `<path d="M18 12 v14 a12 12 0 0 0 24 0 V12" fill="none" stroke="${c}" stroke-width="4.4" stroke-linecap="round"/>
+    <circle cx="30" cy="42" r="9" fill="${PAPER}" stroke="${c}" stroke-width="4.4"/>`,
+  '⚕️': (c) => `<circle cx="30" cy="30" r="20" fill="${PAPER}" stroke="${outline(c)}" stroke-width="2.6"/>
+    <rect x="26" y="16" width="8" height="28" rx="4" fill="#E8556D"/>
+    <rect x="16" y="26" width="28" height="8" rx="4" fill="#E8556D"/>`,
+  '❤️': () => `<path d="M30 48 C10 34 8 22 15 16 c5-4 11-2 15 4 4-6 10-8 15-4 7 6 5 18-15 32z"
+    fill="#FF5F8D" stroke="#D8558C" stroke-width="2.2"/>`,
+  '🔬': (c) => `<rect x="12" y="46" width="36" height="6" rx="3" fill="${outline(c)}"/>
+    <rect x="22" y="40" width="16" height="6" rx="3" fill="${PAPER}"/>
+    <path d="M32 40 v-12 l10-10" fill="none" stroke="${c}" stroke-width="5.5" stroke-linecap="round"/>
+    <circle cx="44" cy="16" r="6" fill="${PAPER}" stroke="${c}" stroke-width="4"/>
+    <rect x="20" y="34" width="20" height="4" rx="2" fill="${c}"/>`,
+  '🧪': (c) => `<path d="M24 10 h12 v16 l9 20 a5 5 0 0 1-4.6 7H19.6a5 5 0 0 1-4.6-7l9-20z"
+      fill="${PAPER}" stroke="${outline(c)}" stroke-width="2.6"/>
+    <path d="M19 38 h22 l3.4 8 a5 5 0 0 1-4.6 7H20.6a5 5 0 0 1-4.6-7z" fill="${c}" opacity=".75"/>`,
+  '🧫': (c) => `<ellipse cx="30" cy="32" rx="20" ry="14" fill="${PAPER}" stroke="${outline(c)}" stroke-width="2.6"/>
+    <circle cx="24" cy="30" r="4" fill="${c}" opacity=".8"/><circle cx="35" cy="34" r="3" fill="${c}" opacity=".6"/>
+    <circle cx="33" cy="27" r="2.4" fill="${c}" opacity=".7"/>`,
+  '🩻': (c) => `<rect x="10" y="10" width="40" height="40" rx="8" fill="#1F5E68"/>
+    <path d="M30 18 v24 M22 24 h16 M24 32 h12" stroke="#BDE9E5" stroke-width="3.4" stroke-linecap="round"/>
+    <circle cx="30" cy="16" r="4" fill="#BDE9E5"/>`,
+  '🧲': () => `<path d="M14 40 V26 a16 16 0 0 1 32 0 v14 h-10 V26 a6 6 0 0 0-12 0 v14z"
+      fill="#E8556D" stroke="#B93450" stroke-width="2.4"/>
+    <rect x="14" y="40" width="10" height="8" fill="#C9C4E0"/><rect x="36" y="40" width="10" height="8" fill="#C9C4E0"/>`,
+  '🖥️': (c) => `<rect x="8" y="12" width="44" height="30" rx="6" fill="${PAPER}" stroke="${EDGE}" stroke-width="3"/>
+    <rect x="13" y="17" width="34" height="20" rx="4" fill="${c}" opacity=".35"/>
+    <path d="M16 30 l6-8 5 6 4-5 6 10" fill="none" stroke="${c}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="24" y="42" width="12" height="7" fill="${EDGE}"/><rect x="16" y="48" width="28" height="5" rx="2.5" fill="${EDGE}"/>`,
+  '🦴': () => `<path d="M14 34 a7 7 0 1 1 8-9 l16 0 a7 7 0 1 1 8 9 a7 7 0 1 1-8 9 l-16 0 a7 7 0 1 1-8-9z"
+    fill="${PAPER}" stroke="${EDGE}" stroke-width="2.6"/>`,
+  '🪛': (c) => `<rect x="26" y="10" width="8" height="20" rx="3" fill="${c}"/>
+    <rect x="27.5" y="28" width="5" height="18" rx="2" fill="#C9C4E0"/>
+    <path d="M27 46 h6 l-3 5z" fill="#8C86AD"/>`,
+  '🚑': () => `<rect x="8" y="24" width="44" height="16" rx="6" fill="${PAPER}" stroke="${EDGE}" stroke-width="2.6"/>
+    <rect x="14" y="29" width="6" height="3" rx="1.5" fill="#E8556D"/><rect x="15.5" y="27.5" width="3" height="6" rx="1.5" fill="#E8556D"/>
+    <circle cx="18" cy="42" r="5" fill="${INK}"/><circle cx="42" cy="42" r="5" fill="${INK}"/>
+    <rect x="26" y="18" width="8" height="5" rx="2.5" fill="#5EC8F0"/>`,
+  '🚁': () => `<ellipse cx="28" cy="34" rx="15" ry="9" fill="#E8556D"/>
+    <path d="M42 32 q12 1 16 5 q-8 2-16 1z" fill="#B93450"/>
+    <circle cx="24" cy="33" r="5" fill="#DFF6F4"/>
+    <rect x="6" y="16" width="46" height="4" rx="2" fill="${INK}"/>
+    <rect x="26" y="19" width="4" height="6" rx="2" fill="#B93450"/>`,
+};
+
+/** A prop's artwork. Living props keep their own viewBox; the rest are 60x60. */
+function propMarkup(emoji, { accent = '#2FA8A0' } = {}) {
+  if (LIVING[emoji]) return LIVING[emoji]();
+  const draw = DRAWN[emoji];
+  const inner = draw
+    ? draw(accent)
+    : star(30, 30, 14, { fill: accent, stroke: outline(accent) });
+  return `<svg viewBox="0 0 60 60" style="width:100%;height:100%;display:block" aria-hidden="true">${inner}</svg>`;
 }
 
-function patientElement(patient, mood = 'happy') {
-  const el = raw(patientMarkup(patient, mood), 'patient-art');
-  el.dataset.kind = patient.kind;
-  return el;
-}
-
-/** Swap the artwork in-place when a mood changes, keeping the wrapper. */
-function setMood(el, patient, mood) {
-  el.innerHTML = patientMarkup(patient, mood);
-  el.dataset.mood = mood;
-}
-
-/** The noise this patient makes — used for reactions. */
-function patientSound(patient) {
-  if (patient.kind === 'human') return 'squeak';
-  if (isToy(patient.kind)) return TOYS[patient.kind].sound || 'squeak';
-  return SPECIES[patient.kind]?.sound || 'squeak';
-}
-
-function patientEmoji(patient) {
-  if (patient.kind === 'human') return patient.emoji || '🧒';
-  if (isToy(patient.kind)) return TOYS[patient.kind].emoji || '🧸';
-  return SPECIES[patient.kind]?.emoji || '🐾';
-}
-  Object.assign(__x, { patientMarkup, patientElement, setMood, patientSound, patientEmoji });
+/** True when this prop is a character rather than an object. */
+function isLivingProp(emoji) { return !!LIVING[emoji]; }
+  Object.assign(__x, { propMarkup, isLivingProp });
 });
 
 __def("src/ui/creature.js", function (__x, __req) {
@@ -8517,6 +8680,156 @@ function carSVG(t, mood, idle) {
   return frame(inner, spots, idle);
 }
   Object.assign(__x, { TOYS, TOY_KINDS, isToy, toySpots, toySVG });
+});
+
+__def("src/ui/screens/levels.js", function (__x, __req) {
+/**
+ * Level select for one career track.
+ * Completed cases can always be replayed (they just award fewer coins).
+ */
+const { h } = __req("src/core/dom.js");
+const { sfx } = __req("src/core/audio.js");
+const { go, goHome } = __req("src/core/router.js");
+const { isLevelUnlocked, isLevelCompleted, careerCompletion, setCareer, getState } = __req("src/core/state.js");
+const { TRACKS } = __req("src/data/cases/index.js");
+const { hud, progressBar } = __req("src/ui/components.js");
+const { toast } = __req("src/core/fx.js");
+const { patientMarkup } = __req("src/ui/patients.js");
+const { icon, starRow } = __req("src/ui/icons.js");
+
+function levelsScreen({ career = 'doctor' } = {}) {
+  const track = TRACKS[career];
+  if (getState().career !== career) setCareer(career);
+
+  const el = h('div', { class: 'lh-screen lh-screen--levels', 'data-world': career });
+  // The world header: its drawn mark in a chip, then the world's name.
+  const bar = hud({
+    back: () => goHome('hub'),
+    chips: ['stars', 'coins'],
+    extra: [],
+  });
+  bar.classList.add('levels-header');
+  bar.insertBefore(h('div', { class: 'levels-world' },
+    h('span', { class: 'levels-world__mark', html: icon(career, { size: 30 }) }),
+    h('div', { class: 'lh-hud__title' }, track.name)), bar.querySelector('.lh-hud__spacer'));
+  el.appendChild(bar);
+
+  const scroll = h('div', { class: 'lh-screen__scroll' });
+  const { done, total } = careerCompletion(career);
+
+  scroll.appendChild(h('div', { style: { padding: '4px 16px 14px', width: 'min(96vw, 760px)', margin: '0 auto' } },
+    progressBar(done, total, `${track.blurb}`)));
+
+  const list = h('div', { class: 'level-list' });
+
+  // Exactly one card wears the "PLAY NEXT" badge: the first one still to do.
+  const nextUp = track.cases.find(
+    (c) => isLevelUnlocked(career, c.level) && !isLevelCompleted(career, c.id));
+
+  track.cases.forEach((caseDef) => {
+    const unlocked = isLevelUnlocked(career, caseDef.level);
+    const completed = isLevelCompleted(career, caseDef.id);
+    const isNext = caseDef === nextUp;
+
+    // Locked copy is the requirement, never a scold.
+    const tagline = unlocked
+      ? caseDef.tagline
+      : `Finish ${track.name} Level ${caseDef.level - 1}`;
+
+    const card = h('button', {
+      class: `lh-case${completed ? ' lh-case--done' : ''}${isNext ? ' lh-case--next' : ''}${unlocked ? '' : ' lh-case--locked'}`,
+      'aria-disabled': String(!unlocked),
+      onClick: () => start(caseDef, unlocked),
+    },
+      isNext ? h('span', { class: 'lh-case__flag' }, 'PLAY NEXT') : null,
+      h('span', {
+        class: 'lh-case__art',
+        html: unlocked ? patientMarkup(caseDef.patient, completed ? 'happy' : 'calm') : icon('lock', { size: 38 }),
+      }),
+      h('div', { class: 'lh-case__body' },
+        h('div', { class: 'lh-case__title' }, `${caseDef.level}. ${caseDef.title}`),
+        h('div', { class: 'lh-case__tagline' }, tagline),
+        h('div', { class: 'lh-case__teaches' },
+          ...(unlocked ? caseDef.teaches : []).map((t) => h('span', { class: 'lh-case__tag' }, t)))),
+      h('span', {
+        class: 'lh-case__state',
+        html: completed ? starRow(caseDef.reward?.stars ?? 3)
+          : unlocked ? `<span class="lh-case__go">${icon('play', { size: 26 })}</span>`
+          : icon('lock', { size: 26 }),
+      }),
+      completed ? h('span', { class: 'lh-case__done' }, 'Helped!') : null);
+
+    list.appendChild(card);
+  });
+
+  scroll.appendChild(list);
+  el.appendChild(scroll);
+
+  function start(caseDef, unlocked) {
+    if (!unlocked) {
+      sfx.nudge();
+      toast('Finish the level before this one first!', { mark: 'lock' });
+      return;
+    }
+    sfx.select();
+    go('case', { career, caseId: caseDef.id });
+  }
+
+  return { el, destroy: () => bar.dispose?.() };
+}
+  Object.assign(__x, { levelsScreen });
+});
+
+__def("src/ui/patients.js", function (__x, __req) {
+/**
+ * Patient factory — turns the `patient` block of a case into a DOM element.
+ *
+ * A patient is just data:
+ *   { kind: 'human' | <species>, name, look: {...}, voice }
+ * so a new patient never needs new rendering code.
+ */
+const { humanSVG } = __req("src/ui/human.js");
+const { creatureSVG, SPECIES } = __req("src/ui/creature.js");
+const { toySVG, TOYS, isToy } = __req("src/ui/toy.js");
+const { raw } = __req("src/core/dom.js");
+
+function patientMarkup(patient, mood = 'happy') {
+  if (patient.kind === 'human') {
+    return humanSVG({ ...(patient.look || {}), mood });
+  }
+  // Toys come in five body plans — plush, action figure, robot, doll and car —
+  // so they route through their own renderer rather than the animal one.
+  if (isToy(patient.kind)) {
+    return toySVG({ kind: patient.kind, mood, ...(patient.look || {}) });
+  }
+  return creatureSVG({ species: patient.kind, mood, ...(patient.look || {}) });
+}
+
+function patientElement(patient, mood = 'happy') {
+  const el = raw(patientMarkup(patient, mood), 'patient-art');
+  el.dataset.kind = patient.kind;
+  return el;
+}
+
+/** Swap the artwork in-place when a mood changes, keeping the wrapper. */
+function setMood(el, patient, mood) {
+  el.innerHTML = patientMarkup(patient, mood);
+  el.dataset.mood = mood;
+}
+
+/** The noise this patient makes — used for reactions. */
+function patientSound(patient) {
+  if (patient.kind === 'human') return 'squeak';
+  if (isToy(patient.kind)) return TOYS[patient.kind].sound || 'squeak';
+  return SPECIES[patient.kind]?.sound || 'squeak';
+}
+
+function patientEmoji(patient) {
+  if (patient.kind === 'human') return patient.emoji || '🧒';
+  if (isToy(patient.kind)) return TOYS[patient.kind].emoji || '🧸';
+  return SPECIES[patient.kind]?.emoji || '🐾';
+}
+  Object.assign(__x, { patientMarkup, patientElement, setMood, patientSound, patientEmoji });
 });
 
 __def("src/ui/screens/casescreen.js", function (__x, __req) {
@@ -9233,7 +9546,7 @@ function runTool(step, ctx) {
   // A nudge if nothing happens for a while — never blocking, just helpful.
   const idleTimer = setTimeout(() => {
     if (!solved) {
-      toast(ctx.fill(step.hint || `Try the ${tool.name.toLowerCase()}!`), { icon: tool.icon });
+      toast(ctx.fill(step.hint || `Try the ${tool.name.toLowerCase()}!`), {});
       tray.querySelector('.tool--needed')?.classList.add('tool--glow');
     }
   }, ctx.little ? 5000 : 11000);
@@ -9247,7 +9560,7 @@ function runTool(step, ctx) {
       sfx.nudge();
       chip.classList.add('tool--shake');
       setTimeout(() => chip.classList.remove('tool--shake'), 500);
-      toast(wrongToolMessage(getTool(id)), { icon: '💡' });
+      toast(wrongToolMessage(getTool(id)));
       if (tries >= TRIES_BEFORE_REVEAL) tray.querySelector('.tool--needed')?.classList.add('tool--glow');
       return;
     }
@@ -9714,7 +10027,7 @@ function runChoose(step, ctx) {
   ctx.speakOptions(options.map((o) => o.label));
 
   const idle = setTimeout(() => {
-    if (!solved && step.nudge) toast(ctx.fill(step.nudge), { icon: '💡' });
+    if (!solved && step.nudge) toast(ctx.fill(step.nudge));
   }, ctx.little ? 6000 : 13000);
 
   async function choose(opt, card) {
@@ -9726,7 +10039,7 @@ function runChoose(step, ctx) {
       sfx.nudge();
       card.classList.add('choice--wobble');
       setTimeout(() => card.classList.remove('choice--wobble'), 520);
-      toast(ctx.fill(step.nudge || nudge()), { icon: '💡' });
+      toast(ctx.fill(step.nudge || nudge()));
       if (tries >= TRIES_BEFORE_REVEAL) grid.querySelector('[data-correct]')?.classList.add('choice--glow');
       return;
     }
@@ -9744,7 +10057,7 @@ function runChoose(step, ctx) {
     ctx.award({ stars: step.stars ?? 1 }, card);
     if (step.badge) {
       ctx.badge(step.badge);
-      toast('✨ New badge earned!', { icon: '🏅', tone: 'good' });
+      toast('New badge earned!', { tone: 'good' });
     }
     ctx.setPrompt(praise());
     if (opt.say) ctx.say('narrator', opt.say);
@@ -9830,7 +10143,7 @@ function runFind(step, ctx) {
       sfx.nudge();
       node.classList.add('find-spot--wobble');
       setTimeout(() => node.classList.remove('find-spot--wobble'), 500);
-      toast(DECOY_QUIPS[Math.floor(Math.random() * DECOY_QUIPS.length)], { icon: item.icon });
+      toast(DECOY_QUIPS[Math.floor(Math.random() * DECOY_QUIPS.length)], {});
       return;
     }
 
@@ -9906,7 +10219,7 @@ function runOrder(step, ctx) {
       card.classList.add('choice--wobble');
       setTimeout(() => card.classList.remove('choice--wobble'), 520);
       const shouldBe = items.find((i) => i.urgency === expect);
-      toast(ctx.fill(shouldBe?.why || step.hint || 'Someone else needs you a little sooner.'), { icon: '💡' });
+      toast(ctx.fill(shouldBe?.why || step.hint || 'Someone else needs you a little sooner.'), {});
       queue.querySelectorAll('.triage__card').forEach((c, i) => {
         if (items[i].urgency === expect) c.classList.add('triage__card--halo');
       });
@@ -10021,7 +10334,7 @@ function runScan(step, ctx) {
     document.addEventListener('pointerup', up);
 
     const fire = h('button', { class: 'lh-btn lh-btn--toy lh-btn--wide scan-fire', onClick: () => {
-      if (!isOver()) { toast('Line the camera up with the glowing spot first!', { icon: '🎯' }); return; }
+      if (!isOver()) { toast('Line the camera up with the glowing spot first!', {}); return; }
       document.removeEventListener('pointermove', move);
       document.removeEventListener('pointerup', up);
       frame.classList.add('xray-frame--firing');
@@ -10112,7 +10425,7 @@ function runScan(step, ctx) {
         sfx.nudge();
         card.classList.add('choice--wobble');
         setTimeout(() => card.classList.remove('choice--wobble'), 520);
-        toast(ctx.fill(step.nudge || nudge()), { icon: '🔍' });
+        toast(ctx.fill(step.nudge || nudge()));
         if (tries >= TRIES_BEFORE_REVEAL) row.querySelector('[data-correct]')?.classList.add('choice--glow');
         return;
       }
@@ -10833,12 +11146,12 @@ function shopScreen({ category = 'comfort' } = {}) {
     const result = buyItem(item);
     if (result === 'owned') {
       sfx.tap();
-      toast('You already own this one!', { icon: '✅', tone: 'good' });
+      toast('You already own this one!', { mark: 'tick', tone: 'good' });
       return;
     }
     if (result === 'poor') {
       sfx.nudge();
-      toast(`You need ${item.price - getState().wallet.coins} more coins — help another patient!`, { icon: '🪙' });
+      toast(`You need ${item.price - getState().wallet.coins} more coins — help another patient!`, { mark: 'coin' });
       return;
     }
 
@@ -10847,14 +11160,14 @@ function shopScreen({ category = 'comfort' } = {}) {
     confetti({ intensity: 0.6, duration: 1800 });
 
     if (item.unlocksRoom) {
-      toast('A new room is being built!', { icon: '🏗️', tone: 'good', ms: 3000 });
+      toast('A new room is being built!', { tone: 'good', ms: 3000 });
       setTimeout(() => go('hub', { build: [item.unlocksRoom] }, { replace: true }), 900);
       return;
     }
     if (item.accessory) {
-      toast('Try it on in the character creator! 🎨', { icon: '👕', tone: 'good', ms: 3000 });
+      toast('Try it on in the character creator!', { tone: 'good', ms: 3000 });
     } else {
-      toast('It has been added to your hospital!', { icon: '🏥', tone: 'good' });
+      toast('It has been added to your hospital!', { tone: 'good' });
     }
     render();
   }

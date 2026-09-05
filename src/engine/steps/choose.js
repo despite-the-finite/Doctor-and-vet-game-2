@@ -37,7 +37,7 @@ export function runChoose(step, ctx) {
   ctx.speakOptions(options.map((o) => o.label));
 
   const idle = setTimeout(() => {
-    if (!solved && step.nudge) toast(ctx.fill(step.nudge), { icon: '💡' });
+    if (!solved && step.nudge) toast(ctx.fill(step.nudge));
   }, ctx.little ? 6000 : 13000);
 
   async function choose(opt, card) {
@@ -49,7 +49,7 @@ export function runChoose(step, ctx) {
       sfx.nudge();
       card.classList.add('choice--wobble');
       setTimeout(() => card.classList.remove('choice--wobble'), 520);
-      toast(ctx.fill(step.nudge || nudge()), { icon: '💡' });
+      toast(ctx.fill(step.nudge || nudge()));
       if (tries >= TRIES_BEFORE_REVEAL) grid.querySelector('[data-correct]')?.classList.add('choice--glow');
       return;
     }
@@ -67,7 +67,7 @@ export function runChoose(step, ctx) {
     ctx.award({ stars: step.stars ?? 1 }, card);
     if (step.badge) {
       ctx.badge(step.badge);
-      toast('✨ New badge earned!', { icon: '🏅', tone: 'good' });
+      toast('New badge earned!', { tone: 'good' });
     }
     ctx.setPrompt(praise());
     if (opt.say) ctx.say('narrator', opt.say);

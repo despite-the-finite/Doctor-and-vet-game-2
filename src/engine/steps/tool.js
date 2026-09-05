@@ -87,7 +87,7 @@ export function runTool(step, ctx) {
   // A nudge if nothing happens for a while — never blocking, just helpful.
   const idleTimer = setTimeout(() => {
     if (!solved) {
-      toast(ctx.fill(step.hint || `Try the ${tool.name.toLowerCase()}!`), { icon: tool.icon });
+      toast(ctx.fill(step.hint || `Try the ${tool.name.toLowerCase()}!`), {});
       tray.querySelector('.tool--needed')?.classList.add('tool--glow');
     }
   }, ctx.little ? 5000 : 11000);
@@ -101,7 +101,7 @@ export function runTool(step, ctx) {
       sfx.nudge();
       chip.classList.add('tool--shake');
       setTimeout(() => chip.classList.remove('tool--shake'), 500);
-      toast(wrongToolMessage(getTool(id)), { icon: '💡' });
+      toast(wrongToolMessage(getTool(id)));
       if (tries >= TRIES_BEFORE_REVEAL) tray.querySelector('.tool--needed')?.classList.add('tool--glow');
       return;
     }

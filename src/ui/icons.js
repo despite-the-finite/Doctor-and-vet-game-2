@@ -68,6 +68,16 @@ const ICONS = {
   /* ---- shop / bag ---- */
   bag: () => `<path d="M7 13 h26 l-3 21 h-20z" fill="#FFB13B" stroke="#D98A19" stroke-width="2.6" stroke-linejoin="round"/>
     <path d="M14 13 v-3 a6 6 0 0 1 12 0 v3" fill="none" stroke="#D98A19" stroke-width="3"/>`,
+  hint: () => `<circle cx="20" cy="17" r="9" fill="#FFE08A" stroke="#D98A19" stroke-width="2.2"/>
+    <rect x="16" y="26" width="8" height="6" rx="2.4" fill="#C9C4E0"/>
+    <path d="M20 34 h0" stroke="#8C86AD" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M13 8 l-3-3 M27 8 l3-3 M20 5 v-4" stroke="#FFD05A" stroke-width="2.6" stroke-linecap="round"/>`,
+
+  dice: () => `<rect x="8" y="8" width="24" height="24" rx="7" fill="#FFF9F0" stroke="#D9CFC0" stroke-width="2.6"/>
+    <circle cx="15" cy="15" r="2.4" fill="#4A4667"/><circle cx="25" cy="15" r="2.4" fill="#4A4667"/>
+    <circle cx="20" cy="20" r="2.4" fill="#4A4667"/>
+    <circle cx="15" cy="25" r="2.4" fill="#4A4667"/><circle cx="25" cy="25" r="2.4" fill="#4A4667"/>`,
+
   kit: () => `<rect x="8" y="14" width="24" height="20" rx="6" fill="#E8556D"/>
     <path d="M14 14 v-3 a6 6 0 0 1 12 0 v3" fill="none" stroke="#E8556D" stroke-width="3.4"/>
     <rect x="17" y="20" width="6" height="10" rx="3" fill="#FFF9F0"/>

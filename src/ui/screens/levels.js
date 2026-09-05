@@ -83,7 +83,7 @@ export function levelsScreen({ career = 'doctor' } = {}) {
   function start(caseDef, unlocked) {
     if (!unlocked) {
       sfx.nudge();
-      toast('Finish the level before this one first!', { icon: '🔒' });
+      toast('Finish the level before this one first!', { mark: 'lock' });
       return;
     }
     sfx.select();

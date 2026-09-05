@@ -54,7 +54,7 @@ export function runFind(step, ctx) {
       sfx.nudge();
       node.classList.add('find-spot--wobble');
       setTimeout(() => node.classList.remove('find-spot--wobble'), 500);
-      toast(DECOY_QUIPS[Math.floor(Math.random() * DECOY_QUIPS.length)], { icon: item.icon });
+      toast(DECOY_QUIPS[Math.floor(Math.random() * DECOY_QUIPS.length)], {});
       return;
     }
 

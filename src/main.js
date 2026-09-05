@@ -48,7 +48,7 @@ function boot() {
   window.__go = go;
 
   // Global unlock announcements, wherever they happen.
-  on('unlock:room', (room) => toast(`${room.icon} ${room.name} unlocked!`, { icon: '🎉', tone: 'good' }));
+  on('unlock:room', (room) => toast(`${room.name} unlocked!`, { tone: 'good' }));
 
   // Keep the layout honest when a phone rotates or a keyboard opens.
   const setVH = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);

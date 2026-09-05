@@ -83,7 +83,7 @@ export function runScan(step, ctx) {
     document.addEventListener('pointerup', up);
 
     const fire = h('button', { class: 'lh-btn lh-btn--toy lh-btn--wide scan-fire', onClick: () => {
-      if (!isOver()) { toast('Line the camera up with the glowing spot first!', { icon: '🎯' }); return; }
+      if (!isOver()) { toast('Line the camera up with the glowing spot first!', {}); return; }
       document.removeEventListener('pointermove', move);
       document.removeEventListener('pointerup', up);
       frame.classList.add('xray-frame--firing');
@@ -174,7 +174,7 @@ export function runScan(step, ctx) {
         sfx.nudge();
         card.classList.add('choice--wobble');
         setTimeout(() => card.classList.remove('choice--wobble'), 520);
-        toast(ctx.fill(step.nudge || nudge()), { icon: '🔍' });
+        toast(ctx.fill(step.nudge || nudge()));
         if (tries >= TRIES_BEFORE_REVEAL) row.querySelector('[data-correct]')?.classList.add('choice--glow');
         return;
       }

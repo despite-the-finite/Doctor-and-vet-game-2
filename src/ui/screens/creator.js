@@ -11,6 +11,7 @@ import { go } from '../../core/router.js';
 import { getState, setHero, setDifficulty, hasHero, setVoice } from '../../core/state.js';
 import { hud, heroSVG } from '../components.js';
 import { sparkle } from '../../core/fx.js';
+import { icon } from '../icons.js';
 import {
   SKIN_TONES, HAIR_COLORS, HAIR_STYLES, SCRUB_COLORS, COAT_COLORS,
   SHOE_COLORS, GLASSES, ACCESSORIES, ACCESSORY_LABELS, NAME_SUGGESTIONS, defaultHero,
@@ -41,24 +42,30 @@ export function creatorScreen() {
   const scroll = h('div', { class: 'lh-screen__scroll' }, grid);
   el.appendChild(scroll);
 
+  el.appendChild(h('div', { class: 'creator-bar' },
+    h('button', { class: 'lh-btn lh-btn--quiet', onClick: randomise }, 'Surprise me!'),
+    h('button', { class: 'lh-btn lh-btn--primary creator-bar__go', onClick: done },
+      editing ? 'SAVE' : "THAT'S ME!"),
+    h('span', { class: 'creator-bar__note' }, 'You can change any of this later.')));
+
   /* ------------------------------------------------------------- preview */
   function redraw() {
     art.innerHTML = heroSVG({ ...draft, mood: 'happy', age: 'adult' });
     clear(nameLabel);
-    nameLabel.append(h('span', {}, '🩺'), h('span', {}, `Dr. ${draft.name || '…'}`));
+    nameLabel.append(h('span', {}, `Dr. ${draft.name || '…'}`));
   }
 
   /* ------------------------------------------------------- option groups */
-  function group(icon, title, rowEls) {
-    return h('div', { class: 'lh-optgroup' },
-      h('div', { class: 'lh-optgroup__label' }, h('span', {}, icon), h('span', {}, title)),
+  function group(title, rowEls, { wide = false } = {}) {
+    return h('div', { class: `lh-optgroup${wide ? ' lh-optgroup--wide' : ''}` },
+      h('div', { class: 'lh-optgroup__label' }, title),
       h('div', { class: 'lh-optgroup__row' }, ...rowEls));
   }
 
   // A colour is a swatch; a named choice ("Curly", "No coat") is a pill.
-  function swatch(key, id, styles, content = null, wide = false) {
+  function swatch(key, id, styles, content = null, wide = false, large = false) {
     const btn = h('button', {
-      class: wide ? 'lh-pillopt' : 'lh-swatch',
+      class: wide ? 'lh-pillopt' : `lh-swatch${large ? ' lh-swatch--lg' : ''}`,
       'aria-pressed': String(draft[key] === id),
       style: styles,
       'aria-label': String(content || id),
@@ -81,7 +88,8 @@ export function creatorScreen() {
     const dice = h('button', {
       class: 'lh-btn lh-btn--icon', 'aria-label': 'Pick a name for me',
       onClick: () => { draft.name = pick(NAME_SUGGESTIONS); input.value = draft.name; sfx.select(); redraw(); },
-    }, '🎲');
+      html: icon('dice', { size: 28 }),
+    });
 
     const chips = h('div', { class: 'name-chips' },
       ...NAME_SUGGESTIONS.slice(0, 8).map((n) => h('button', {
@@ -89,14 +97,14 @@ export function creatorScreen() {
         onClick: () => { draft.name = n; input.value = n; sfx.tap(); redraw(); },
       }, n)));
 
-    return h('div', { class: 'lh-optgroup' },
-      h('div', { class: 'lh-optgroup__label' }, h('span', {}, '✏️'), h('span', {}, 'My name is…')),
+    return h('div', { class: 'lh-optgroup lh-optgroup--wide' },
+      h('div', { class: 'lh-optgroup__label' }, 'My name is…'),
       h('div', { class: 'name-row' }, input, dice),
       chips);
   }
 
   function difficultyGroup() {
-    const card = (id, icon, title, ages, bullets) => h('button', {
+    const card = (id, title, ages, bullets) => h('button', {
       class: 'diff-card',
       'aria-pressed': String(difficulty === id),
       onClick: () => {
@@ -108,18 +116,17 @@ export function creatorScreen() {
         rebuild();
       },
     },
-      h('span', { class: 'diff-card__icon' }, icon),
       h('div', {},
         h('h3', {}, title),
-        h('p', {}, ages),
+        h('p', { class: `diff-card__ages diff-card__ages--${id}` }, ages),
         h('p', {}, bullets)));
 
-    return h('div', { class: 'lh-optgroup' },
-      h('div', { class: 'lh-optgroup__label' }, h('span', {}, '🎚️'), h('span', {}, 'How much help would you like?')),
+    return h('div', { class: 'lh-optgroup lh-optgroup--wide' },
+      h('div', { class: 'lh-optgroup__label' }, 'How much help would you like?'),
       h('div', { class: 'difficulty-row' },
-        card('little', '🧸', 'Little Helper', 'Ages about 4–6',
+        card('little', 'Little Helper', 'Ages about 4–6',
           'Arrows and glowing hints, the right tool sparkles, and only two answers to choose from.'),
-        card('explorer', '🔬', 'Medical Explorer', 'Ages about 7–10',
+        card('explorer', 'Medical Explorer', 'Ages about 7–10',
           'More tools, more answers, real medical words and fewer hints. You can change this any time.')));
   }
 
@@ -128,21 +135,22 @@ export function creatorScreen() {
     const shopAccessories = ownedAccessories(getState().purchased)
       .map((a) => ACCESSORY_LABELS[a]).filter(Boolean);
 
+    // The design's order, and every option id read straight from
+    // data/characters.js — never re-authored here.
     options.append(
       nameGroup(),
-      group('🎨', 'Skin', SKIN_TONES.map((s) => swatch('skin', s.id, { background: s.value }))),
-      group('💇', 'Hair style', HAIR_STYLES.map((s) => swatch('hair', s.id, { background: '#fff' }, s.label, true))),
-      group('🌈', 'Hair colour', HAIR_COLORS.map((c) => swatch('hairColor', c.id, { background: c.value }))),
-      group('👓', 'Glasses', GLASSES.map((g) => swatch('glasses', g.id, { background: '#fff' }, g.icon))),
-      group('👕', 'Scrubs', SCRUB_COLORS.map((c) => swatch('scrubs', c.id, { background: c.value }))),
-      group('🥼', 'Lab coat', COAT_COLORS.map((c) => swatch('coat', c.id, { background: c.value || '#f1f4fa' }, c.value ? null : '🚫', !c.value))),
-      group('👟', 'Shoes', SHOE_COLORS.map(swatchShoe)),
-      group('✨', 'Something fun', [...ACCESSORIES, ...shopAccessories]
-        .map((a) => swatch('accessory', a.id, { background: '#fff' }, a.icon))),
+      group('Skin', SKIN_TONES.map((s) => swatch('skin', s.id, { background: s.value }, null, false, true))),
+      group('Hair colour', HAIR_COLORS.map((c) => swatch('hairColor', c.id, { background: c.value }))),
+      group('Hair style', HAIR_STYLES.map((s) => swatch('hair', s.id, {}, s.label, true)), { wide: true }),
+      group('Scrubs', SCRUB_COLORS.map((c) => swatch('scrubs', c.id, { background: c.value }))),
+      group('Lab coat', COAT_COLORS.map((c) => c.value
+        ? swatch('coat', c.id, { background: c.value })
+        : swatch('coat', c.id, {}, c.label, true))),
+      group('Glasses', GLASSES.map((g) => swatch('glasses', g.id, {}, g.label, true))),
+      group('Shoes', SHOE_COLORS.map(swatchShoe)),
+      group('Something fun', [...ACCESSORIES, ...shopAccessories]
+        .map((a) => swatch('accessory', a.id, {}, a.label, true)), { wide: true }),
       difficultyGroup(),
-      h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', padding: '10px 0 30px', flexWrap: 'wrap' } },
-        h('button', { class: 'lh-btn lh-btn--quiet', onClick: randomise }, '🎲 Surprise me!'),
-        h('button', { class: 'lh-btn lh-btn--primary lh-btn--lg', onClick: done }, editing ? '💾 SAVE' : '👍 THAT\'S ME!')),
     );
     redraw();
   }

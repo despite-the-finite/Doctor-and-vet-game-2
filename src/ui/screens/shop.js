@@ -70,12 +70,12 @@ export function shopScreen({ category = 'comfort' } = {}) {
     const result = buyItem(item);
     if (result === 'owned') {
       sfx.tap();
-      toast('You already own this one!', { icon: '✅', tone: 'good' });
+      toast('You already own this one!', { mark: 'tick', tone: 'good' });
       return;
     }
     if (result === 'poor') {
       sfx.nudge();
-      toast(`You need ${item.price - getState().wallet.coins} more coins — help another patient!`, { icon: '🪙' });
+      toast(`You need ${item.price - getState().wallet.coins} more coins — help another patient!`, { mark: 'coin' });
       return;
     }
 
@@ -84,14 +84,14 @@ export function shopScreen({ category = 'comfort' } = {}) {
     confetti({ intensity: 0.6, duration: 1800 });
 
     if (item.unlocksRoom) {
-      toast('A new room is being built!', { icon: '🏗️', tone: 'good', ms: 3000 });
+      toast('A new room is being built!', { tone: 'good', ms: 3000 });
       setTimeout(() => go('hub', { build: [item.unlocksRoom] }, { replace: true }), 900);
       return;
     }
     if (item.accessory) {
-      toast('Try it on in the character creator! 🎨', { icon: '👕', tone: 'good', ms: 3000 });
+      toast('Try it on in the character creator!', { tone: 'good', ms: 3000 });
     } else {
-      toast('It has been added to your hospital!', { icon: '🏥', tone: 'good' });
+      toast('It has been added to your hospital!', { tone: 'good' });
     }
     render();
   }

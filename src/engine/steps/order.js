@@ -43,7 +43,7 @@ export function runOrder(step, ctx) {
       card.classList.add('choice--wobble');
       setTimeout(() => card.classList.remove('choice--wobble'), 520);
       const shouldBe = items.find((i) => i.urgency === expect);
-      toast(ctx.fill(shouldBe?.why || step.hint || 'Someone else needs you a little sooner.'), { icon: '💡' });
+      toast(ctx.fill(shouldBe?.why || step.hint || 'Someone else needs you a little sooner.'), {});
       queue.querySelectorAll('.triage__card').forEach((c, i) => {
         if (items[i].urgency === expect) c.classList.add('triage__card--halo');
       });

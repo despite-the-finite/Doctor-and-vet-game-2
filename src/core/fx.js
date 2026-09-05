@@ -4,6 +4,7 @@
  * inherit the page's reduced-motion settings and cost nothing to load.
  */
 import { h, rand, randI, pick } from './dom.js';
+import { icon } from '../ui/icons.js';
 import { say } from './voice.js';
 
 let layer = null;
@@ -108,10 +109,13 @@ function pointOf(target) {
  * Gentle nudge / praise banner. Never says "wrong" — see the copy in
  * engine/hints.js for the encouraging phrase pool.
  */
-export function toast(text, { icon = '💡', tone = 'warm', ms = 2600, speak = true } = {}) {
+export function toast(text, { mark = null, tone = 'warm', ms = 2600, speak = true } = {}) {
   if (!toastLane) return;
   if (speak) say(text);
-  const el = h('div', { class: `lh-toast lh-toast--${tone}` }, h('span', { style: { fontSize: '28px' } }, icon), h('span', {}, text));
+  // Drawn, never typed: a good-news toast ticks, a nudge lights a lamp.
+  const el = h('div', { class: `lh-toast lh-toast--${tone}` },
+    h('span', { class: 'lh-toast__mark', html: icon(mark || (tone === 'good' ? 'tick' : 'hint'), { size: 30 }) }),
+    h('span', {}, text));
   toastLane.appendChild(el);
   setTimeout(() => {
     el.classList.add('is-leaving');

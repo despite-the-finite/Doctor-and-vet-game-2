@@ -106,6 +106,33 @@
   .creator-grid { grid-template-columns: minmax(260px, 380px) 1fr; padding: 0 26px 26px; }
 }
 
+/* All eight groups sit above the fold: two columns, wide ones spanning. */
+.creator-options { display: grid; gap: 14px; grid-template-columns: 1fr; align-content: start; }
+@media (min-width: 720px) {
+  .creator-options { grid-template-columns: 1fr 1fr; }
+  .lh-optgroup--wide { grid-column: 1 / -1; }
+}
+
+/* The action bar is a pinned row, not an absolute footer — that clipped. */
+.creator-bar {
+  flex: none; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 14px 26px calc(14px + var(--safe));
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 -8px 0 rgba(46,42,68,.06), 0 -18px 30px rgba(46,42,68,.10);
+}
+.creator-bar .lh-btn { white-space: nowrap; flex: none; }
+.creator-bar__go {
+  background: linear-gradient(180deg,#5FD8B4,#3FC79E); color: #0C4A3A;
+  padding: 20px 56px; box-shadow: 0 8px 0 #2E9E7C, var(--lh-air-2), var(--lh-gloss);
+  text-shadow: none;
+}
+.creator-bar__go:active { box-shadow: 0 3px 0 #2E9E7C, var(--lh-air-1), var(--lh-gloss); }
+.creator-bar__note {
+  flex: 1; min-width: 140px;
+  font-family: var(--lh-font-display); font-weight: 800;
+  font-size: var(--lh-size-label); color: var(--lh-ink-mute);
+}
+
 .hero-preview {
   position: sticky; top: 0;
   display: flex; flex-direction: column; align-items: center; gap: 10px;
@@ -144,6 +171,10 @@
   transition: transform .14s;
 }
 .diff-card:hover { transform: translateY(-3px); }
+.diff-card h3 { font-size: var(--lh-size-body-lg); }
+.diff-card__ages { font-size: 15px; font-weight: 800; margin: 2px 0 6px; }
+.diff-card__ages--little { color: #B07A12; }
+.diff-card__ages--explorer { color: var(--lh-doc); }
 .diff-card[aria-pressed='true'] { box-shadow: 0 6px 0 var(--lh-doc-deep), 0 0 0 5px rgba(63,208,166,.4); background: linear-gradient(180deg,#f2fffa,#dcfbee); }
 .diff-card__icon { font-size: 38px; }
 .diff-card h3 { font-size: var(--step-1); }
@@ -152,11 +183,55 @@
 /* ══════════════════════════════════════════════════════ CAREER ══════════ */
 /* ══════════════════════════════════════════════════════ HUB ═════════════ */
 .lh-screen--hub { background: var(--lh-sky-grad); }
-.hub-scroll { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.hub-scroll { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+
+/* Three world doors, with the growing-hospital panel floating beside them. */
+.hub-top {
+  width: min(96vw, 1180px); display: flex; gap: 18px; align-items: stretch;
+  flex-wrap: wrap; padding: 0 8px;
+}
+.hub-doors { flex: 1 1 640px; display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+
+.hub-door {
+  position: relative; overflow: hidden; cursor: pointer; border: none; padding: 0;
+  height: 230px; border-radius: var(--lh-r-xl);
+  background: linear-gradient(180deg, var(--lh-accent), var(--lh-accent-deep));
+  box-shadow: 0 10px 0 var(--lh-accent-ink), 0 20px 32px rgba(46,42,68,.24);
+  transition: transform .16s cubic-bezier(.2,1.4,.4,1);
+}
+.hub-door:hover { transform: translateY(-4px); }
+.hub-door:active { transform: translateY(5px); }
+.hub-door:focus-visible { outline: 4px solid var(--lh-ink); outline-offset: 4px; }
+.hub-door__room { position: absolute; inset: 0; }
+.hub-door__head {
+  position: absolute; left: 0; top: 0; width: 100%;
+  padding: 16px 20px; display: flex; align-items: center; gap: 10px; text-align: left;
+}
+.hub-door__mark {
+  width: 44px; height: 44px; flex: none; border-radius: var(--lh-r-xs);
+  background: rgba(255,255,255,.22); display: grid; place-items: center;
+}
+.hub-door__title {
+  font-family: var(--lh-font-display); font-weight: 800;
+  font-size: 25px; color: var(--lh-paper);
+}
+.hub-door__sub { font-size: var(--lh-size-label); font-weight: 800; color: var(--lh-accent-tint); }
+.hub-door__go {
+  position: absolute; right: 16px; bottom: 16px;
+  padding: 9px 18px; border-radius: var(--lh-r-pill);
+  background: var(--lh-star); color: var(--lh-star-ink);
+  font-family: var(--lh-font-display); font-weight: 800; font-size: var(--lh-size-meta);
+  box-shadow: 0 5px 0 var(--lh-star-deep);
+}
+
+.hub-progress { flex: 0 1 322px; min-width: 260px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+.hub-progress h3 { font-size: var(--lh-size-body-lg); }
+
 
 .building-wrap { width: min(96vw, 720px); padding: 4px 8px 10px; }
 
 .floor {
+  margin-bottom: 8px;
   display: grid; gap: 8px; margin-bottom: 8px;
 }
 .floor--1 { grid-template-columns: 1fr; }
@@ -165,7 +240,7 @@
 .room {
   position: relative; overflow: hidden;
   border: none; border-radius: var(--lh-r-sm);
-  min-height: clamp(96px, 15vh, 150px);
+  min-height: 84px;
   cursor: pointer; padding: 0;
   box-shadow: 0 7px 0 rgba(46,42,68,.16), 0 14px 26px rgba(46,42,68,.16);
   transition: transform .16s cubic-bezier(.3,1.4,.5,1), box-shadow .16s;
@@ -176,7 +251,14 @@
 .room:focus-visible { outline: 4px solid var(--lh-ink); outline-offset: 3px; }
 .room__wall { position: absolute; inset: 0; background: linear-gradient(180deg, var(--wall), var(--tint)); }
 .room__floorline { position: absolute; left: 0; right: 0; bottom: 0; height: 22%; background: rgba(46,42,68,.1); }
-.room__prop { position: absolute; transform: translate(-50%,-50%); filter: drop-shadow(0 3px 3px rgba(46,42,68,.18)); }
+.room__prop {
+  position: absolute; transform: translate(-50%,-50%);
+  display: grid; place-items: center;
+  filter: drop-shadow(0 3px 3px rgba(46,42,68,.18));
+}
+.room__prop svg { width: 100%; height: 100%; display: block; }
+/* A living prop is a whole character, so it hangs from its feet. */
+.room__prop--living { transform: translate(-50%,-72%); }
 .room__label {
   position: absolute; left: 8px; top: 8px;
   display: flex; align-items: center; gap: 6px;
@@ -200,39 +282,36 @@
 }
 
 .room--locked { cursor: pointer; }
-.room--locked .room__wall { filter: grayscale(.75) brightness(.86); }
-.room--locked::after {
-  content: ""; position: absolute; inset: 0;
-  background:
-    repeating-linear-gradient(45deg, rgba(255,200,68,.24) 0 18px, rgba(46,42,68,.16) 18px 36px);
-}
+.room--locked { box-shadow: var(--lh-inset); }
+.room--locked .room__wall { display: none; }
 .room__lock {
   position: absolute; inset: 0; z-index: 2;
-  background: radial-gradient(70% 70% at 50% 50%, rgba(38,45,72,.62), rgba(38,45,72,.34));
+  background: var(--lh-locked-fill);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-  color: var(--lh-panel); text-shadow: 0 3px 0 rgba(46,42,68,.5); text-align: center; padding: 8px;
+  color: var(--lh-ink-mute); text-align: center; padding: 8px; padding: 8px;
 }
-.room__lock-icon { font-size: clamp(26px, 5vw, 42px); animation: lh-bob-slow 3s ease-in-out infinite; }
-.room__lock-name { font-family: var(--lh-font-display); font-weight: 800; font-size: clamp(13px, 2.4vw, 19px); }
+.room__lock-icon { display: grid; place-items: center; animation: lh-bob-slow 3s ease-in-out infinite; }
+.room__lock-name { font-family: var(--lh-font-display); font-weight: 800; font-size: 15px; color: var(--lh-ink-mute); }
 .room__lock-how {
-  font-size: clamp(11px, 1.8vw, 13px); line-height: 1.25; opacity: .96;
-  max-width: 24ch; text-wrap: balance;
+  font-size: var(--lh-size-label); font-weight: 800; line-height: 1.25;
+  color: var(--lh-ink-faint); max-width: 26ch; text-wrap: balance;
 }
 
 .room--roof {
-  min-height: clamp(66px, 10vh, 110px);
+  min-height: 92px;
   background: transparent; box-shadow: none;
   border-radius: var(--lh-r-sm) var(--lh-r-sm) 0 0;
 }
 .room--roof .room__wall { background: linear-gradient(180deg, transparent, rgba(255,255,255,.4)); }
 
 .roof-cap {
-  height: 22px; border-radius: 14px 14px 0 0;
-  background: linear-gradient(180deg,#ff8f80,#e9584a);
-  box-shadow: 0 5px 0 #c33f33;
+  height: 44px; border-radius: 20px 20px 0 0;
+  background: linear-gradient(180deg, var(--lh-accent), var(--lh-accent-deep));
+  box-shadow: 0 6px 0 var(--lh-accent-ink);
   margin-bottom: 8px;
-  display: grid; place-items: center; color: var(--lh-panel); font-weight: 900; font-size: 14px;
-  font-family: var(--lh-font-display); letter-spacing: 2px;
+  display: grid; place-items: center; color: var(--lh-paper);
+  font-family: var(--lh-font-display); font-weight: 800; font-size: var(--lh-size-meta);
+  letter-spacing: var(--lh-track-caps);
 }
 .hub-ground {
   height: 26px; border-radius: 0 0 20px 20px;
