@@ -2726,7 +2726,7 @@ let ready = false;
  * "Enhanced" — and the rest are the named Apple and Android voices that are
  * actually pleasant to listen to.
  */
-const GOOD_VOICE = /\b(natural|neural|online|premium|enhanced|google|siri|samantha|karen|serena|moira|tessa|fiona|ava|allison|nicky|zoe|joana|libby|sonia|jenny|aria|emma|amber|nova)\b/i;
+const GOOD_VOICE = /\b(natural|neural|online|premium|enhanced|google|siri)\b/i;
 
 /**
  * Voices to stay away from. macOS ships a shelf of novelty voices that are
@@ -2734,10 +2734,19 @@ const GOOD_VOICE = /\b(natural|neural|online|premium|enhanced|google|siri|samant
  * fallback nobody chooses on purpose, and the "Desktop" Microsoft voices are
  * the old SAPI5 ones rather than the neural pair with the same first name.
  */
-const BAD_VOICE = /\b(espeak|festival|pico|compact|albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|bruce|fred|agnes|victoria|princess|hysterical|junior|ralph|kathy|rocko|shelley|grandma|grandpa|sandy|eddy|flo|reed|novelty)\b/i;
+const BAD_VOICE = /\b(espeak|festival|pico|compact|albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|hysterical|junior|novelty|grandma|grandpa|bahh)\b/i;
 
-/** A warm, mid-to-high voice suits a children's game; a nudge, not a rule. */
-const WARM_VOICE = /\b(female|woman|samantha|karen|serena|moira|tessa|fiona|ava|allison|nicky|zoe|libby|sonia|jenny|aria|emma|joana|amber|nova|kate|hazel|susan)\b/i;
+/**
+ * Who a voice sounds like.
+ *
+ * There is no gender field on a SpeechSynthesisVoice, so the name is all
+ * there is. This is only ever a PREFERENCE — the game still speaks if every
+ * voice on the device is the same person — but without it the ward can end up
+ * sounding like one man doing all nineteen parts, which is what happened.
+ */
+const FEMALE_VOICE = /\b(female|woman|samantha|karen|serena|moira|tessa|fiona|ava|allison|nicky|zoe|joana|libby|sonia|jenny|aria|emma|amber|nova|kate|hazel|susan|zira|catherine|linda|heera|eva|mia|martha|victoria|princess|agnes|kathy|shelley|sandy|flo|fiona|lisa|clara|amelie|anna|marie|alice|laura|lily|matilda|jessica|michelle|natasha|olivia|isha|swara)\b/i;
+
+const MALE_VOICE = /\b(male|man|david|mark|george|daniel|alex|fred|thomas|oliver|rishi|aaron|arthur|gordon|reed|rocko|eddy|ralph|bruce|guy|ryan|william|james|john|paul|peter|liam|noah|brian|eric|chris|roger|callum|christopher|richard|tom|sean|gareth|rishi|prabhat|hemant|ravi)\b/i;
 
 function scoreVoice(v, lang) {
   const name = `${v.name || ''} ${v.voiceURI || ''}`;
@@ -2748,13 +2757,12 @@ function scoreVoice(v, lang) {
   if (v.lang === lang) score += 50;
   else if (v.lang?.replace('_', '-').split('-')[0] === lang.split('-')[0]) score += 34;
   else if (v.lang?.startsWith('en')) score += 18;
-  else score -= 40;
+  else score -= 200;                       // never read English in a French voice
 
-  if (GOOD_VOICE.test(name)) score += 55;
+  if (GOOD_VOICE.test(name)) score += 45;
   if (/\b(natural|neural|online|premium|enhanced)\b/i.test(name)) score += 25;
-  if (BAD_VOICE.test(name)) score -= 90;
+  if (BAD_VOICE.test(name)) score -= 120;
   if (/\bdesktop\b/i.test(name)) score -= 25;
-  if (WARM_VOICE.test(name)) score += 14;
   // A remote voice is nearly always the neural one; a local voice is nearly
   // always the fallback. Worth a nudge, never worth losing an exact language.
   if (!v.localService) score += 8;
@@ -2763,28 +2771,91 @@ function scoreVoice(v, lang) {
   return score;
 }
 
-let cachedVoice = null;
-let cachedFor = null;
+/** Everything usable on this device, best first. */
+function rankedVoices() {
+  if (!synth) return [];
+  const voices = synth.getVoices();
+  if (!voices.length) return [];
+  const lang = (navigator.language || 'en-GB').replace('_', '-');
+  return voices
+    .map((v) => ({ v, score: scoreVoice(v, lang) }))
+    .filter((x) => x.score > -100)
+    .sort((a, b) => b.score - a.score)
+    .map((x) => x.v);
+}
 
-/** Voices load asynchronously in most browsers. */
-function pickVoice() {
+const sounds = (v, re) => re.test(`${v.name || ''} ${v.voiceURI || ''}`);
+
+/**
+ * Cast the speakers.
+ *
+ * The game used to run every character through ONE voice and tell them apart
+ * by pitch. That failed twice over: on a device whose best voice is male,
+ * every child in the hospital is a man; and shifting a synthesiser's pitch
+ * away from its natural range is the single fastest way to make it sound like
+ * a machine. Giving each speaker a genuinely different voice sounds better
+ * AND costs nothing — the voices are already installed.
+ *
+ * Preferences, in order, per speaker. Anything already cast is skipped, so
+ * the parts stay distinct as long as the device has the voices for it; a
+ * device with only one usable voice falls back to it for everybody, and then
+ * (and only then) pitch does the work.
+ */
+function castVoices() {
+  const ranked = rankedVoices();
+  if (!ranked.length) return {};
+
+  const taken = new Set();
+  const take = (...tests) => {
+    for (const test of tests) {
+      const found = ranked.find((v) => !taken.has(v) && test(v));
+      if (found) { taken.add(found); return found; }
+    }
+    return null;
+  };
+
+  const female = (v) => sounds(v, FEMALE_VOICE);
+  const male = (v) => sounds(v, MALE_VOICE);
+  const any = () => true;
+
+  // The narrator carries most of the game, so it gets first pick of the best
+  // warm voice. The child patients and the hero should not be the narrator.
+  const narrator = take(female, (v) => !male(v), any);
+  const patient = take(female, (v) => !male(v), any);
+  const hero = take(female, (v) => !male(v), any);
+  // A grown-up in the chair by the bed is the one part a lower voice suits.
+  const grownup = take(male, any);
+  const nurse = take(female, any);
+
+  const fallback = narrator || ranked[0];
+  return {
+    narrator: narrator || fallback,
+    patient: patient || fallback,
+    hero: hero || fallback,
+    grownup: grownup || fallback,
+    parent: grownup || fallback,
+    owner: grownup || fallback,
+    nurse: nurse || fallback,
+  };
+}
+
+let cast = null;
+let castFor = null;
+
+/** The voice for one speaker. Voices load asynchronously in most browsers. */
+function pickVoice(who = 'narrator') {
   if (!synth) return null;
   const voices = synth.getVoices();
   if (!voices.length) return null;
-  if (cachedVoice && cachedFor === voices.length) return cachedVoice;
-
-  const lang = (navigator.language || 'en-GB').replace('_', '-');
-  const best = voices
-    .map((v) => ({ v, score: scoreVoice(v, lang) }))
-    .sort((a, b) => b.score - a.score)[0];
-
-  cachedVoice = best?.v || voices[0];
-  cachedFor = voices.length;
-  return cachedVoice;
+  if (!cast || castFor !== voices.length) {
+    cast = castVoices();
+    castFor = voices.length;
+  }
+  return cast[who] || cast.narrator || voices[0];
 }
 
 if (synth) {
-  const warm = () => { ready = true; cachedVoice = null; cachedFor = null; pickVoice(); };
+  const warm = () => { ready = true; cast = null; castFor = null; pickVoice(); };
   synth.addEventListener?.('voiceschanged', warm);
   // Some browsers already have voices; some only after a gesture.
   if (synth.getVoices().length) ready = true;
@@ -2842,48 +2913,54 @@ function currentVoiceMode() {
  * same `who` values a case step uses.
  */
 const ROLES = {
-  narrator: { rate: 0.93, pitch: 1.02 },  // the game talking to the player
-  nurse:    { rate: 0.95, pitch: 1.08 },
-  grownup:  { rate: 0.94, pitch: 1.00 },
-  parent:   { rate: 0.94, pitch: 1.00 },
-  owner:    { rate: 0.94, pitch: 1.00 },
-  hero:     { rate: 0.97, pitch: 1.14 },  // the child's own hero
-  patient:  { rate: 0.99, pitch: 1.26 },  // small, and usually excited
+  narrator: { rate: 0.96, pitch: 1.00 },  // the game talking to the player
+  nurse:    { rate: 0.98, pitch: 1.04 },
+  grownup:  { rate: 0.96, pitch: 0.98 },
+  parent:   { rate: 0.96, pitch: 0.98 },
+  owner:    { rate: 0.96, pitch: 0.98 },
+  hero:     { rate: 1.00, pitch: 1.06 },  // the child's own hero
+  patient:  { rate: 1.00, pitch: 1.10 },  // small, and usually excited
 };
 
-/** How long to hold the silence after a sentence, by how it ended. */
-const PAUSE = { '.': 300, '!': 330, '?': 340, '…': 420, ',': 150, ';': 220, ':': 240, '': 190 };
+/*
+ * Pitch stays NEAR 1. Each speaker already has a different voice (see
+ * castVoices), so pitch only has to nudge them apart — and a synthesiser
+ * pushed far from its natural pitch is resampled rather than re-performed,
+ * which is what "robotic" actually sounds like. The first version of this
+ * file ran the patient at 1.26 and it was audibly worse than the flat voice
+ * it replaced.
+ *
+ * There is deliberately no random wobble between lines either. Real speech
+ * varies WITHIN a sentence, which a synthesiser already does; varying the
+ * rate and pitch randomly BETWEEN sentences just sounds unsteady.
+ */
 
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
-/** A touch of wobble, so two lines in a row never land identically. */
-const jitter = (n) => n + (Math.random() - 0.5) * n * 0.05;
 
 /**
- * Break a line into the pieces it should be spoken in.
+ * A line is spoken as ONE utterance wherever it can be.
  *
- * One sentence per utterance is what buys the pause between them, and the
- * pause is what a listener hears as "someone talking" rather than "text being
- * processed". A sentence long enough to run out of breath is split again at a
- * comma, because a synthesiser given eighty words in one go flattens out
- * completely near the end.
+ * Splitting every sentence into its own utterance and inserting a pause
+ * between them seemed like it would sound more natural and did the opposite:
+ * the engine plans intonation across a whole utterance, so cutting a line into
+ * pieces throws that away and restarts flat on each piece, with an
+ * unnaturally even gap in between. Only a line long enough to genuinely run
+ * out of breath is split, and then at a sentence end with a short gap.
  */
-const LONG = 140;
+const LONG = 220;
+const GAP = 140;
 
 function sentences(text) {
+  if (text.length <= LONG) return [text];
   const out = [];
-  // Keep the terminator: it sets both the pause length and the intonation.
-  const parts = text.match(/[^.!?…]+[.!?…]*/g) || [text];
-  parts.map((x) => x.trim()).filter(Boolean).forEach((line) => {
-    if (line.length <= LONG) { out.push(line); return; }
-    let buffer = '';
-    (line.match(/[^,;:]+[,;:]*/g) || [line]).forEach((clause) => {
-      const piece = clause.trim();
-      if (!piece) return;
-      if ((`${buffer} ${piece}`).trim().length > LONG && buffer) { out.push(buffer.trim()); buffer = piece; }
-      else buffer = `${buffer} ${piece}`.trim();
-    });
-    if (buffer.trim()) out.push(buffer.trim());
+  let buffer = '';
+  (text.match(/[^.!?…]+[.!?…]*/g) || [text]).forEach((part) => {
+    const piece = part.trim();
+    if (!piece) return;
+    if ((`${buffer} ${piece}`).trim().length > LONG && buffer) { out.push(buffer.trim()); buffer = piece; }
+    else buffer = `${buffer} ${piece}`.trim();
   });
+  if (buffer.trim()) out.push(buffer.trim());
   return out.length ? out : [text];
 }
 
@@ -2996,25 +3073,22 @@ function speakWithSynth(item, era = epoch) {
     const piece = pieces[i];
     if (piece === undefined) { done(); return; }
 
-    const ends = piece.slice(-1);
-    // A question lifts and slows; an exclamation is quicker and brighter.
-    const lift = ends === '?' ? 0.07 : ends === '!' ? 0.05 : 0;
-    const hurry = ends === '?' ? -0.02 : ends === '!' ? 0.04 : 0;
 
     try {
       const utter = new SpeechSynthesisUtterance(piece);
-      const voice = ready ? pickVoice() : null;
+      // Each speaker has its OWN voice, so `who` selects the voice as well as
+      // the pitch — this is what stops the whole ward sounding like one person.
+      const voice = ready ? pickVoice(item.who) : null;
       if (voice) { utter.voice = voice; utter.lang = voice.lang; }
-      utter.rate = clamp(jitter((item.rate ?? base.rate) + hurry), 0.5, 1.6);
-      utter.pitch = clamp(jitter((item.pitch ?? base.pitch) + lift), 0.6, 1.9);
+      utter.rate = clamp(item.rate ?? base.rate, 0.6, 1.4);
+      utter.pitch = clamp(item.pitch ?? base.pitch, 0.8, 1.4);
       utter.volume = 0.9;
       // `onend` does not fire if the utterance errors or is cancelled, so both
       // paths have to move the line on or the voice would stop for good.
       const after = () => {
         if (era !== epoch) return;
-        const last = i === pieces.length - 1;
-        const gap = Math.round((PAUSE[ends] ?? PAUSE['']) * (last ? 0.8 : 1));
-        setTimeout(() => speakPiece(i + 1), gap);
+        if (i === pieces.length - 1) { done(); return; }
+        setTimeout(() => speakPiece(i + 1), GAP);
       };
       utter.onend = after;
       utter.onerror = after;
