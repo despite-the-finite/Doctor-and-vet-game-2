@@ -6,7 +6,7 @@
  * present Back button so a child can never get stuck.
  */
 import { clearOverlays } from './fx.js';
-import { stop as stopSpeaking } from './voice.js';
+import { stop as stopSpeaking, setVoiceMode } from './voice.js';
 
 const registry = new Map();
 const stack = [];
@@ -24,8 +24,11 @@ export function go(name, params = {}, { replace = false } = {}) {
   // A screen change is a clean slate. Everything that outlives the screen
   // element — the effects layer, the toast lane, an open modal, whatever the
   // last screen was halfway through saying — is torn down here, once, rather
-  // than being remembered by eight different screens.
+  // than being remembered by eight different screens. The incoming screen then
+  // decides whose voices it wants: a case or the results screen sets its own
+  // track, everything else follows the save file.
   stopSpeaking();
+  setVoiceMode(null);
   clearOverlays();
 
   if (current) {

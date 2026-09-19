@@ -9,6 +9,7 @@ import { isLevelUnlocked, isLevelCompleted, careerCompletion, setCareer, getStat
 import { TRACKS } from '../../data/cases/index.js';
 import { hud, progressBar } from '../components.js';
 import { toast } from '../../core/fx.js';
+import { UI_LINES } from '../../dialogue/common.js';
 import { patientMarkup } from '../patients.js';
 import { icon, starRow } from '../icons.js';
 
@@ -85,7 +86,7 @@ export function levelsScreen({ career = 'doctor' } = {}) {
   function start(caseDef, unlocked) {
     if (!unlocked) {
       sfx.nudge();
-      toast('Finish the level before this one first!', { mark: 'lock' });
+      toast(UI_LINES.levelLocked, { mark: 'lock' });
       return;
     }
     sfx.select();

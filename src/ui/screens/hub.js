@@ -17,6 +17,7 @@ import { placedItemsFor } from '../../data/shop.js';
 import { TRACKS, CAREERS } from '../../data/cases/index.js';
 import { hud, heroSVG, modal, progressBar } from '../components.js';
 import { confetti, sparkle, toast, flash } from '../../core/fx.js';
+import { UI_LINES } from '../../dialogue/common.js';
 import { icon } from '../icons.js';
 import { propMarkup, isLivingProp } from '../props.js';
 
@@ -163,7 +164,7 @@ export function hubScreen({ build = null, highlight = null } = {}) {
     sfx.tap();
     if (!unlocked) {
       sfx.nudge();
-      toast(room.unlock?.text || 'Help more patients to open this room!');
+      toast(room.unlock?.text || UI_LINES.roomLocked);
       return;
     }
     if (room.action === 'shop') return go('shop');

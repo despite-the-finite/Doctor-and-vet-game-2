@@ -11,15 +11,52 @@ import { soundOn } from './state.js';
 let ctx = null;
 let master = null;
 
+/** Normal effects level, and the level they drop to under spoken dialogue. */
+const LEVEL = 0.14;      // deliberately gentle
+const DUCKED = 0.045;
+let ducking = 0;
+
 function ensure() {
   if (ctx) return ctx;
   const AC = window.AudioContext || window.webkitAudioContext;
   if (!AC) return null;
   ctx = new AC();
   master = ctx.createGain();
-  master.gain.value = 0.14; // deliberately gentle
+  master.gain.value = ducking ? DUCKED : LEVEL;
   master.connect(ctx.destination);
   return ctx;
+}
+
+/** Ramp the effects bus, so a duck is never an audible click. */
+function rampTo(value) {
+  if (!ctx || !master) return;
+  const now = ctx.currentTime;
+  try {
+    master.gain.cancelScheduledValues(now);
+    master.gain.setValueAtTime(master.gain.value, now);
+    master.gain.linearRampToValueAtTime(value, now + 0.12);
+  } catch {
+    master.gain.value = value;
+  }
+}
+
+/**
+ * Duck the effects while somebody is talking.
+ *
+ * Bleeps, fanfares and heartbeats are fun but they are not information; the
+ * spoken line usually is, and for a child who cannot read it is the ONLY
+ * information. Each line ducks as it starts; the effects come back up once the
+ * whole run of dialogue has finished, not between two lines in the same breath.
+ */
+export function duckForSpeech() {
+  ducking++;
+  if (ducking === 1) rampTo(DUCKED);
+}
+
+export function unduckAfterSpeech() {
+  if (ducking === 0) return;
+  ducking = 0;
+  rampTo(LEVEL);
 }
 
 // Browsers suspend the context until a gesture happens.

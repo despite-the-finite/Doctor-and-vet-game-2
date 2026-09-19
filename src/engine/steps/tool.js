@@ -12,6 +12,7 @@ import { sparkle, toast } from '../../core/fx.js';
 import { getTool } from '../../data/tools.js';
 import { makeDraggable, holdGauge, rubGauge } from '../interactions.js';
 import { praise, wrongToolMessage, TRIES_BEFORE_REVEAL } from '../hints.js';
+import { readoutLine, tryToolLine } from '../../dialogue/speech.js';
 import { readout } from './readout.js';
 
 export function runTool(step, ctx) {
@@ -88,7 +89,8 @@ export function runTool(step, ctx) {
   // A nudge if nothing happens for a while — never blocking, just helpful.
   const idleTimer = setTimeout(() => {
     if (!solved) {
-      toast(ctx.fill(step.hint || `Try the ${tool.name.toLowerCase()}!`), {});
+      const line = step.hint || tryToolLine(tool.name);
+      toast(ctx.fill(line), { key: line });
       tray.querySelector('.tool--needed')?.classList.add('tool--glow');
     }
   }, ctx.little ? 5000 : 11000);
@@ -152,8 +154,9 @@ export function runTool(step, ctx) {
       const card = readout(step.readout, tool, ctx);
       ctx.bodyEl.appendChild(card);
       requestAnimationFrame(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
-      // Say what the tool actually found, not just "well done".
-      ctx.say('narrator', readoutLine(step.readout, tool, ctx));
+      // Say what the tool actually found, not just "well done". Unfilled, so
+      // ctx.say() can match it against the recording made from the same line.
+      ctx.say('narrator', readoutLine(step.readout, step.readout.label || tool.readout?.label || tool.name));
     }
 
     ctx.setPrompt(praise());
@@ -175,16 +178,6 @@ export function runTool(step, ctx) {
     marker.remove();
     ctx.overlay.querySelectorAll('.tool-stuck').forEach((s) => s.remove());
   };
-}
-
-/** What the readout card says, as a sentence a child can hear. */
-function readoutLine(spec, tool, ctx) {
-  const label = spec.label || tool.readout?.label || tool.name;
-  const value = spec.kind === 'number' || spec.kind === 'heartbeat'
-    ? `${spec.value}${spec.unit ? ` ${spec.unit}` : ''}`
-    : ctx.fill(spec.value || '');
-  const head = `${label}: ${value}`.replace(/[\s.]+$/, '');
-  return [head, spec.text ? ctx.fill(spec.text) : null].filter(Boolean).join('. ');
 }
 
 /**

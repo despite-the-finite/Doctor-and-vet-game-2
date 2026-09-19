@@ -9,13 +9,8 @@ import { h, wait } from '../../core/dom.js';
 import { sfx, play } from '../../core/audio.js';
 import { sparkle, toast } from '../../core/fx.js';
 import { praise } from '../hints.js';
-
-const DECOY_QUIPS = [
-  'Ooh — pretty, but not a clue!',
-  'Nice spot! Not what we need though.',
-  'Ha! That one is just decoration.',
-  'Good eyes! Keep looking.',
-];
+import { DECOY_QUIPS } from '../../dialogue/common.js';
+import { foundLine } from '../../dialogue/speech.js';
 
 export function runFind(step, ctx) {
   const total = step.targets.length;
@@ -66,7 +61,7 @@ export function runFind(step, ctx) {
     numEl.textContent = String(found);
     counter.classList.remove('is-bumping'); void counter.offsetWidth; counter.classList.add('is-bumping');
 
-    if (item.label) ctx.say('narrator', `${step.found || 'Found it!'} ${item.label}`);
+    if (item.label) ctx.say('narrator', foundLine(step.found, item.label));
 
     if (found >= total) {
       sfx.great();

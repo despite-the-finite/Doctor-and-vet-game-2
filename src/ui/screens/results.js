@@ -17,7 +17,8 @@ import { ROOMS } from '../../data/rooms.js';
 import { patientMarkup } from '../patients.js';
 import { modal } from '../components.js';
 import { confetti, sparkle, flash } from '../../core/fx.js';
-import { sayAll } from '../../core/voice.js';
+import { sayAll, setVoiceMode } from '../../core/voice.js';
+import { RESULTS_LINES, NEW_TOOL_LINES } from '../../dialogue/common.js';
 import { BADGES } from './bag.js';
 
 /** "1 kindness star", "3 kindness stars" — it is read aloud, so it must scan. */
@@ -31,6 +32,8 @@ function listed(items) {
 }
 
 export function resultsScreen({ career, caseDef, result, newTools = [], newRooms = [], progress, replay }) {
+  // Still the track we have just been playing — the celebration is in its voice.
+  setVoiceMode(career);
   const el = h('div', { class: 'lh-screen lh-screen--results', 'data-world': career });
   // Level 1 of either track is somebody's very first patient — say so.
   const firstEver = caseDef.level === 1 && progress?.firstTime;
@@ -136,19 +139,25 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
     flash('rgba(255,255,255,.55)', 500);
 
     // Read the celebration out. This is the payoff screen, and it was silent.
-    // The rewards are one sentence, not three: read as three, the pause after
-    // each one landed in the middle of a list and sounded like a stutter.
+    //
+    // Each line carries BOTH versions, the way `keyText` already does for
+    // {hero}: `key` is the recorded line, which can never contain a name the
+    // player invented or a star count that changes every run, while `text` is
+    // what the browser voice says when there is no recording — and there it
+    // costs nothing to say the child's actual name and actual rewards.
     sayAll([
-      spokenHeading,
+      { text: spokenHeading, key: result.perfect ? RESULTS_LINES.perfect : RESULTS_LINES.great },
       firstEver
-        ? 'You helped your very first patient. Well done!'
-        : `You helped ${result.patient.name} feel much better!`,
-      `You earned ${listed([
+        ? { text: RESULTS_LINES.firstPatient, key: RESULTS_LINES.firstPatient }
+        : { text: `You helped ${result.patient.name} feel so much better!`, key: RESULTS_LINES.helped },
+      // Read as three sentences the pauses landed inside the list and sounded
+      // like a stutter, so the rewards are deliberately one sentence.
+      { text: `You earned ${listed([
         plural(result.stars, 'hero star'),
         result.kindness ? plural(result.kindness, 'kindness star') : null,
         plural(result.coins, 'hospital coin'),
-      ])}.`,
-    ], { role: 'ui', interrupt: true });
+      ])}.`, key: RESULTS_LINES.rewards },
+    ], { interrupt: true });
 
     await wait(500);
     sparkle(card, { count: 20 });
@@ -165,7 +174,9 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
     return new Promise((resolve) => {
       sfx.unlock();
       confetti({ intensity: 0.7, duration: 2000 });
-      sayAll(['A new tool!', tool.name, tool.blurb], { role: 'ui' });
+      // Fixed strings from the tool catalogue, so these can be recorded —
+      // see NEW_TOOL_LINES and the `newTool` pool in dialogue/collect.js.
+      sayAll([NEW_TOOL_LINES.kicker, tool.name, tool.blurb], { who: 'narrator' });
       const m = modal([
         h('div', { class: 'newtool' },
           h('div', { class: 'newtool__kicker' }, 'NEW TOOL!'),

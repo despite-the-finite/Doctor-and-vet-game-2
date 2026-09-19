@@ -1,3 +1,8 @@
 node_modules/
 *.log
 .DS_Store
+
+# Secrets. The ElevenLabs API key lives here and must never be committed.
+.env
+.env.local
+.env.*.local

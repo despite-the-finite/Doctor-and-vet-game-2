@@ -7,6 +7,7 @@
 import { h } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
 import { showArt } from '../arts.js';
+import { showLine } from '../../dialogue/speech.js';
 
 export function runShow(step, ctx) {
   ctx.setPrompt(null);
@@ -18,7 +19,7 @@ export function runShow(step, ctx) {
   ctx.bodyEl.appendChild(panel);
   // The explainer is pure text on screen; without this it is silent to a
   // child who cannot read, which is precisely who it is written for.
-  ctx.say('narrator', `${ctx.fill(step.title)}. ${ctx.fill(step.text)}`);
+  ctx.say('narrator', showLine(step.title, step.text));
   sfx.select();
 
   ctx.bodyEl.appendChild(h('button', {
