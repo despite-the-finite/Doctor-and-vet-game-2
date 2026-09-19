@@ -23,6 +23,13 @@ import { BADGES } from './bag.js';
 /** "1 kindness star", "3 kindness stars" — it is read aloud, so it must scan. */
 function plural(n, word) { return `${n} ${word}${n === 1 ? '' : 's'}`; }
 
+/** "a, b and c" — a spoken list, so the last join is a word and not a comma. */
+function listed(items) {
+  const parts = items.filter(Boolean);
+  if (parts.length < 2) return parts[0] || '';
+  return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
+}
+
 export function resultsScreen({ career, caseDef, result, newTools = [], newRooms = [], progress, replay }) {
   const el = h('div', { class: 'lh-screen lh-screen--results', 'data-world': career });
   // Level 1 of either track is somebody's very first patient — say so.
@@ -36,6 +43,11 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
   const heading = result.perfect
     ? `⭐ PERFECT CHECKUP, DR. ${(heroName || 'HERO').toUpperCase()}! ⭐`
     : `GREAT JOB, DR. ${(heroName || 'HERO').toUpperCase()}!`;
+  // The banner shouts and abbreviates because that is what a banner does; the
+  // spoken version says the title in full, because "Dr." out loud is "Drive".
+  const spokenHeading = result.perfect
+    ? `Perfect checkup, Doctor ${heroName || 'Hero'}!`
+    : `Great job, Doctor ${heroName || 'Hero'}!`;
 
   card.append(
     h('div', { class: 'results-patient', html: patientMarkup(result.patient, 'proud') }),
@@ -86,7 +98,7 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
         // Some cases pick their patient from a pool, so there may be no
         // single one to draw — show the first of the pool when that happens.
         h('span', { class: 'unlock-chip__icon',
-                    html: nextPatient ? patientMarkup(nextPatient, 'happy') : icon('tick') }),
+                    html: nextPatient ? patientMarkup(nextPatient, 'happy', { portrait: true }) : icon('tick') }),
         h('span', {}, `New patient: ${next.title}`)));
     }
   }
@@ -124,15 +136,19 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
     flash('rgba(255,255,255,.55)', 500);
 
     // Read the celebration out. This is the payoff screen, and it was silent.
+    // The rewards are one sentence, not three: read as three, the pause after
+    // each one landed in the middle of a list and sounded like a stutter.
     sayAll([
-      heading,
+      spokenHeading,
       firstEver
-        ? 'You helped your first patient. Well done!'
+        ? 'You helped your very first patient. Well done!'
         : `You helped ${result.patient.name} feel much better!`,
-      `You earned ${plural(result.stars, 'hero star')}`,
-      result.kindness ? `and ${plural(result.kindness, 'kindness star')}` : null,
-      `and ${plural(result.coins, 'hospital coin')}.`,
-    ], { interrupt: true });
+      `You earned ${listed([
+        plural(result.stars, 'hero star'),
+        result.kindness ? plural(result.kindness, 'kindness star') : null,
+        plural(result.coins, 'hospital coin'),
+      ])}.`,
+    ], { role: 'ui', interrupt: true });
 
     await wait(500);
     sparkle(card, { count: 20 });
@@ -149,6 +165,7 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
     return new Promise((resolve) => {
       sfx.unlock();
       confetti({ intensity: 0.7, duration: 2000 });
+      sayAll(['A new tool!', tool.name, tool.blurb], { role: 'ui' });
       const m = modal([
         h('div', { class: 'newtool' },
           h('div', { class: 'newtool__kicker' }, 'NEW TOOL!'),

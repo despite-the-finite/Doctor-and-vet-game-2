@@ -11,7 +11,7 @@ import { sfx } from '../../core/audio.js';
 import { go } from '../../core/router.js';
 import { getState, hasHero, resetEverything } from '../../core/state.js';
 import { modal, heroSVG } from '../components.js';
-import { confetti } from '../../core/fx.js';
+import { sparkle } from '../../core/fx.js';
 import { cross } from '../parts.js';
 import {
   scene, cloud, sunDisc, birds, helicopter, hill, haze,
@@ -78,8 +78,12 @@ export function titleScreen() {
 
   function start() {
     sfx.fanfare();
-    confetti({ intensity: 0.7, duration: 2000 });
-    setTimeout(() => go(returning ? 'hub' : 'creator', {}, { replace: true }), 260);
+    // A two-second confetti fall started a quarter of a second before the
+    // screen changes is a two-second confetti fall nobody ever sees the end
+    // of — most pieces had not even been released. A burst that finishes
+    // where it started says the same thing and leaves nothing behind.
+    sparkle(el.querySelector('.title-hero__art') || el, { count: 22 });
+    setTimeout(() => go(returning ? 'hub' : 'creator', {}, { replace: true }), 320);
   }
 
   function confirmReset() {

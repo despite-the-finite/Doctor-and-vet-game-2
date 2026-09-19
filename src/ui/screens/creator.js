@@ -4,6 +4,14 @@
  * Deliberately operable by a 4-year-old: every choice is a big round swatch
  * that instantly changes the picture. There is no "confirm" on any individual
  * option — only one big DONE button at the end.
+ *
+ * The options are built ONCE and then updated in place. Rebuilding the whole
+ * list on every tap looked harmless and was not: it threw away the button the
+ * child had just pressed (so focus vanished), it threw away the name field
+ * mid-word, and because the list briefly emptied the scroller jumped — tapping
+ * a shoe colour could fling you to a different part of the screen. Now a tap
+ * changes exactly two things: the pressed state inside that one group, and
+ * the picture.
  */
 import { h, clear, pick } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
@@ -55,6 +63,30 @@ export function creatorScreen() {
     nameLabel.append(h('span', {}, `Dr. ${draft.name || '…'}`));
   }
 
+  /* ---------------------------------------------------- live option state */
+  // Every option button registers itself here so a tap can repaint just the
+  // buttons that changed, instead of the whole column.
+  const buttons = [];
+  let nameInput = null;
+  const diffCards = [];
+
+  /** Repaint the pressed state everywhere — no DOM is created or destroyed. */
+  function syncPressed() {
+    buttons.forEach(({ el: btn, key, id }) =>
+      btn.setAttribute('aria-pressed', String(draft[key] === id)));
+    diffCards.forEach(({ el: card, id }) =>
+      card.setAttribute('aria-pressed', String(difficulty === id)));
+  }
+
+  function choose(key, id, btn) {
+    if (draft[key] === id) return;   // already chosen: no flicker, no re-draw
+    draft[key] = id;
+    sfx.select();
+    sparkle(btn, { count: 6 });
+    syncPressed();
+    redraw();
+  }
+
   /* ------------------------------------------------------- option groups */
   function group(title, rowEls, { wide = false } = {}) {
     return h('div', { class: `lh-optgroup${wide ? ' lh-optgroup--wide' : ''}` },
@@ -69,13 +101,9 @@ export function creatorScreen() {
       'aria-pressed': String(draft[key] === id),
       style: styles,
       'aria-label': String(content || id),
-      onClick: () => {
-        draft[key] = id;
-        sfx.select();
-        sparkle(btn, { count: 6 });
-        rebuild();
-      },
+      onClick: () => choose(key, id, btn),
     }, content);
+    buttons.push({ el: btn, key, id });
     return btn;
   }
 
@@ -85,16 +113,26 @@ export function creatorScreen() {
       value: draft.name, 'aria-label': 'Your hero\'s name', placeholder: 'Your name',
       onInput: (ev) => { draft.name = ev.target.value.slice(0, 12); redraw(); },
     });
+    nameInput = input;
+
+    // Setting a name from a button must not steal the caret out of the field
+    // a child may still be typing in — it writes the value and moves on.
+    const setName = (value) => {
+      draft.name = value;
+      input.value = value;
+      redraw();
+    };
+
     const dice = h('button', {
       class: 'lh-btn lh-btn--icon', 'aria-label': 'Pick a name for me',
-      onClick: () => { draft.name = pick(NAME_SUGGESTIONS); input.value = draft.name; sfx.select(); redraw(); },
+      onClick: () => { setName(pick(NAME_SUGGESTIONS)); sfx.select(); },
       html: icon('dice', { size: 28 }),
     });
 
     const chips = h('div', { class: 'name-chips' },
       ...NAME_SUGGESTIONS.slice(0, 8).map((n) => h('button', {
         class: 'name-chip',
-        onClick: () => { draft.name = n; input.value = n; sfx.tap(); redraw(); },
+        onClick: () => { setName(n); sfx.tap(); },
       }, n)));
 
     return h('div', { class: 'lh-optgroup lh-optgroup--wide' },
@@ -104,22 +142,27 @@ export function creatorScreen() {
   }
 
   function difficultyGroup() {
-    const card = (id, title, ages, bullets) => h('button', {
-      class: 'diff-card',
-      'aria-pressed': String(difficulty === id),
-      onClick: () => {
-        difficulty = id;
-        // Little Helpers get the prompts read aloud by default; explorers do
-        // not. Either way it stays a toggle in the top bar.
-        setVoice(id === 'little');
-        sfx.select();
-        rebuild();
+    const card = (id, title, ages, bullets) => {
+      const btn = h('button', {
+        class: 'diff-card',
+        'aria-pressed': String(difficulty === id),
+        onClick: () => {
+          if (difficulty === id) return;
+          difficulty = id;
+          // Little Helpers get the prompts read aloud by default; explorers do
+          // not. Either way it stays a toggle in the top bar.
+          setVoice(id === 'little');
+          sfx.select();
+          syncPressed();
+        },
       },
-    },
-      h('div', {},
-        h('h3', {}, title),
-        h('p', { class: `diff-card__ages diff-card__ages--${id}` }, ages),
-        h('p', {}, bullets)));
+        h('div', {},
+          h('h3', {}, title),
+          h('p', { class: `diff-card__ages diff-card__ages--${id}` }, ages),
+          h('p', {}, bullets)));
+      diffCards.push({ el: btn, id });
+      return btn;
+    };
 
     return h('div', { class: 'lh-optgroup lh-optgroup--wide' },
       h('div', { class: 'lh-optgroup__label' }, 'How much help would you like?'),
@@ -130,7 +173,10 @@ export function creatorScreen() {
           'More tools, more answers, real medical words and fewer hints. You can change this any time.')));
   }
 
-  function rebuild() {
+  /** Built once, on the way in. */
+  function build() {
+    buttons.length = 0;
+    diffCards.length = 0;
     clear(options);
     const shopAccessories = ownedAccessories(getState().purchased)
       .map((a) => ACCESSORY_LABELS[a]).filter(Boolean);
@@ -161,8 +207,9 @@ export function creatorScreen() {
       'aria-pressed': String(draft.shoes === c.id),
       style: c.value === 'rainbow' ? {} : { background: c.value },
       'aria-label': c.id,
-      onClick: () => { draft.shoes = c.id; sfx.select(); sparkle(btn, { count: 6 }); rebuild(); },
+      onClick: () => choose('shoes', c.id, btn),
     });
+    buttons.push({ el: btn, key: 'shoes', id: c.id });
     return btn;
   }
 
@@ -179,7 +226,11 @@ export function creatorScreen() {
       shoes: pick(SHOE_COLORS).id,
       accessory: pick(ACCESSORIES).id,
     });
-    rebuild();
+    // The name field is a separate element from the swatches, so it has to be
+    // told too — this was the one control a "surprise me" could leave stale.
+    if (nameInput) nameInput.value = draft.name;
+    syncPressed();
+    redraw();
     sparkle(art, { count: 18 });
   }
 
@@ -195,6 +246,6 @@ export function creatorScreen() {
     setTimeout(() => go('hub', {}, { replace: true }), 320);
   }
 
-  rebuild();
+  build();
   return { el, destroy: () => bar.dispose?.() };
 }

@@ -56,7 +56,7 @@ export function creatureSVG(opts = {}) {
   const faceFill = faceTint(mood, s.fur);
 
   return `
-<svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<svg viewBox="0 0 200 250" data-portrait="20 26 160 160" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <defs>
     <radialGradient id="furShine-${species}">
       <stop offset="0%" stop-color="#fff" stop-opacity=".45"/><stop offset="100%" stop-color="#fff" stop-opacity="0"/>

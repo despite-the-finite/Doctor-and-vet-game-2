@@ -123,8 +123,19 @@ export function toySVG(opts = {}) {
 
 /* ------------------------------------------------------------- wrappers */
 
-const frame = (inner, spots, idle) => `
-<svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+/**
+ * The head-and-shoulders crop a thumbnail uses, per body plan. A toy car has
+ * no head at all, so its "portrait" is simply the whole car.
+ */
+const PORTRAIT = {
+  figure: '24 46 152 152',
+  robot:  '22 30 156 156',
+  doll:   '24 38 152 152',
+  car:    '12 74 176 176',
+};
+
+const frame = (inner, spots, idle, portrait = PORTRAIT.figure) => `
+<svg viewBox="0 0 200 250" data-portrait="${portrait}" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <ellipse cx="100" cy="240" rx="52" ry="8" fill="rgba(46,42,68,.16)"/>
   <g class="${idle ? 'lh-char-idle' : ''}">${inner}</g>
   <g class="spots" fill="transparent">${spots}</g>
@@ -185,7 +196,7 @@ function figureSVG(t, mood, idle) {
     spot('leg', 86, 200, 18), spot('foot', 84, 226, 16),
     spot('joint', 138, 136, 16),
   ].join('');
-  return frame(inner, spots, idle);
+  return frame(inner, spots, idle, PORTRAIT.figure);
 }
 
 /* ═══════════════════════════════════════════════════════════════ robot ══ */
@@ -243,7 +254,7 @@ function robotSVG(t, mood, idle) {
     spot('back', 100, 150, 24), spot('arm', 47, 150, 16), spot('hand', 47, 174, 14),
     spot('leg', 85, 208, 16), spot('foot', 83, 228, 15),
   ].join('');
-  return frame(inner, spots, idle);
+  return frame(inner, spots, idle, PORTRAIT.robot);
 }
 
 /* ══════════════════════════════════════════════════════════ fashion doll ══ */
@@ -296,7 +307,7 @@ function dollSVG(t, mood, idle) {
     spot('back', 100, 148, 22), spot('arm', 64, 150, 15), spot('hand', 59, 176, 13),
     spot('leg', 91, 204, 16), spot('foot', 91, 230, 14),
   ].join('');
-  return frame(inner, spots, idle);
+  return frame(inner, spots, idle, PORTRAIT.doll);
 }
 
 /* ═════════════════════════════════════════════════════════════ toy car ══ */
@@ -341,5 +352,5 @@ function carSVG(t, mood, idle) {
     spot('chest', 100, 184, 26), spot('back', 44, 182, 20),
     spot('wheel', 62, 206, 26), spot('light', 172, 178, 16),
   ].join('');
-  return frame(inner, spots, idle);
+  return frame(inner, spots, idle, PORTRAIT.car);
 }

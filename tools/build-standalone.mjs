@@ -123,7 +123,12 @@ const body = [...modules.entries()]
 
 const script = `${runtime}\n\n${body}\n\n__req(${JSON.stringify(ENTRY)});`;
 
-const css = ['base', 'ui', 'screens', 'case']
+// The same sheets index.html loads, in the same order. `tokens` has to come
+// first and must not be left out: every other sheet is written against the
+// `--lh-*` custom properties it defines, so a bundle without it renders with
+// no panel colours, no radii, no shadows and no display font — which is
+// exactly what dist/ has been shipping.
+const css = ['tokens', 'base', 'ui', 'screens', 'case']
   .map((name) => `/* ── ${name}.css ─────────────────────────────── */\n` +
                  readFileSync(resolve(ROOT, `src/styles/${name}.css`), 'utf8'))
   .join('\n\n');

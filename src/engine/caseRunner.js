@@ -57,7 +57,7 @@ export function createCaseRunner(caseDef, { onFinish, onQuit }) {
   stage.appendChild(scene);
 
   const nameTag = h('div', { class: 'case-nametag' },
-    h('span', { class: 'case-nametag__art', html: patientMarkup(patient, 'happy') }),
+    h('span', { class: 'case-nametag__art', html: patientMarkup(patient, 'happy', { portrait: true }) }),
     h('span', {}, patient.name));
   stage.appendChild(nameTag);
 
@@ -81,7 +81,12 @@ export function createCaseRunner(caseDef, { onFinish, onQuit }) {
     const bubble = h('div', { class: `lh-bubble lh-bubble--${who}` }, spoken);
     // Animal patients get their line then the translation. Join them without
     // doubling punctuation — "Woof!." is a stumble when it is read aloud.
-    speak(translate ? `${spoken.replace(/[\s.]+$/, '')}. ${fill(translate, patient)}` : spoken);
+    // The bark and its translation are the SAME character talking, so they
+    // keep the same voice — a puppy saying "Hello! I am Biscuit!" in the
+    // narrator's voice is a caption, not a puppy. They are two utterances
+    // rather than one joined line so there is a real beat between them.
+    speak(spoken, { role: who });
+    if (translate) speak(fill(translate, patient), { role: who });
     if (who === 'narrator' || who === 'nurse') bubble.classList.add('lh-bubble--thought');
     bubbleLane.appendChild(bubble);
     if (translate) {
@@ -139,7 +144,7 @@ export function createCaseRunner(caseDef, { onFinish, onQuit }) {
     teachEl.classList.remove('lh-hidden');
     // Read it out — it is the one line in the step actually worth teaching,
     // and a child who cannot read was previously getting nothing from it.
-    speak(fill(text, patient));
+    speak(fill(text, patient), { role: 'narrator' });
   }
 
   /**
@@ -154,7 +159,7 @@ export function createCaseRunner(caseDef, { onFinish, onQuit }) {
   function speakOptions(labels, { lead = 'You can pick:' } = {}) {
     const clean = labels.map((l) => fill(String(l), patient)).filter(Boolean);
     if (!clean.length) return;
-    sayAll([lead, ...clean.map((l, i) => (i === 0 ? l : `Or: ${l}`))]);
+    sayAll([lead, ...clean.map((l, i) => (i === 0 ? l : `Or: ${l}`))], { role: 'narrator' });
   }
 
   function noteMistake() { tally.mistakes++; }
@@ -162,7 +167,7 @@ export function createCaseRunner(caseDef, { onFinish, onQuit }) {
   function setPrompt(text, sub = null, { spoken = true } = {}) {
     clear(promptEl);
     if (!text) return;
-    if (spoken) speak(fill(text, patient));
+    if (spoken) speak(fill(text, patient), { role: 'narrator' });
     promptEl.appendChild(h('div', { class: 'panel__prompt-main' }, fill(text, patient)));
     if (sub) promptEl.appendChild(h('div', { class: 'panel__prompt-sub' }, fill(sub, patient)));
   }

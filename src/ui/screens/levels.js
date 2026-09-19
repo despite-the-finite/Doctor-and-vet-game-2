@@ -60,7 +60,7 @@ export function levelsScreen({ career = 'doctor' } = {}) {
       h('span', {
         class: 'lh-case__art',
         html: unlocked
-          ? patientMarkup(caseDef.patient || caseDef.patientPool?.[0], completed ? 'happy' : 'calm')
+          ? patientMarkup(caseDef.patient || caseDef.patientPool?.[0], completed ? 'happy' : 'calm', { portrait: true })
           : icon('lock', { size: 38 }),
       }),
       h('div', { class: 'lh-case__body' },

@@ -5,6 +5,9 @@
  * Only one is mounted at a time. A shallow history stack powers the always
  * present Back button so a child can never get stuck.
  */
+import { clearOverlays } from './fx.js';
+import { stop as stopSpeaking } from './voice.js';
+
 const registry = new Map();
 const stack = [];
 let current = null;
@@ -17,6 +20,13 @@ export function attach(el) { root = el; }
 export function go(name, params = {}, { replace = false } = {}) {
   const factory = registry.get(name);
   if (!factory) { console.error(`[router] unknown screen "${name}"`); return; }
+
+  // A screen change is a clean slate. Everything that outlives the screen
+  // element — the effects layer, the toast lane, an open modal, whatever the
+  // last screen was halfway through saying — is torn down here, once, rather
+  // than being remembered by eight different screens.
+  stopSpeaking();
+  clearOverlays();
 
   if (current) {
     try { current.instance.destroy?.(); } catch (e) { console.error(e); }
