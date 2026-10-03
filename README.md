@@ -7,8 +7,9 @@ doctor or a vet. Cute patients arrive, the child examines them, chooses tools,
 works out what is wrong, treats them — and every patient helped makes their
 hospital bigger.
 
-**No dependencies. No binary assets.** Every character, room, X-ray and
-microscope slide in the game is drawn with inline SVG and CSS. The source runs
+**No dependencies.** Every character, room, X-ray and
+microscope slide in the game is drawn with inline SVG and CSS — the one binary
+asset is the Entropic Labs opening ident video. The source runs
 unbundled in the browser; the one build script simply folds it into a single
 portable file.
 
@@ -41,6 +42,14 @@ node tools/build-standalone.mjs
 ```
 
 ---
+
+## Opening ident
+
+Every launch opens on the Entropic Labs logo (`src/assets/entropic-ident.mp4`), played full-screen
+by `src/ident.js` while the game loads underneath. A tap, click, Enter, Space or Escape
+skips it; if the video can't load or autoplay, the game simply starts. Add
+`?noident` to the URL to skip it while developing.
+The single-file build inlines the video, so it still needs nothing beside it.
 
 ## What is in the first pass
 
