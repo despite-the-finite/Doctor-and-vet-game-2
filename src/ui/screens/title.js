@@ -8,6 +8,7 @@
  */
 import { h } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
+import { music } from '../../core/music.js';
 import { go } from '../../core/router.js';
 import { getState, hasHero, resetEverything } from '../../core/state.js';
 import { modal, heroSVG } from '../components.js';
@@ -76,7 +77,13 @@ export function titleScreen() {
   el.appendChild(h('div', { class: 'title-foot' },
     'A make-believe hospital. Not real medical advice.'));
 
+  // Browsers only let audio start after a gesture, so the menu loop begins on
+  // the first tap anywhere here. The mute button needs no wiring: music.js
+  // reads soundOn() on every tick and ducks.
+  el.addEventListener('pointerdown', () => { music.start('lobby'); }, { once: true, passive: true });
+
   function start() {
+    music.stop(1.4);                       // fade under the confetti
     sfx.fanfare();
     confetti({ intensity: 0.7, duration: 2000 });
     setTimeout(() => go(returning ? 'hub' : 'creator', {}, { replace: true }), 260);
@@ -97,5 +104,5 @@ export function titleScreen() {
     ]);
   }
 
-  return { el };
+  return { el, destroy: () => music.stop(0.8) };   // leaving by any route fades out
 }
