@@ -45,10 +45,12 @@ node tools/build-standalone.mjs
 
 ## Opening ident
 
-Every launch opens on the Entropic Labs logo (`src/assets/entropic-ident.mp4`), played full-screen
+Every launch opens on the Entropic Labs logo and its sound (`src/assets/entropic-ident.mp4`), played full-screen
 by `src/ident.js` while the game loads underneath. A tap, click, Enter, Space or Escape
-skips it; if the video can't load or autoplay, the game simply starts. Add
-`?noident` to the URL to skip it while developing.
+skips it; if the video can't load, the game simply starts. The logo has sound,
+and browsers won't start sound before the player interacts, so when the browser
+blocks it the screen first says "Tap to begin" (that tap also unlocks the game's
+own audio). Add `?noident` to the URL to skip it while developing.
 The single-file build inlines the video, so it still needs nothing beside it.
 
 ## What is in the first pass
