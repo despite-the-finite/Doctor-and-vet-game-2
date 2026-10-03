@@ -1,0 +1,27 @@
+{
+  "name": "little-heroes-hospital",
+  "version": "1.1.0",
+  "private": true,
+  "description": "A browser game for children who want to be a doctor, a vet or a toy doctor — with pre-generated ElevenLabs voice-over.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "build": "node tools/build-standalone.mjs",
+    "validate": "node tools/validate-cases.mjs",
+    "validate:voices": "node tools/validate-voices.mjs",
+    "test:voices": "node tools/voice-selftest.mjs",
+    "test": "node tools/validate-cases.mjs && node tools/validate-voices.mjs && node tools/voice-selftest.mjs",
+    "generate-voices": "node tools/generate-voices.mjs",
+    "generate-voices:doctor": "node tools/generate-voices.mjs --mode doctor",
+    "generate-voices:vet": "node tools/generate-voices.mjs --mode vet",
+    "generate-voices:toy": "node tools/generate-voices.mjs --mode toy",
+    "generate-voices:dry": "node tools/generate-voices.mjs --dry-run",
+    "voices:list": "node tools/list-voices.mjs",
+    "voices:check": "node tools/generate-voices.mjs --check"
+  },
+  "keywords": ["game", "children", "education", "elevenlabs", "text-to-speech"],
+  "license": "MIT"
+}

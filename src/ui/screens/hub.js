@@ -17,6 +17,7 @@ import { placedItemsFor } from '../../data/shop.js';
 import { TRACKS, CAREERS } from '../../data/cases/index.js';
 import { hud, heroSVG, modal, progressBar } from '../components.js';
 import { confetti, sparkle, toast, flash } from '../../core/fx.js';
+import { UI_LINES } from '../../dialogue/common.js';
 import { icon } from '../icons.js';
 import { propMarkup, isLivingProp } from '../props.js';
 
@@ -163,7 +164,7 @@ export function hubScreen({ build = null, highlight = null } = {}) {
     sfx.tap();
     if (!unlocked) {
       sfx.nudge();
-      toast(room.unlock?.text || 'Help more patients to open this room!');
+      toast(room.unlock?.text || UI_LINES.roomLocked);
       return;
     }
     if (room.action === 'shop') return go('shop');
@@ -175,13 +176,16 @@ export function hubScreen({ build = null, highlight = null } = {}) {
   function showRoomInfo(room) {
     const usedBy = Object.values(TRACKS)
       .flatMap((t) => t.cases.filter((c) => c.room === room.id).map((c) => c.title));
-    modal([
+    // Closing by `querySelector('.lh-modal__veil')` shut whichever modal
+    // happened to be first in the document, which is not necessarily this
+    // one. The handle `modal()` hands back is the only safe way to close it.
+    const m = modal([
       h('div', { class: 'room-info__art', html: propMarkup(room.props?.[0]?.emoji || room.icon, { accent: room.tint }) }),
       h('h2', {}, room.name),
       h('p', {}, room.blurb),
       usedBy.length ? h('div', { class: 'unlock-strip' },
         ...usedBy.slice(0, 4).map((u) => h('span', { class: 'unlock-chip' }, u))) : null,
-      h('button', { class: 'lh-btn lh-btn--secondary', onClick: () => document.querySelector('.lh-modal__veil')?.remove() }, 'Nice!'),
+      h('button', { class: 'lh-btn lh-btn--secondary', onClick: () => { sfx.tap(); m.close(); } }, 'Nice!'),
     ]);
   }
 

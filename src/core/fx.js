@@ -17,6 +17,30 @@ export function attachFx(el) {
   document.body.appendChild(toastLane);
 }
 
+/**
+ * Wipe every floating thing the last screen left behind.
+ *
+ * Confetti, sparkles and floating reward text live in `#fx`, which sits
+ * OUTSIDE the screen element — so removing a screen never removed them, and a
+ * burst fired on the way out (tapping a swatch, saving a hero, finishing a
+ * case) carried on raining over whatever screen came next. Modals are the
+ * same: they attach to `document.body`, so one left open survived the
+ * navigation that was supposed to close it.
+ *
+ * The router calls this on every screen change. Nothing here is state — it is
+ * all decoration — so cancelling it mid-flight is always safe.
+ */
+export function clearOverlays() {
+  if (layer) {
+    // `fill: 'forwards'` animations keep a handle on their element, so the
+    // animation has to be cancelled as well or the node is re-parented back.
+    layer.getAnimations?.({ subtree: true }).forEach((a) => { try { a.cancel(); } catch { /* ignore */ } });
+    layer.replaceChildren();
+  }
+  toastLane?.replaceChildren();
+  document.querySelectorAll('.lh-modal__veil').forEach((veil) => veil.remove());
+}
+
 const CONFETTI_COLORS = ['#ff7a6b', '#ffc844', '#3fd0a6', '#39b5f0', '#a97bf0', '#ff9ec4', '#ffffff'];
 
 /**
@@ -115,9 +139,11 @@ function pointOf(target) {
  * Gentle nudge / praise banner. Never says "wrong" — see the copy in
  * engine/hints.js for the encouraging phrase pool.
  */
-export function toast(text, { mark = null, tone = 'warm', ms = 2600, speak = true } = {}) {
+export function toast(text, { mark = null, tone = 'warm', ms = 2600, speak = true, key = null } = {}) {
   if (!toastLane) return;
-  if (speak) say(text);
+  // `key` is the line BEFORE its {name}/{hero} tokens were filled in — that is
+  // what the recording was made from, so it is how the clip is found.
+  if (speak) say(text, { key: key ?? text });
   // Drawn, never typed: a good-news toast ticks, a nudge lights a lamp.
   const el = h('div', { class: `lh-toast lh-toast--${tone}` },
     h('span', { class: 'lh-toast__mark', html: icon(mark || (tone === 'good' ? 'tick' : 'hint'), { size: 30 }) }),

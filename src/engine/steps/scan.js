@@ -12,6 +12,8 @@ import { sfx } from '../../core/audio.js';
 import { sparkle, toast, flash } from '../../core/fx.js';
 import { scanArt } from '../arts.js';
 import { praise, nudge, TRIES_BEFORE_REVEAL } from '../hints.js';
+import { affirmFinding } from '../../dialogue/speech.js';
+import { SCAN_LINES, CONNECTORS } from '../../dialogue/common.js';
 
 export function runScan(step, ctx) {
   const cleanups = [];
@@ -84,7 +86,7 @@ export function runScan(step, ctx) {
     document.addEventListener('pointerup', up);
 
     const fire = h('button', { class: 'lh-btn lh-btn--toy lh-btn--wide scan-fire', onClick: () => {
-      if (!isOver()) { toast('Line the camera up with the glowing spot first!', {}); return; }
+      if (!isOver()) { toast(SCAN_LINES.lineUp, {}); return; }
       document.removeEventListener('pointermove', move);
       document.removeEventListener('pointerup', up);
       frame.classList.add('xray-frame--firing');
@@ -131,7 +133,7 @@ export function runScan(step, ctx) {
   /* ------------------------------------------------------------- the reveal */
   async function shoot(cleanupAim) {
     sfx.scan();
-    ctx.setPrompt(step.mode === 'micro' ? 'Focusing…' : 'Whirrrr… hold still…');
+    ctx.setPrompt(step.mode === 'micro' ? SCAN_LINES.focusing : SCAN_LINES.shooting);
     machine.innerHTML = '';
     machine.appendChild(h('div', { class: 'scan-loading' },
       h('div', { class: 'scan-loading__bar' }, h('i')),
@@ -144,8 +146,8 @@ export function runScan(step, ctx) {
 
     const plate = h('div', { class: `scan-plate scan-plate--${step.mode}`, html: scanArt(step.revealArt) });
     machine.appendChild(plate);
-    machine.appendChild(h('div', { class: 'scan-caption' }, ctx.fill(step.revealCaption || 'Look at that!')));
-    ctx.say('narrator', step.revealCaption || 'Look at that!');
+    machine.appendChild(h('div', { class: 'scan-caption' }, ctx.fill(step.revealCaption || SCAN_LINES.reveal)));
+    ctx.say('narrator', step.revealCaption || SCAN_LINES.reveal);
     sparkle(plate, { count: 12, glyphs: ['✨', '💫'] });
 
     await wait(700);
@@ -153,7 +155,7 @@ export function runScan(step, ctx) {
   }
 
   function askFinding() {
-    ctx.setPrompt('What can you see?');
+    ctx.setPrompt(SCAN_LINES.question);
     const options = ctx.little ? littleOptions(step.findings) : shuffle(step.findings);
     const row = h('div', { class: 'choice-grid choice-grid--chips' });
     let tries = 0, solved = false;
@@ -166,7 +168,7 @@ export function runScan(step, ctx) {
       row.appendChild(card);
     });
     machine.appendChild(row);
-    ctx.speakOptions(options.map((o) => o.label), { lead: 'Is it:' });
+    ctx.speakOptions(options.map((o) => o.label), { lead: CONNECTORS.findingLead });
 
     async function pickFinding(opt, card) {
       if (solved) return;
@@ -176,7 +178,8 @@ export function runScan(step, ctx) {
         sfx.nudge();
         card.classList.add('choice--wobble');
         setTimeout(() => card.classList.remove('choice--wobble'), 520);
-        toast(ctx.fill(step.nudge || nudge()));
+        const line = step.nudge || nudge();
+        toast(ctx.fill(line), { key: line });
         if (tries >= TRIES_BEFORE_REVEAL) row.querySelector('[data-correct]')?.classList.add('choice--glow');
         return;
       }
@@ -188,7 +191,7 @@ export function runScan(step, ctx) {
       ctx.award({ stars: step.stars ?? 2 }, card);
       ctx.setPrompt(praise());
       if (opt.say) ctx.say('narrator', opt.say);
-      else ctx.say('narrator', `You found it — ${ctx.fill(opt.label)}.`);
+      else ctx.say('narrator', affirmFinding(opt.label));
       ctx.teach(step.teach || null);
       ctx.react('happy');
       await wait(600);

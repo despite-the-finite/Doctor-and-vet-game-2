@@ -17,13 +17,23 @@ import { ROOMS } from '../../data/rooms.js';
 import { patientMarkup } from '../patients.js';
 import { modal } from '../components.js';
 import { confetti, sparkle, flash } from '../../core/fx.js';
-import { sayAll } from '../../core/voice.js';
+import { sayAll, setVoiceMode } from '../../core/voice.js';
+import { RESULTS_LINES, NEW_TOOL_LINES } from '../../dialogue/common.js';
 import { BADGES } from './bag.js';
 
 /** "1 kindness star", "3 kindness stars" — it is read aloud, so it must scan. */
 function plural(n, word) { return `${n} ${word}${n === 1 ? '' : 's'}`; }
 
+/** "a, b and c" — a spoken list, so the last join is a word and not a comma. */
+function listed(items) {
+  const parts = items.filter(Boolean);
+  if (parts.length < 2) return parts[0] || '';
+  return `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
+}
+
 export function resultsScreen({ career, caseDef, result, newTools = [], newRooms = [], progress, replay }) {
+  // Still the track we have just been playing — the celebration is in its voice.
+  setVoiceMode(career);
   const el = h('div', { class: 'lh-screen lh-screen--results', 'data-world': career });
   // Level 1 of either track is somebody's very first patient — say so.
   const firstEver = caseDef.level === 1 && progress?.firstTime;
@@ -36,6 +46,11 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
   const heading = result.perfect
     ? `⭐ PERFECT CHECKUP, DR. ${(heroName || 'HERO').toUpperCase()}! ⭐`
     : `GREAT JOB, DR. ${(heroName || 'HERO').toUpperCase()}!`;
+  // The banner shouts and abbreviates because that is what a banner does; the
+  // spoken version says the title in full, because "Dr." out loud is "Drive".
+  const spokenHeading = result.perfect
+    ? `Perfect checkup, Doctor ${heroName || 'Hero'}!`
+    : `Great job, Doctor ${heroName || 'Hero'}!`;
 
   card.append(
     h('div', { class: 'results-patient', html: patientMarkup(result.patient, 'proud') }),
@@ -86,7 +101,7 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
         // Some cases pick their patient from a pool, so there may be no
         // single one to draw — show the first of the pool when that happens.
         h('span', { class: 'unlock-chip__icon',
-                    html: nextPatient ? patientMarkup(nextPatient, 'happy') : icon('tick') }),
+                    html: nextPatient ? patientMarkup(nextPatient, 'happy', { portrait: true }) : icon('tick') }),
         h('span', {}, `New patient: ${next.title}`)));
     }
   }
@@ -124,14 +139,24 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
     flash('rgba(255,255,255,.55)', 500);
 
     // Read the celebration out. This is the payoff screen, and it was silent.
+    //
+    // Each line carries BOTH versions, the way `keyText` already does for
+    // {hero}: `key` is the recorded line, which can never contain a name the
+    // player invented or a star count that changes every run, while `text` is
+    // what the browser voice says when there is no recording — and there it
+    // costs nothing to say the child's actual name and actual rewards.
     sayAll([
-      heading,
+      { text: spokenHeading, key: result.perfect ? RESULTS_LINES.perfect : RESULTS_LINES.great },
       firstEver
-        ? 'You helped your first patient. Well done!'
-        : `You helped ${result.patient.name} feel much better!`,
-      `You earned ${plural(result.stars, 'hero star')}`,
-      result.kindness ? `and ${plural(result.kindness, 'kindness star')}` : null,
-      `and ${plural(result.coins, 'hospital coin')}.`,
+        ? { text: RESULTS_LINES.firstPatient, key: RESULTS_LINES.firstPatient }
+        : { text: `You helped ${result.patient.name} feel so much better!`, key: RESULTS_LINES.helped },
+      // Read as three sentences the pauses landed inside the list and sounded
+      // like a stutter, so the rewards are deliberately one sentence.
+      { text: `You earned ${listed([
+        plural(result.stars, 'hero star'),
+        result.kindness ? plural(result.kindness, 'kindness star') : null,
+        plural(result.coins, 'hospital coin'),
+      ])}.`, key: RESULTS_LINES.rewards },
     ], { interrupt: true });
 
     await wait(500);
@@ -149,6 +174,9 @@ export function resultsScreen({ career, caseDef, result, newTools = [], newRooms
     return new Promise((resolve) => {
       sfx.unlock();
       confetti({ intensity: 0.7, duration: 2000 });
+      // Fixed strings from the tool catalogue, so these can be recorded —
+      // see NEW_TOOL_LINES and the `newTool` pool in dialogue/collect.js.
+      sayAll([NEW_TOOL_LINES.kicker, tool.name, tool.blurb], { who: 'narrator' });
       const m = modal([
         h('div', { class: 'newtool' },
           h('div', { class: 'newtool__kicker' }, 'NEW TOOL!'),

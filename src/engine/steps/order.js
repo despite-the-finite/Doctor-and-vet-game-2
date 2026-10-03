@@ -9,6 +9,8 @@ import { h, wait, shuffle } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
 import { toast, sparkle } from '../../core/fx.js';
 import { praise } from '../hints.js';
+import { triageLine } from '../../dialogue/speech.js';
+import { CONNECTORS, ORDER_LINES } from '../../dialogue/common.js';
 
 export function runOrder(step, ctx) {
   ctx.setPrompt(step.prompt, ctx.little ? null : step.hint);
@@ -31,8 +33,8 @@ export function runOrder(step, ctx) {
 
   ctx.bodyEl.appendChild(queue);
   // Who is waiting, and what is wrong with each of them.
-  ctx.speakOptions(items.map((i) => `${ctx.fill(i.label)} — ${ctx.fill(i.note)}`),
-    { lead: 'Here is who is waiting:' });
+  ctx.speakOptions(items.map((i) => triageLine(i.label, i.note)),
+    { lead: CONNECTORS.triageLead });
 
   async function tap(item, card) {
     if (solved || card.dataset.done) return;
@@ -43,7 +45,8 @@ export function runOrder(step, ctx) {
       card.classList.add('choice--wobble');
       setTimeout(() => card.classList.remove('choice--wobble'), 520);
       const shouldBe = items.find((i) => i.urgency === expect);
-      toast(ctx.fill(shouldBe?.why || step.hint || 'Someone else needs you a little sooner.'), {});
+      const line = shouldBe?.why || step.hint || ORDER_LINES.sooner;
+      toast(ctx.fill(line), { key: line });
       queue.querySelectorAll('.triage__card').forEach((c, i) => {
         if (items[i].urgency === expect) c.classList.add('triage__card--halo');
       });

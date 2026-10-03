@@ -573,7 +573,7 @@
 
 /* The nametag carries the patient's own face. */
 .case-nametag__art { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: block; flex: none; }
-.case-nametag__art svg { width: 190%; height: auto; display: block; transform: translate(-24%, 6%); }
+.case-nametag__art svg { width: 100%; height: 100%; display: block; }
 
 /* Backdrop props are drawn boxes. */
 .backdrop__prop { width: 42px; height: 42px; display: inline-grid; place-items: center; }
