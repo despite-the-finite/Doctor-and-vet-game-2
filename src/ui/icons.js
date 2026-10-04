@@ -25,6 +25,12 @@ const ICONS = {
   soundOff: (c = INK) => `<path d="M10 15 h6 l8-6 v22 l-8-6 h-6 z" fill="${c}"/>
     <path d="M28 15 l8 10 M36 15 l-8 10" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
 
+  musicOn: (c = INK) => `<path d="M15 28 V10 l16-4 v18" fill="none" stroke="${c}" stroke-width="3.4" stroke-linejoin="round"/>
+    <ellipse cx="11.5" cy="28.5" rx="4.5" ry="3.6" fill="${c}"/><ellipse cx="27.5" cy="24.5" rx="4.5" ry="3.6" fill="${c}"/>`,
+  musicOff: (c = INK) => `<g opacity=".45"><path d="M15 28 V10 l16-4 v18" fill="none" stroke="${c}" stroke-width="3.4" stroke-linejoin="round"/>
+    <ellipse cx="11.5" cy="28.5" rx="4.5" ry="3.6" fill="${c}"/><ellipse cx="27.5" cy="24.5" rx="4.5" ry="3.6" fill="${c}"/></g>
+    <path d="M7 7 l26 26" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
+
   voiceOn: (c = INK) => `<rect x="15" y="7" width="10" height="18" rx="5" fill="${c}"/>
     <path d="M12 22 a8 8 0 0 0 16 0" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>
     <path d="M20 30 v4" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,

@@ -10,7 +10,7 @@
  *   music.start('lobby');   // the main-menu loop
  *   music.stop(1.2);        // fade out in seconds
  */
-import { soundOn } from './state.js';
+import { soundOn, musicOn } from './state.js';
 
 const NOTE = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 const m = (s) => { const r = /^([A-G])([#b]?)(-?\d)$/.exec(s); return NOTE[r[1]] + (r[2] === '#' ? 1 : r[2] === 'b' ? -1 : 0) + (+r[3] + 1) * 12; };
@@ -299,5 +299,5 @@ export function createMusic({ isEnabled = () => true, volume = 0.5 } = {}) {
 
 /* ------------------------------------------------------------ game glue */
 
-/** The one shared player. Respects the mute button on every tick. */
-export const music = createMusic({ isEnabled: soundOn, volume: 0.5 });
+/** The one shared player. Respects the sound and music toggles on every tick. */
+export const music = createMusic({ isEnabled: () => soundOn() && musicOn(), volume: 0.5 });

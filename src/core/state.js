@@ -181,6 +181,16 @@ export function toggleSound() {
 
 export function soundOn() { return save.settings.sound; }
 
+/** Menu music, separate from sound effects. The sound button still silences both. */
+export function toggleMusic() {
+  save.settings.music = !save.settings.music;
+  commit('settings');
+  emit('settings:music', save.settings.music);
+  return save.settings.music;
+}
+
+export function musicOn() { return save.settings.music; }
+
 /** Spoken prompts. Defaults on for Little Helper, off for Medical Explorer. */
 export function setVoice(on) {
   save.settings.voice = on;

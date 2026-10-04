@@ -56,7 +56,7 @@ node tools/build-standalone.mjs
 | 🛒 Supply Room | Decor, comfy furniture, patient toys, outfits and one buildable new wing |
 | ⭐❤️🪙 Rewards | Hero Stars, Kindness Stars and Hospital Coins |
 | 🎚️ Two age modes | *Little Helper* (~4–6) and *Medical Explorer* (~7–10) — the same game, adapted |
-| 🎵 Menu music | "Waiting Room Lo-fi" — a 12-bar lo-fi loop (Rhodes, marimba, flute, upright bass, brushes) synthesised live in `core/music.js`; starts on the first tap, follows the mute button |
+| 🎵 Menu music | "Waiting Room Lo-fi" — a 12-bar lo-fi loop (Rhodes, marimba, flute, upright bass, brushes) synthesised live in `core/music.js`; starts on the first tap; its own on/off switch on the title screen, and the sound button silences it too |
 | 💾 Save system | `localStorage`, versioned and migratable |
 
 ---

@@ -10,8 +10,9 @@ import { h } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
 import { music } from '../../core/music.js';
 import { go } from '../../core/router.js';
-import { getState, hasHero, resetEverything } from '../../core/state.js';
+import { getState, hasHero, resetEverything, musicOn, toggleMusic } from '../../core/state.js';
 import { modal, heroSVG } from '../components.js';
+import { icon } from '../icons.js';
 import { confetti } from '../../core/fx.js';
 import { cross } from '../parts.js';
 import {
@@ -73,6 +74,20 @@ export function titleScreen() {
         h('button', { class: 'lh-btn lh-btn--quiet lh-btn--sm', onClick: confirmReset }, 'Start again'),
         h('span', {}, `Welcome back, Dr. ${state.hero.name}!`)) : null));
   el.appendChild(stack);
+
+  /* Music on/off. The loop only plays here, so this is where the switch lives. */
+  const musicBtn = h('button', {
+    class: 'lh-btn lh-btn--icon title-music', 'aria-label': 'Music on or off', title: 'Music on or off',
+    'aria-pressed': String(musicOn()),
+    html: icon(musicOn() ? 'musicOn' : 'musicOff'),
+    onClick: () => {
+      const now = toggleMusic();
+      musicBtn.innerHTML = icon(now ? 'musicOn' : 'musicOff');
+      musicBtn.setAttribute('aria-pressed', String(now));
+      sfx.tap();
+    },
+  });
+  el.appendChild(musicBtn);
 
   el.appendChild(h('div', { class: 'title-foot' },
     'A make-believe hospital. Not real medical advice.'));

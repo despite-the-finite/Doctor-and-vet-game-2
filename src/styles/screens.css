@@ -78,6 +78,8 @@
   color: #2E4A52; text-shadow: 0 2px 0 rgba(255,255,255,.5);
 }
 
+.title-music { position: absolute; top: 16px; right: 16px; z-index: 4; }
+
 .title-foot {
   position: absolute; left: 0; bottom: 0; width: 100%; z-index: 3;
   padding: 12px; text-align: center;

@@ -618,6 +618,8 @@ button { font-family: inherit; }
   color: #2E4A52; text-shadow: 0 2px 0 rgba(255,255,255,.5);
 }
 
+.title-music { position: absolute; top: 16px; right: 16px; z-index: 4; }
+
 .title-foot {
   position: absolute; left: 0; bottom: 0; width: 100%; z-index: 3;
   padding: 12px; text-align: center;
@@ -2159,6 +2161,12 @@ const ICONS = {
   soundOff: (c = INK) => `<path d="M10 15 h6 l8-6 v22 l-8-6 h-6 z" fill="${c}"/>
     <path d="M28 15 l8 10 M36 15 l-8 10" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
 
+  musicOn: (c = INK) => `<path d="M15 28 V10 l16-4 v18" fill="none" stroke="${c}" stroke-width="3.4" stroke-linejoin="round"/>
+    <ellipse cx="11.5" cy="28.5" rx="4.5" ry="3.6" fill="${c}"/><ellipse cx="27.5" cy="24.5" rx="4.5" ry="3.6" fill="${c}"/>`,
+  musicOff: (c = INK) => `<g opacity=".45"><path d="M15 28 V10 l16-4 v18" fill="none" stroke="${c}" stroke-width="3.4" stroke-linejoin="round"/>
+    <ellipse cx="11.5" cy="28.5" rx="4.5" ry="3.6" fill="${c}"/><ellipse cx="27.5" cy="24.5" rx="4.5" ry="3.6" fill="${c}"/></g>
+    <path d="M7 7 l26 26" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
+
   voiceOn: (c = INK) => `<rect x="15" y="7" width="10" height="18" rx="5" fill="${c}"/>
     <path d="M12 22 a8 8 0 0 0 16 0" fill="none" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>
     <path d="M20 30 v4" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`,
@@ -2769,6 +2777,16 @@ function toggleSound() {
 
 function soundOn() { return save.settings.sound; }
 
+/** Menu music, separate from sound effects. The sound button still silences both. */
+function toggleMusic() {
+  save.settings.music = !save.settings.music;
+  commit('settings');
+  emit('settings:music', save.settings.music);
+  return save.settings.music;
+}
+
+function musicOn() { return save.settings.music; }
+
 /** Spoken prompts. Defaults on for Little Helper, off for Medical Explorer. */
 function setVoice(on) {
   save.settings.voice = on;
@@ -2791,7 +2809,7 @@ function resetEverything() {
   save = freshSave();
   commit('reset');
 }
-  Object.assign(__x, { getState, hasHero, setHero, setDifficulty, setCareer, isLittle, heroTitle, addStars, addKindness, addCoins, spendCoins, hasTool, unlockTool, hasRoom, unlockRoom, ownsItem, buyItem, awardBadge, trackProgress, isLevelUnlocked, isLevelCompleted, completeCase, careerCompletion, isCareerFinished, toggleSound, soundOn, setVoice, flag, setFlag, resetEverything });
+  Object.assign(__x, { getState, hasHero, setHero, setDifficulty, setCareer, isLittle, heroTitle, addStars, addKindness, addCoins, spendCoins, hasTool, unlockTool, hasRoom, unlockRoom, ownsItem, buyItem, awardBadge, trackProgress, isLevelUnlocked, isLevelCompleted, completeCase, careerCompletion, isCareerFinished, toggleSound, soundOn, toggleMusic, musicOn, setVoice, flag, setFlag, resetEverything });
 });
 
 __def("src/core/save.js", function (__x, __req) {
@@ -6393,8 +6411,9 @@ const { h } = __req("src/core/dom.js");
 const { sfx } = __req("src/core/audio.js");
 const { music } = __req("src/core/music.js");
 const { go } = __req("src/core/router.js");
-const { getState, hasHero, resetEverything } = __req("src/core/state.js");
+const { getState, hasHero, resetEverything, musicOn, toggleMusic } = __req("src/core/state.js");
 const { modal, heroSVG } = __req("src/ui/components.js");
+const { icon } = __req("src/ui/icons.js");
 const { confetti } = __req("src/core/fx.js");
 const { cross } = __req("src/ui/parts.js");
 const { scene, cloud, sunDisc, birds, helicopter, hill, haze, treeRound, treePine, hospital, windowDog, road, ambulance } = __req("src/ui/scene.js");
@@ -6453,6 +6472,20 @@ function titleScreen() {
         h('button', { class: 'lh-btn lh-btn--quiet lh-btn--sm', onClick: confirmReset }, 'Start again'),
         h('span', {}, `Welcome back, Dr. ${state.hero.name}!`)) : null));
   el.appendChild(stack);
+
+  /* Music on/off. The loop only plays here, so this is where the switch lives. */
+  const musicBtn = h('button', {
+    class: 'lh-btn lh-btn--icon title-music', 'aria-label': 'Music on or off', title: 'Music on or off',
+    'aria-pressed': String(musicOn()),
+    html: icon(musicOn() ? 'musicOn' : 'musicOff'),
+    onClick: () => {
+      const now = toggleMusic();
+      musicBtn.innerHTML = icon(now ? 'musicOn' : 'musicOff');
+      musicBtn.setAttribute('aria-pressed', String(now));
+      sfx.tap();
+    },
+  });
+  el.appendChild(musicBtn);
 
   el.appendChild(h('div', { class: 'title-foot' },
     'A make-believe hospital. Not real medical advice.'));
@@ -6600,7 +6633,7 @@ __def("src/core/music.js", function (__x, __req) {
  *   music.start('lobby');   // the main-menu loop
  *   music.stop(1.2);        // fade out in seconds
  */
-const { soundOn } = __req("src/core/state.js");
+const { soundOn, musicOn } = __req("src/core/state.js");
 
 const NOTE = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 const m = (s) => { const r = /^([A-G])([#b]?)(-?\d)$/.exec(s); return NOTE[r[1]] + (r[2] === '#' ? 1 : r[2] === 'b' ? -1 : 0) + (+r[3] + 1) * 12; };
@@ -6889,8 +6922,8 @@ function createMusic({ isEnabled = () => true, volume = 0.5 } = {}) {
 
 /* ------------------------------------------------------------ game glue */
 
-/** The one shared player. Respects the mute button on every tick. */
-const music = createMusic({ isEnabled: soundOn, volume: 0.5 });
+/** The one shared player. Respects the sound and music toggles on every tick. */
+const music = createMusic({ isEnabled: () => soundOn() && musicOn(), volume: 0.5 });
   Object.assign(__x, { SONGS, createMusic, music });
 });
 
