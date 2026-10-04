@@ -9054,6 +9054,10 @@ function createMusic({ isEnabled = () => true, volume = 0.5 } = {}) {
     if (ctx) return ctx;
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
+    // iOS mutes Web Audio under the ringer's silent switch unless the page
+    // says it is media playback (Safari 16.4+); the ident video is unaffected,
+    // which is why the logo could be heard and the music not.
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch { /* older browsers */ }
     ctx = new AC();
     master = ctx.createGain(); master.gain.value = volume;
     const comp = ctx.createDynamicsCompressor();
@@ -9074,6 +9078,12 @@ function createMusic({ isEnabled = () => true, volume = 0.5 } = {}) {
     for (let c = 0; c < 2; c++) { const d = b.getChannelData(c); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, decay); }
     return b;
   }
+
+  // Safari can create the context 'suspended' (or later 'interrupted') when it
+  // was not made inside a tap, e.g. when the loop starts after the ident. Keep
+  // nudging it on every gesture until it runs, not just the first.
+  ['pointerdown', 'touchend', 'click', 'keydown'].forEach((evt) =>
+    window.addEventListener(evt, () => { if (ctx && ctx.state !== 'running') ctx.resume?.(); }, { passive: true, capture: true }));
 
   /* -- voice helpers -- */
   const out = (node, send = 0.2) => { node.connect(bus); if (send) { const s = ctx.createGain(); s.gain.value = send; node.connect(s).connect(verb); } };
