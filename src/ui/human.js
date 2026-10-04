@@ -1,7 +1,8 @@
 /**
  * Parametric human character (the hero and every people-patient).
  *
- * Returns an SVG string on a 200x240 canvas. Invisible `data-spot` circles
+ * Returns an SVG string on a 200x240 canvas. `data-portrait` is the head-and-
+ * shoulders crop a thumbnail uses — see ui/patients.js. Invisible `data-spot` circles
  * mark the places a tool can be dropped, so the case engine only ever needs
  * to say "the chest" and this file decides where that is.
  */
@@ -52,7 +53,7 @@ export function humanSVG(opts = {}) {
   const armFill = co.value || sc.value;
 
   return `
-<svg viewBox="0 0 200 250" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<svg viewBox="0 0 200 250" data-portrait="26 22 148 148" class="lh-charsvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
   <defs>
     <linearGradient id="rainbowShoe" x1="0" x2="1">
       <stop offset="0%" stop-color="#ff7a6b"/><stop offset="35%" stop-color="#ffc844"/>

@@ -8,6 +8,7 @@
 import { h, wait } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
 import { kindPraise } from '../hints.js';
+import { CONNECTORS } from '../../dialogue/common.js';
 
 export function runEmpathy(step, ctx) {
   ctx.setPrompt(step.prompt, 'Every answer here is a kind one.');
@@ -24,7 +25,9 @@ export function runEmpathy(step, ctx) {
   });
 
   ctx.bodyEl.appendChild(grid);
-  ctx.speakOptions(options.map((o) => o.label), { lead: 'You could say:' });
+  // Spoken in the player's own voice: these are things the hero says, and the
+  // same recording is reused when the child picks one.
+  ctx.speakOptions(options.map((o) => o.label), { lead: CONNECTORS.empathyLead, who: 'hero' });
 
   let done = false;
   async function choose(opt, card) {

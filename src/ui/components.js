@@ -130,10 +130,20 @@ export function modal(content, { onClose = null, dismissable = true } = {}) {
   return { el: veil, box, close };
 }
 
-/** Big rounded section heading used on the hub, shop and bag screens. */
-export function sectionTitle(icon, text, sub = null) {
+/**
+ * Big rounded section heading used on the hub, shop and bag screens.
+ *
+ * `mark` is drawing, not text: every caller hands it `icon(...)`, which is a
+ * markup string, so it has to be set as HTML. Appending it as a child printed
+ * the SVG source in 40px type across the top of the Doctor Bag and the Supply
+ * Room. An element is accepted too, for a caller that has one already.
+ */
+export function sectionTitle(mark, text, sub = null) {
+  const badge = typeof mark === 'string'
+    ? h('span', { class: 'lh-section-title__icon', html: mark })
+    : h('span', { class: 'lh-section-title__icon' }, mark);
   return h('div', { class: 'lh-section-title' },
-    h('span', { class: 'lh-section-title__icon' }, icon),
+    badge,
     h('div', {},
       h('h2', {}, text),
       sub ? h('p', {}, sub) : null));

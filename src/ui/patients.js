@@ -10,7 +10,24 @@ import { creatureSVG, SPECIES } from './creature.js';
 import { toySVG, TOYS, isToy } from './toy.js';
 import { raw } from '../core/dom.js';
 
-export function patientMarkup(patient, mood = 'happy') {
+/**
+ * Draw a patient.
+ *
+ * `portrait: true` returns the same artwork cropped to head and shoulders,
+ * for the little round thumbnails on the level list, the case name tag and
+ * the results screen. Those used to be "cropped" by blowing the full-body
+ * drawing up to 185% inside a 76px box and hoping — which framed the top of
+ * the head and nothing else. Every renderer now declares the box that
+ * actually contains its face (`data-portrait`), so a thumbnail is a real
+ * crop: it is framed the same whether the patient is a child, a hedgehog, a
+ * robot or a toy car, and it stays framed if the artwork ever moves.
+ */
+export function patientMarkup(patient, mood = 'happy', { portrait = false } = {}) {
+  const svg = draw(patient, mood);
+  return portrait ? cropToPortrait(svg) : svg;
+}
+
+function draw(patient, mood) {
   // Cases that pick from a `patientPool` have no single patient until the
   // runner chooses one, so callers can legitimately have nothing to draw.
   if (!patient?.kind) return humanSVG({ mood });
@@ -23,6 +40,14 @@ export function patientMarkup(patient, mood = 'happy') {
     return toySVG({ kind: patient.kind, mood, ...(patient.look || {}) });
   }
   return creatureSVG({ species: patient.kind, mood, ...(patient.look || {}) });
+}
+
+/** Swap the root viewBox for the renderer's declared head-and-shoulders box. */
+function cropToPortrait(svg) {
+  const box = svg.match(/data-portrait="([^"]+)"/)?.[1];
+  if (!box) return svg;
+  // Only the first viewBox — the root element's — is ever replaced.
+  return svg.replace(/viewBox="[^"]*"/, `viewBox="${box}" preserveAspectRatio="xMidYMid meet"`);
 }
 
 export function patientElement(patient, mood = 'happy') {

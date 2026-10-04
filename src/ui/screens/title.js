@@ -13,7 +13,7 @@ import { go } from '../../core/router.js';
 import { getState, hasHero, resetEverything, musicOn, toggleMusic } from '../../core/state.js';
 import { modal, heroSVG } from '../components.js';
 import { icon } from '../icons.js';
-import { confetti } from '../../core/fx.js';
+import { sparkle } from '../../core/fx.js';
 import { cross } from '../parts.js';
 import {
   scene, cloud, sunDisc, birds, helicopter, hill, haze,
@@ -92,16 +92,25 @@ export function titleScreen() {
   el.appendChild(h('div', { class: 'title-foot' },
     'A make-believe hospital. Not real medical advice.'));
 
-  // Browsers only let audio start after a gesture, so the menu loop begins on
-  // the first tap anywhere here. The mute button needs no wiring: music.js
-  // reads soundOn() on every tick and ducks.
-  el.addEventListener('pointerdown', () => { music.start('lobby'); }, { once: true, passive: true });
+  // Browsers only let audio start after a gesture. The tap that starts the
+  // opening ident counts, so once the ident has gone the loop can begin on its
+  // own; failing that, it begins on the first tap anywhere here. The music
+  // switch needs no wiring: music.js reads soundOn() and musicOn() every tick.
+  const begin = () => { if (el.isConnected && !music.playing()) music.start('lobby'); };
+  el.addEventListener('pointerdown', begin, { once: true, passive: true });
+  Promise.resolve(window.EntropicIdent?.done).then(() => {
+    if (navigator.userActivation?.hasBeenActive) begin();
+  });
 
   function start() {
-    music.stop(1.4);                       // fade under the confetti
+    music.stop(1.4);                       // fade under the fanfare
     sfx.fanfare();
-    confetti({ intensity: 0.7, duration: 2000 });
-    setTimeout(() => go(returning ? 'hub' : 'creator', {}, { replace: true }), 260);
+    // A two-second confetti fall started a quarter of a second before the
+    // screen changes is a two-second confetti fall nobody ever sees the end
+    // of — most pieces had not even been released. A burst that finishes
+    // where it started says the same thing and leaves nothing behind.
+    sparkle(el.querySelector('.title-hero__art') || el, { count: 22 });
+    setTimeout(() => go(returning ? 'hub' : 'creator', {}, { replace: true }), 320);
   }
 
   function confirmReset() {

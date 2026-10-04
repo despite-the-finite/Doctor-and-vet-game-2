@@ -12,6 +12,9 @@
  *                                 <body> wrapper, for hosts that supply their
  *                                 own document shell.
  *
+ * Both carry the Entropic Labs opening ident (src/ident.js) with its video
+ * inlined as a data: URI, so the single file still needs nothing beside it.
+ *
  * The game ships as ES modules, which browsers refuse to load over file://.
  * Rather than pull in a bundler, this walks the import graph itself and wraps
  * each module in a function with a tiny CommonJS-style registry — so module
@@ -123,7 +126,12 @@ const body = [...modules.entries()]
 
 const script = `${runtime}\n\n${body}\n\n__req(${JSON.stringify(ENTRY)});`;
 
-const css = ['base', 'ui', 'screens', 'case']
+// The same sheets index.html loads, in the same order. `tokens` has to come
+// first and must not be left out: every other sheet is written against the
+// `--lh-*` custom properties it defines, so a bundle without it renders with
+// no panel colours, no radii, no shadows and no display font — which is
+// exactly what dist/ has been shipping.
+const css = ['tokens', 'base', 'ui', 'screens', 'case']
   .map((name) => `/* ── ${name}.css ─────────────────────────────── */\n` +
                  readFileSync(resolve(ROOT, `src/styles/${name}.css`), 'utf8'))
   .join('\n\n');
@@ -135,7 +143,15 @@ const NOSCRIPT = `<noscript><div style="padding:2rem;font-family:system-ui;text-
   <p>This game needs JavaScript switched on. Please enable it and refresh.</p>
 </div></noscript>`;
 
-const content = `<div id="app" aria-live="polite"></div>
+// The opening ident goes first so it covers the page before the game draws.
+const IDENT_JS = readFileSync(resolve(ROOT, 'src/ident.js'), 'utf8').replace(/<\/script/gi, '<\\/script');
+const IDENT_VIDEO = readFileSync(resolve(ROOT, 'src/assets/entropic-ident.mp4')).toString('base64');
+const IDENT = `<script data-src="data:video/mp4;base64,${IDENT_VIDEO}">
+${IDENT_JS.trim()}
+</script>`;
+
+const content = `${IDENT}
+<div id="app" aria-live="polite"></div>
 <div id="fx" aria-hidden="true"></div>
 ${NOSCRIPT}
 <script type="module">
@@ -177,7 +193,7 @@ ${css}
 ${content}
 `);
 
-const kb = (p) => (readFileSync(resolve(ROOT, p), 'utf8').length / 1024).toFixed(0);
+const kb = (p) => (readFileSync(resolve(ROOT, p)).length / 1024).toFixed(0);
 console.log(`✅ bundled ${modules.size} modules`);
 console.log(`   dist/little-heroes-hospital.html  ${kb('dist/little-heroes-hospital.html')} KB`);
 console.log(`   dist/artifact.html                ${kb('dist/artifact.html')} KB`);

@@ -14,6 +14,7 @@ import { getState, buyItem, ownsItem } from '../../core/state.js';
 import { CATEGORIES, itemsIn } from '../../data/shop.js';
 import { hud, sectionTitle } from '../components.js';
 import { confetti, sparkle, toast } from '../../core/fx.js';
+import { UI_LINES } from '../../dialogue/common.js';
 
 export function shopScreen({ category = 'comfort' } = {}) {
   let active = category;
@@ -74,7 +75,7 @@ export function shopScreen({ category = 'comfort' } = {}) {
     const result = buyItem(item);
     if (result === 'owned') {
       sfx.tap();
-      toast('You already own this one!', { mark: 'tick', tone: 'good' });
+      toast(UI_LINES.alreadyOwned, { mark: 'tick', tone: 'good' });
       return;
     }
     if (result === 'poor') {
@@ -88,14 +89,14 @@ export function shopScreen({ category = 'comfort' } = {}) {
     confetti({ intensity: 0.6, duration: 1800 });
 
     if (item.unlocksRoom) {
-      toast('A new room is being built!', { tone: 'good', ms: 3000 });
+      toast(UI_LINES.buildingRoom, { tone: 'good', ms: 3000 });
       setTimeout(() => go('hub', { build: [item.unlocksRoom] }, { replace: true }), 900);
       return;
     }
     if (item.accessory) {
-      toast('Try it on in the character creator!', { tone: 'good', ms: 3000 });
+      toast(UI_LINES.tryItOn, { tone: 'good', ms: 3000 });
     } else {
-      toast('It has been added to your hospital!', { tone: 'good' });
+      toast(UI_LINES.addedToHospital, { tone: 'good' });
     }
     render();
   }
