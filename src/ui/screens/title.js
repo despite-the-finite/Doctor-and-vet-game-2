@@ -8,7 +8,6 @@
  */
 import { h } from '../../core/dom.js';
 import { sfx } from '../../core/audio.js';
-import { music } from '../../core/music.js';
 import { go } from '../../core/router.js';
 import { getState, hasHero, resetEverything, musicOn, toggleMusic } from '../../core/state.js';
 import { modal, heroSVG } from '../components.js';
@@ -75,7 +74,7 @@ export function titleScreen() {
         h('span', {}, `Welcome back, Dr. ${state.hero.name}!`)) : null));
   el.appendChild(stack);
 
-  /* Music on/off. The loop only plays here, so this is where the switch lives. */
+  /* Music on/off. The title has no top bar, so it gets its own switch. */
   const musicBtn = h('button', {
     class: 'lh-btn lh-btn--icon title-music', 'aria-label': 'Music on or off', title: 'Music on or off',
     'aria-pressed': String(musicOn()),
@@ -92,18 +91,7 @@ export function titleScreen() {
   el.appendChild(h('div', { class: 'title-foot' },
     'A make-believe hospital. Not real medical advice.'));
 
-  // Browsers only let audio start after a gesture. The tap that starts the
-  // opening ident counts, so once the ident has gone the loop can begin on its
-  // own; failing that, it begins on the first tap anywhere here. The music
-  // switch needs no wiring: music.js reads soundOn() and musicOn() every tick.
-  const begin = () => { if (el.isConnected && !music.playing()) music.start('lobby'); };
-  el.addEventListener('pointerdown', begin, { once: true, passive: true });
-  Promise.resolve(window.EntropicIdent?.done).then(() => {
-    if (navigator.userActivation?.hasBeenActive) begin();
-  });
-
   function start() {
-    music.stop(1.4);                       // fade under the fanfare
     sfx.fanfare();
     // A two-second confetti fall started a quarter of a second before the
     // screen changes is a two-second confetti fall nobody ever sees the end
@@ -128,5 +116,5 @@ export function titleScreen() {
     ]);
   }
 
-  return { el, destroy: () => music.stop(0.8) };   // leaving by any route fades out
+  return { el };
 }

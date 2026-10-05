@@ -12,6 +12,7 @@ import { registerScreen, attach, go } from './core/router.js';
 import { attachFx, toast } from './core/fx.js';
 import { getState, hasHero } from './core/state.js';
 import { on } from './core/events.js';
+import { music } from './core/music.js';
 
 import { titleScreen } from './ui/screens/title.js';
 import { creatorScreen } from './ui/screens/creator.js';
@@ -33,12 +34,38 @@ const SCREENS = {
   shop: shopScreen,
 };
 
+/*
+ * The menu loop plays across every menu screen and fades out for a case.
+ * Keeping it to the title screen meant the tap that started it was nearly
+ * always "Carry on", which faded it straight back out — nobody heard it.
+ */
+const MENU_SCREENS = new Set(['title', 'creator', 'hub', 'levels', 'bag', 'shop']);
+let currentScreen = null;
+let identDone = !window.EntropicIdent;
+
+function syncMusic() {
+  if (!MENU_SCREENS.has(currentScreen)) { if (music.playing()) music.stop(1.0); return; }
+  if (music.playing() || !identDone) return;
+  // Browsers only let audio start after a gesture; the tap that started the
+  // opening ident counts. Safari has no userActivation, so it just tries —
+  // music.js resumes a suspended context on the next tap.
+  if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
+  music.start('lobby');
+}
+
 function boot() {
   const app = document.getElementById('app');
   attach(app);
   attachFx(document.getElementById('fx'));
 
-  Object.entries(SCREENS).forEach(([name, factory]) => registerScreen(name, factory));
+  Object.entries(SCREENS).forEach(([name, factory]) => registerScreen(name, (params) => {
+    currentScreen = name;
+    syncMusic();
+    return factory(params);
+  }));
+  Promise.resolve(window.EntropicIdent?.done).then(() => { identDone = true; syncMusic(); });
+  window.addEventListener('pointerdown', syncMusic, { capture: true, passive: true });
+  window.addEventListener('keydown', syncMusic, { capture: true, passive: true });
 
   // A returning player with a hero still starts on the title screen — it is
   // the friendliest "front door" and the Carry On button is right there.

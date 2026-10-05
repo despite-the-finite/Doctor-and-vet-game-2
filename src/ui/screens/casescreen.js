@@ -33,6 +33,7 @@ export function caseScreen({ career, caseId }) {
     back: confirmQuit,
     dark: true,
     chips: [],
+    music: false,
   });
   el.appendChild(bar);
 

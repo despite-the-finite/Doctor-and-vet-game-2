@@ -2160,6 +2160,7 @@ const { registerScreen, attach, go } = __req("src/core/router.js");
 const { attachFx, toast } = __req("src/core/fx.js");
 const { getState, hasHero } = __req("src/core/state.js");
 const { on } = __req("src/core/events.js");
+const { music } = __req("src/core/music.js");
 
 const { titleScreen } = __req("src/ui/screens/title.js");
 const { creatorScreen } = __req("src/ui/screens/creator.js");
@@ -2181,12 +2182,38 @@ const SCREENS = {
   shop: shopScreen,
 };
 
+/*
+ * The menu loop plays across every menu screen and fades out for a case.
+ * Keeping it to the title screen meant the tap that started it was nearly
+ * always "Carry on", which faded it straight back out — nobody heard it.
+ */
+const MENU_SCREENS = new Set(['title', 'creator', 'hub', 'levels', 'bag', 'shop']);
+let currentScreen = null;
+let identDone = !window.EntropicIdent;
+
+function syncMusic() {
+  if (!MENU_SCREENS.has(currentScreen)) { if (music.playing()) music.stop(1.0); return; }
+  if (music.playing() || !identDone) return;
+  // Browsers only let audio start after a gesture; the tap that started the
+  // opening ident counts. Safari has no userActivation, so it just tries —
+  // music.js resumes a suspended context on the next tap.
+  if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
+  music.start('lobby');
+}
+
 function boot() {
   const app = document.getElementById('app');
   attach(app);
   attachFx(document.getElementById('fx'));
 
-  Object.entries(SCREENS).forEach(([name, factory]) => registerScreen(name, factory));
+  Object.entries(SCREENS).forEach(([name, factory]) => registerScreen(name, (params) => {
+    currentScreen = name;
+    syncMusic();
+    return factory(params);
+  }));
+  Promise.resolve(window.EntropicIdent?.done).then(() => { identDone = true; syncMusic(); });
+  window.addEventListener('pointerdown', syncMusic, { capture: true, passive: true });
+  window.addEventListener('keydown', syncMusic, { capture: true, passive: true });
 
   // A returning player with a hero still starts on the title screen — it is
   // the friendliest "front door" and the Carry On button is right there.
@@ -8843,139 +8870,6 @@ function preloadClips(lookups = []) {
   Object.assign(__x, { loadVoiceIndex, indexLoaded, clipFor, playClip, stopClip, preloadClips });
 });
 
-__def("src/ui/screens/title.js", function (__x, __req) {
-/**
- * Title screen — the front door.
- *
- * The town is alive before the child touches anything: clouds drift, the air
- * ambulance crosses, an ambulance pulls up at the kerb, a dog watches from
- * the vet window and the hero breathes on the pavement. Four depth planes,
- * every prop drawn — there is not an emoji in the scene.
- */
-const { h } = __req("src/core/dom.js");
-const { sfx } = __req("src/core/audio.js");
-const { music } = __req("src/core/music.js");
-const { go } = __req("src/core/router.js");
-const { getState, hasHero, resetEverything, musicOn, toggleMusic } = __req("src/core/state.js");
-const { modal, heroSVG } = __req("src/ui/components.js");
-const { icon } = __req("src/ui/icons.js");
-const { sparkle } = __req("src/core/fx.js");
-const { cross } = __req("src/ui/parts.js");
-const { scene, cloud, sunDisc, birds, helicopter, hill, haze, treeRound, treePine, hospital, windowDog, road, ambulance } = __req("src/ui/scene.js");
-
-function titleScreen() {
-  const state = getState();
-  const returning = hasHero();
-
-  const el = h('div', { class: 'lh-screen lh-screen--title', 'data-world': 'doctor' });
-
-  el.appendChild(scene({
-    world: 'doctor',
-    sky: [
-      sunDisc({ right: 96, top: 60 }),
-      cloud({ top: 88, w: 230, hgt: 74, opacity: .94, dur: 52 }),
-      cloud({ top: 172, w: 150, hgt: 52, opacity: .8, dur: 74, delay: -26 }),
-      cloud({ top: 44, w: 110, hgt: 40, opacity: .7, dur: 96, delay: -60 }),
-      helicopter({ top: 130 }),
-      birds({ left: 180, top: 120 }),
-    ],
-    far: [
-      hill({ side: 'left', offset: -8, bottom: 210, w: 62, hgt: 230, fill: '#8FD9A0' }),
-      hill({ side: 'right', offset: -12, bottom: 196, w: 58, hgt: 190, fill: '#79CB8D' }),
-      haze({ bottom: 196, hgt: 260, strength: .22 }),
-      treeRound({ side: 'left', offset: 96, bottom: 214 }),
-      treePine({ side: 'right', offset: 120, bottom: 206 }),
-    ],
-    room: [
-      hospital({ bottom: 150 }),
-      `<div style="position:absolute; left:calc(50% - 214px); bottom:216px;">${windowDog({ left: 0, bottom: 0 })}</div>`,
-    ],
-    fore: [
-      road(),
-      ambulance(),
-    ],
-  }));
-
-  /* The hero stands right of centre on the pavement, clear of both the
-     wordmark and the primary button. */
-  el.appendChild(h('div', { class: 'title-hero', html: `<div class="title-hero__art">${heroSVG({ mood: 'happy' })}</div>` }));
-
-  /* ---------------------------------------------------------- the words */
-  const stack = h('div', { class: 'title-stack' },
-    h('div', { class: 'title-kicker' },
-      h('span', { class: 'title-kicker__mark', html: `<svg viewBox="0 0 40 40">${cross(20, 20, 40, '#fff')}</svg>` }),
-      h('span', {}, 'AGES 4–10')),
-    h('h1', { class: 'title-wordmark' },
-      h('span', { class: 'title-word title-word--1' }, 'LITTLE'),
-      h('span', { class: 'title-word title-word--2' }, 'HEROES'),
-      h('span', { class: 'title-word title-word--3' }, 'HOSPITAL')),
-    h('p', { class: 'title-sub' }, 'People or pets — everyone needs a hero.'),
-    h('div', { class: 'title-actions' },
-      h('button', { class: 'lh-btn lh-btn--secondary lh-btn--lg', onClick: start },
-        returning ? 'Carry on' : 'Start my adventure'),
-      returning ? h('div', { class: 'title-returning' },
-        h('button', { class: 'lh-btn lh-btn--quiet lh-btn--sm', onClick: confirmReset }, 'Start again'),
-        h('span', {}, `Welcome back, Dr. ${state.hero.name}!`)) : null));
-  el.appendChild(stack);
-
-  /* Music on/off. The loop only plays here, so this is where the switch lives. */
-  const musicBtn = h('button', {
-    class: 'lh-btn lh-btn--icon title-music', 'aria-label': 'Music on or off', title: 'Music on or off',
-    'aria-pressed': String(musicOn()),
-    html: icon(musicOn() ? 'musicOn' : 'musicOff'),
-    onClick: () => {
-      const now = toggleMusic();
-      musicBtn.innerHTML = icon(now ? 'musicOn' : 'musicOff');
-      musicBtn.setAttribute('aria-pressed', String(now));
-      sfx.tap();
-    },
-  });
-  el.appendChild(musicBtn);
-
-  el.appendChild(h('div', { class: 'title-foot' },
-    'A make-believe hospital. Not real medical advice.'));
-
-  // Browsers only let audio start after a gesture. The tap that starts the
-  // opening ident counts, so once the ident has gone the loop can begin on its
-  // own; failing that, it begins on the first tap anywhere here. The music
-  // switch needs no wiring: music.js reads soundOn() and musicOn() every tick.
-  const begin = () => { if (el.isConnected && !music.playing()) music.start('lobby'); };
-  el.addEventListener('pointerdown', begin, { once: true, passive: true });
-  Promise.resolve(window.EntropicIdent?.done).then(() => {
-    if (navigator.userActivation?.hasBeenActive) begin();
-  });
-
-  function start() {
-    music.stop(1.4);                       // fade under the fanfare
-    sfx.fanfare();
-    // A two-second confetti fall started a quarter of a second before the
-    // screen changes is a two-second confetti fall nobody ever sees the end
-    // of — most pieces had not even been released. A burst that finishes
-    // where it started says the same thing and leaves nothing behind.
-    sparkle(el.querySelector('.title-hero__art') || el, { count: 22 });
-    setTimeout(() => go(returning ? 'hub' : 'creator', {}, { replace: true }), 320);
-  }
-
-  function confirmReset() {
-    sfx.tap();
-    const m = modal([
-      h('h2', {}, 'Start a brand new hospital?'),
-      h('p', {}, 'Your hero, your stars, your coins and all your rooms will be cleared.'),
-      h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },
-        h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => m.close() }, 'No, keep playing'),
-        h('button', { class: 'lh-btn lh-btn--alert', onClick: () => {
-          resetEverything();
-          m.close();
-          go('title', {}, { replace: true });
-        } }, 'Yes, start again')),
-    ]);
-  }
-
-  return { el, destroy: () => music.stop(0.8) };   // leaving by any route fades out
-}
-  Object.assign(__x, { titleScreen });
-});
-
 __def("src/core/music.js", function (__x, __req) {
 /**
  * Little Heroes Hospital — synthesised menu music.
@@ -9293,6 +9187,127 @@ const music = createMusic({ isEnabled: () => soundOn() && musicOn(), volume: 0.5
   Object.assign(__x, { SONGS, createMusic, music });
 });
 
+__def("src/ui/screens/title.js", function (__x, __req) {
+/**
+ * Title screen — the front door.
+ *
+ * The town is alive before the child touches anything: clouds drift, the air
+ * ambulance crosses, an ambulance pulls up at the kerb, a dog watches from
+ * the vet window and the hero breathes on the pavement. Four depth planes,
+ * every prop drawn — there is not an emoji in the scene.
+ */
+const { h } = __req("src/core/dom.js");
+const { sfx } = __req("src/core/audio.js");
+const { go } = __req("src/core/router.js");
+const { getState, hasHero, resetEverything, musicOn, toggleMusic } = __req("src/core/state.js");
+const { modal, heroSVG } = __req("src/ui/components.js");
+const { icon } = __req("src/ui/icons.js");
+const { sparkle } = __req("src/core/fx.js");
+const { cross } = __req("src/ui/parts.js");
+const { scene, cloud, sunDisc, birds, helicopter, hill, haze, treeRound, treePine, hospital, windowDog, road, ambulance } = __req("src/ui/scene.js");
+
+function titleScreen() {
+  const state = getState();
+  const returning = hasHero();
+
+  const el = h('div', { class: 'lh-screen lh-screen--title', 'data-world': 'doctor' });
+
+  el.appendChild(scene({
+    world: 'doctor',
+    sky: [
+      sunDisc({ right: 96, top: 60 }),
+      cloud({ top: 88, w: 230, hgt: 74, opacity: .94, dur: 52 }),
+      cloud({ top: 172, w: 150, hgt: 52, opacity: .8, dur: 74, delay: -26 }),
+      cloud({ top: 44, w: 110, hgt: 40, opacity: .7, dur: 96, delay: -60 }),
+      helicopter({ top: 130 }),
+      birds({ left: 180, top: 120 }),
+    ],
+    far: [
+      hill({ side: 'left', offset: -8, bottom: 210, w: 62, hgt: 230, fill: '#8FD9A0' }),
+      hill({ side: 'right', offset: -12, bottom: 196, w: 58, hgt: 190, fill: '#79CB8D' }),
+      haze({ bottom: 196, hgt: 260, strength: .22 }),
+      treeRound({ side: 'left', offset: 96, bottom: 214 }),
+      treePine({ side: 'right', offset: 120, bottom: 206 }),
+    ],
+    room: [
+      hospital({ bottom: 150 }),
+      `<div style="position:absolute; left:calc(50% - 214px); bottom:216px;">${windowDog({ left: 0, bottom: 0 })}</div>`,
+    ],
+    fore: [
+      road(),
+      ambulance(),
+    ],
+  }));
+
+  /* The hero stands right of centre on the pavement, clear of both the
+     wordmark and the primary button. */
+  el.appendChild(h('div', { class: 'title-hero', html: `<div class="title-hero__art">${heroSVG({ mood: 'happy' })}</div>` }));
+
+  /* ---------------------------------------------------------- the words */
+  const stack = h('div', { class: 'title-stack' },
+    h('div', { class: 'title-kicker' },
+      h('span', { class: 'title-kicker__mark', html: `<svg viewBox="0 0 40 40">${cross(20, 20, 40, '#fff')}</svg>` }),
+      h('span', {}, 'AGES 4–10')),
+    h('h1', { class: 'title-wordmark' },
+      h('span', { class: 'title-word title-word--1' }, 'LITTLE'),
+      h('span', { class: 'title-word title-word--2' }, 'HEROES'),
+      h('span', { class: 'title-word title-word--3' }, 'HOSPITAL')),
+    h('p', { class: 'title-sub' }, 'People or pets — everyone needs a hero.'),
+    h('div', { class: 'title-actions' },
+      h('button', { class: 'lh-btn lh-btn--secondary lh-btn--lg', onClick: start },
+        returning ? 'Carry on' : 'Start my adventure'),
+      returning ? h('div', { class: 'title-returning' },
+        h('button', { class: 'lh-btn lh-btn--quiet lh-btn--sm', onClick: confirmReset }, 'Start again'),
+        h('span', {}, `Welcome back, Dr. ${state.hero.name}!`)) : null));
+  el.appendChild(stack);
+
+  /* Music on/off. The title has no top bar, so it gets its own switch. */
+  const musicBtn = h('button', {
+    class: 'lh-btn lh-btn--icon title-music', 'aria-label': 'Music on or off', title: 'Music on or off',
+    'aria-pressed': String(musicOn()),
+    html: icon(musicOn() ? 'musicOn' : 'musicOff'),
+    onClick: () => {
+      const now = toggleMusic();
+      musicBtn.innerHTML = icon(now ? 'musicOn' : 'musicOff');
+      musicBtn.setAttribute('aria-pressed', String(now));
+      sfx.tap();
+    },
+  });
+  el.appendChild(musicBtn);
+
+  el.appendChild(h('div', { class: 'title-foot' },
+    'A make-believe hospital. Not real medical advice.'));
+
+  function start() {
+    sfx.fanfare();
+    // A two-second confetti fall started a quarter of a second before the
+    // screen changes is a two-second confetti fall nobody ever sees the end
+    // of — most pieces had not even been released. A burst that finishes
+    // where it started says the same thing and leaves nothing behind.
+    sparkle(el.querySelector('.title-hero__art') || el, { count: 22 });
+    setTimeout(() => go(returning ? 'hub' : 'creator', {}, { replace: true }), 320);
+  }
+
+  function confirmReset() {
+    sfx.tap();
+    const m = modal([
+      h('h2', {}, 'Start a brand new hospital?'),
+      h('p', {}, 'Your hero, your stars, your coins and all your rooms will be cleared.'),
+      h('div', { class: 'lh-row lh-gap-m', style: { justifyContent: 'center', flexWrap: 'wrap' } },
+        h('button', { class: 'lh-btn lh-btn--quiet', onClick: () => m.close() }, 'No, keep playing'),
+        h('button', { class: 'lh-btn lh-btn--alert', onClick: () => {
+          resetEverything();
+          m.close();
+          go('title', {}, { replace: true });
+        } }, 'Yes, start again')),
+    ]);
+  }
+
+  return { el };
+}
+  Object.assign(__x, { titleScreen });
+});
+
 __def("src/ui/components.js", function (__x, __req) {
 /**
  * Shared UI pieces used across screens: the top bar, currency chips, the
@@ -9300,7 +9315,7 @@ __def("src/ui/components.js", function (__x, __req) {
  */
 const { h } = __req("src/core/dom.js");
 const { sfx } = __req("src/core/audio.js");
-const { getState, toggleSound, soundOn } = __req("src/core/state.js");
+const { getState, toggleSound, soundOn, toggleMusic, musicOn } = __req("src/core/state.js");
 const { isSupported: voiceSupported, voiceOn, toggleVoice } = __req("src/core/voice.js");
 const { on } = __req("src/core/events.js");
 const { humanSVG } = __req("src/ui/human.js");
@@ -9323,7 +9338,7 @@ function heroSVG(opts = {}) {
  * The top bar. `back` may be a function or false; the sound toggle is always
  * present so a child can silence the game from any screen.
  */
-function hud({ title = '', back = null, dark = false, chips = ['stars', 'coins'], extra = [] } = {}) {
+function hud({ title = '', back = null, dark = false, chips = ['stars', 'coins'], extra = [], music = true } = {}) {
   const bar = h('div', { class: `lh-hud${dark ? ' lh-hud--dark' : ''}` });
 
   if (back) {
@@ -9361,6 +9376,20 @@ function hud({ title = '', back = null, dark = false, chips = ['stars', 'coins']
     });
     bar.appendChild(voiceBtn);
   }
+
+  // The menu music switch. Cases have no music, so they pass `music: false`.
+  const musicBtn = music && h('button', {
+    class: 'lh-btn lh-btn--icon', 'aria-label': 'Music on or off', title: 'Music on or off',
+    'aria-pressed': String(musicOn()),
+    html: icon(musicOn() ? 'musicOn' : 'musicOff'),
+    onClick: () => {
+      const now = toggleMusic();
+      musicBtn.innerHTML = icon(now ? 'musicOn' : 'musicOff');
+      musicBtn.setAttribute('aria-pressed', String(now));
+      sfx.tap();
+    },
+  });
+  if (musicBtn) bar.appendChild(musicBtn);
 
   const soundBtn = h('button', {
     class: 'lh-btn lh-btn--icon', 'aria-label': 'Sound on or off',
@@ -11198,6 +11227,7 @@ function caseScreen({ career, caseId }) {
     back: confirmQuit,
     dark: true,
     chips: [],
+    music: false,
   });
   el.appendChild(bar);
 

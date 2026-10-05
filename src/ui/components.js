@@ -4,7 +4,7 @@
  */
 import { h } from '../core/dom.js';
 import { sfx } from '../core/audio.js';
-import { getState, toggleSound, soundOn } from '../core/state.js';
+import { getState, toggleSound, soundOn, toggleMusic, musicOn } from '../core/state.js';
 import { isSupported as voiceSupported, voiceOn, toggleVoice } from '../core/voice.js';
 import { on } from '../core/events.js';
 import { humanSVG } from './human.js';
@@ -27,7 +27,7 @@ export function heroSVG(opts = {}) {
  * The top bar. `back` may be a function or false; the sound toggle is always
  * present so a child can silence the game from any screen.
  */
-export function hud({ title = '', back = null, dark = false, chips = ['stars', 'coins'], extra = [] } = {}) {
+export function hud({ title = '', back = null, dark = false, chips = ['stars', 'coins'], extra = [], music = true } = {}) {
   const bar = h('div', { class: `lh-hud${dark ? ' lh-hud--dark' : ''}` });
 
   if (back) {
@@ -65,6 +65,20 @@ export function hud({ title = '', back = null, dark = false, chips = ['stars', '
     });
     bar.appendChild(voiceBtn);
   }
+
+  // The menu music switch. Cases have no music, so they pass `music: false`.
+  const musicBtn = music && h('button', {
+    class: 'lh-btn lh-btn--icon', 'aria-label': 'Music on or off', title: 'Music on or off',
+    'aria-pressed': String(musicOn()),
+    html: icon(musicOn() ? 'musicOn' : 'musicOff'),
+    onClick: () => {
+      const now = toggleMusic();
+      musicBtn.innerHTML = icon(now ? 'musicOn' : 'musicOff');
+      musicBtn.setAttribute('aria-pressed', String(now));
+      sfx.tap();
+    },
+  });
+  if (musicBtn) bar.appendChild(musicBtn);
 
   const soundBtn = h('button', {
     class: 'lh-btn lh-btn--icon', 'aria-label': 'Sound on or off',
