@@ -2194,10 +2194,10 @@ let identDone = !window.EntropicIdent;
 function syncMusic() {
   if (!MENU_SCREENS.has(currentScreen)) { if (music.playing()) music.stop(1.0); return; }
   if (music.playing() || !identDone) return;
-  // Browsers only let audio start after a gesture; the tap that started the
-  // opening ident counts. Safari has no userActivation, so it just tries —
-  // music.js resumes a suspended context on the next tap.
-  if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
+  // Always try. Where the browser allows sound straight away (a site the
+  // player uses a lot, or after the tap that started the ident) the loop
+  // plays at once; where it does not, the context waits suspended and
+  // music.js resumes it on the first tap anywhere.
   music.start('lobby');
 }
 
